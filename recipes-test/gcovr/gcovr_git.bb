@@ -28,5 +28,4 @@ RDEPENDS_${PN} += " \
     python3-pytest \
     python3-shell \
     python3-threading \
-    python3-typing \
 "
