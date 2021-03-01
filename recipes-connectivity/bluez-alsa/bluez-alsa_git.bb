@@ -5,7 +5,9 @@ SECTION = "libs"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3d7d6ac7e2dbd2505652dceb3acdf1fe"
 
-SRC_URI = "git://github.com/Arkq/bluez-alsa.git;protocol=https;branch=master"
+SRC_URI = "git://github.com/Arkq/bluez-alsa.git;protocol=https;branch=master \
+           file://0001-backport-extern-fixes.patch \
+"
 SRCREV = "2cd6e4686f7808276480b430fb37df55dfdcc02b"
 
 SRC_URI += "file://bluez-alsa.service"
