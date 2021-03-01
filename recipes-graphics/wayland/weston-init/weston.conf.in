@@ -1,5 +1,4 @@
 [Service]
-Type=notify
 Environment="XDG_RUNTIME_DIR=@XDG_RUNTIME_DIR@"
 # Note that clearing PAMName (thus not having PAMName=login) disables
 # logind support for the session, which allows setting XDG_RUNTIME_DIR

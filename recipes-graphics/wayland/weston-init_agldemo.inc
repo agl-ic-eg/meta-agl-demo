@@ -52,12 +52,12 @@ do_install_append() {
     done
 
     # Install weston drop-in
-    install -d ${D}${systemd_system_unitdir}/weston@.service.d
-    install -m644 ${WORKDIR}/weston.conf ${D}/${systemd_system_unitdir}/weston@.service.d/weston-init.conf
+    install -d ${D}${systemd_system_unitdir}/weston.service.d
+    install -m644 ${WORKDIR}/weston.conf ${D}/${systemd_system_unitdir}/weston.service.d/weston-init.conf
 
     # Install weston DRM device dependency drop-in if required
     if [ -n "${WESTON_DRM_DEVICE}" ]; then
-        install -m 0644 ${WORKDIR}/weston-dep.conf ${D}/${systemd_system_unitdir}/weston@.service.d/
+        install -m 0644 ${WORKDIR}/weston-dep.conf ${D}/${systemd_system_unitdir}/weston.service.d/
     fi
 
     # Install tmpfiles drop-in
@@ -77,5 +77,5 @@ do_install_append() {
 
 FILES_${PN} += " \
     ${libdir}/tmpfiles.d/ \
-    ${systemd_system_unitdir}/weston@.service.d/ \
+    ${systemd_system_unitdir}/weston.service.d/ \
 "
