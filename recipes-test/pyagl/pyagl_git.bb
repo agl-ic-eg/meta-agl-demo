@@ -28,6 +28,5 @@ RDEPENDS_${PN} += " \
     python3-pytest-asyncio \
     python3-pytest-dependency \
     python3-pytest-reverse \
-    python3-typing \
     python3-websockets \
 "
