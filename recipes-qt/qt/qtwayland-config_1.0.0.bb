@@ -18,4 +18,4 @@ do_install () {
     sed -i -e 's/@QT_WAYLAND_DEFAULT_SHELL@/${QTWAYLAND_DEFAULT_SHELL}/' ${D}${sysconfdir}/afm/unit.env.d/qtwayland
 }
 
-RPROVIDES_${PN} += "virtual/qtwayland-config"
+RPROVIDES:${PN} += "virtual/qtwayland-config"

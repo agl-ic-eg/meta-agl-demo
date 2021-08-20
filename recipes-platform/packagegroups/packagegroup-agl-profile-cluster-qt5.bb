@@ -9,13 +9,13 @@ PACKAGES = "\
     profile-cluster-qt5 \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-image-boot \
     packagegroup-agl-core-security \
     packagegroup-agl-graphical-weston \
     packagegroup-agl-appfw-native-qt5 \
 "
 
-RDEPENDS_profile-cluster-qt5 = "${PN}"
+RDEPENDS:profile-cluster-qt5 = "${PN}"

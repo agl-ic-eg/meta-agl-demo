@@ -34,7 +34,7 @@ PACKAGECONFIG[rm] = "--enable-rm,--disable-rm"
 PACKAGECONFIG[jpeg] = "--enable-jpeg,--disable-jpeg"
 PACKAGECONFIG[png] = "--enable-png,--disable-png"
 
-do_install_append() {
+do_install:append() {
        # Install "test" binary for corresponding package
        install -d ${D}/${bindir}
        install -m 755 ${B}/src/bin/.libs/test ${D}/${bindir}/test-lms
@@ -42,22 +42,22 @@ do_install_append() {
        rm -f ${D}/${libdir}/${PN}/plugins/*.la
 }
 
-FILES_${PN} += "${datadir}/dbus-1"
-FILES_${PN}-dbg += "${libdir}/${PN}/plugins/.debug"
+FILES:${PN} += "${datadir}/dbus-1"
+FILES:${PN}-dbg += "${libdir}/${PN}/plugins/.debug"
 
-PACKAGES_prepend = "${PN}-test "
-FILES_${PN}-test_prepend = "${bindir}/test-lms "
+PACKAGES:prepend = "${PN}-test "
+FILES:${PN}-test:prepend = "${bindir}/test-lms "
 
 PACKAGES += "${PN}-meta"
-ALLOW_EMPTY_${PN}-meta = "1"
+ALLOW_EMPTY:${PN}-meta = "1"
 
 PACKAGES_DYNAMIC = "${PN}-plugin-*"
 
-python populate_packages_prepend () {
+python populate_packages:prepend () {
     lms_libdir = d.expand('${libdir}/${PN}')
     pkgs = []
 
     pkgs += do_split_packages(d, oe.path.join(lms_libdir, "plugins"), '^(.*)\.so$', d.expand('${PN}-plugin-%s'), 'LightMediaScanner plugin for %s', prepend=True, extra_depends=d.expand('${PN}'))
     metapkg = d.getVar('PN') + '-meta'
-    d.setVar('RDEPENDS_' + metapkg, ' '.join(pkgs))
+    d.setVar('RDEPENDS:' + metapkg, ' '.join(pkgs))
 }

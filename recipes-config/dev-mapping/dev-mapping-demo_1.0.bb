@@ -15,4 +15,4 @@ do_install() {
     install -m 0644 ${WORKDIR}/dev-mapping.conf.demo ${D}${sysconfdir}/dev-mapping.conf
 }
 
-RPROVIDES_${PN} = "virtual/low-can-dev-mapping"
+RPROVIDES:${PN} = "virtual/low-can-dev-mapping"

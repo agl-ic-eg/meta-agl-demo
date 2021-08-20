@@ -8,8 +8,8 @@ require agl-telematics-demo-platform.bb
 
 LICENSE = "MIT"
 
-IMAGE_FEATURES_append = " dev-pkgs"
-IMAGE_INSTALL_append = " kernel-dev kernel-devsrc"
+IMAGE_FEATURES:append = " dev-pkgs"
+IMAGE_INSTALL:append = " kernel-dev kernel-devsrc"
 
 inherit populate_sdk
 
@@ -18,4 +18,4 @@ inherit populate_sdk
 # can failed (randomly).
 addtask do_populate_sdk after do_rootfs
 
-TOOLCHAIN_HOST_TASK_append = " nativesdk-perl-modules "
+TOOLCHAIN_HOST_TASK:append = " nativesdk-perl-modules "

@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_append := ":${THISDIR}/dbus"
+FILESEXTRAPATHS:append := ":${THISDIR}/dbus"
 
 SRC_URI += "file://dbus.service \
             file://dbus.socket \
@@ -7,7 +7,7 @@ SRC_URI += "file://dbus.service \
 
 inherit systemd
 
-do_install_append() {
+do_install:append() {
     if [ "${PN}" != "nativesdk-dbus" ]; then
         if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
             install -m 644 -p -D ${WORKDIR}/dbus.service ${D}${systemd_user_unitdir}/dbus.service
@@ -22,7 +22,7 @@ do_install_append() {
     fi
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_user_unitdir}/dbus.*', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/user@.service.d/dbus_env.conf', '', d)} \
     "

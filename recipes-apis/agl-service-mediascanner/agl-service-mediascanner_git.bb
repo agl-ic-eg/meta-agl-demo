@@ -13,6 +13,6 @@ PV = "1.0+git${SRCPV}"
 S  = "${WORKDIR}/git"
 
 DEPENDS = "json-c sqlite3 glib-2.0"
-RDEPENDS_${PN} = "lightmediascanner"
+RDEPENDS:${PN} = "lightmediascanner"
 
 inherit cmake aglwgt pkgconfig

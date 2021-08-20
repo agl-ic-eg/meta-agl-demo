@@ -17,7 +17,7 @@ S = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     agl-service-telephony \
     agl-service-bluetooth-pbap \
     libqtappfw \

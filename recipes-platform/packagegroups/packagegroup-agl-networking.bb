@@ -9,11 +9,11 @@ PACKAGES = "\
     packagegroup-agl-networking \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
 
 # fonts
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     connman \
     connman-client \
     connman-tools \

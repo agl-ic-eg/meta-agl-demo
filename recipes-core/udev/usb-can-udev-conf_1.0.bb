@@ -20,6 +20,6 @@ do_install() {
     fi
 }
 
-FILES_${PN} += "${systemd_system_unitdir}"
+FILES:${PN} += "${systemd_system_unitdir}"
 
-RDEPENDS_${PN} += "systemd"
+RDEPENDS:${PN} += "systemd"

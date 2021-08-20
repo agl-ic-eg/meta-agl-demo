@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_append := ":${THISDIR}/qtwayland"
+FILESEXTRAPATHS:append := ":${THISDIR}/qtwayland"
 
 # QT_MODULE_BRANCH = "5.4"
 
@@ -12,7 +12,7 @@ FILESEXTRAPATHS_append := ":${THISDIR}/qtwayland"
 #    file://0002-qwaylandwindow-add-support-for-IVI-Surface-ID-proper.patch \
 #
 
-SRC_URI_append = "\
+SRC_URI:append = "\
     file://0010-Added-manifest-file-according-to-smack-3-domain-mode.patch \
     file://0001-client-qwaylandintegration-Do-not-attempt-to-use-the.patch \
     "

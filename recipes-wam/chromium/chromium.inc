@@ -39,7 +39,7 @@ BROWSER_APPLICATION_DIR = "/opt/chromium84"
 
 TARGET = "${WEBRUNTIME_BUILD_TARGET} ${BROWSER_APP_BUILD_TARGET}"
 
-# Skip do_install_append of webos_system_bus. It is not compatible with this component.
+# Skip do_install:append of webos_system_bus. It is not compatible with this component.
 WEBOS_SYSTEM_BUS_FILES_LOCATION = "${S}/files/sysbus"
 
 PACKAGECONFIG ?= "jumbo use-upstream-wayland"
@@ -118,10 +118,10 @@ GN_ARGS += "is_cfi=false"
 #    instead, so that if DEBUG_BUILD is not set GN will not create a huge debug
 #    binary anyway. Since our compiler flags are passed after GN's, -g0 does
 #    not cause any issues if DEBUG_BUILD is set, as -g1 will be passed later.
-DEBUG_FLAGS_remove_arm = "-g"
-DEBUG_FLAGS_append_arm = "-g1"
-DEBUG_FLAGS_remove_x86 = "-g"
-DEBUG_FLAGS_append_x86 = "-g1"
+DEBUG_FLAGS:remove:arm = "-g"
+DEBUG_FLAGS:append:arm = "-g1"
+DEBUG_FLAGS:remove:x86 = "-g"
+DEBUG_FLAGS:append:x86 = "-g1"
 GN_ARGS += "symbol_level=0"
 
 # We do not want to use Chromium's own Debian-based sysroots, it is easier to
@@ -146,17 +146,17 @@ def get_compiler_flag(params, param_name, d):
 ARM_FLOAT_ABI = "${@bb.utils.contains('TUNE_FEATURES', 'callconvention-hard', 'hard', 'softfp', d)}"
 ARM_FPU = "${@get_compiler_flag(d.getVar('TUNE_CCARGS').split(), '-mfpu', d)}"
 ARM_TUNE = "${@get_compiler_flag(d.getVar('TUNE_CCARGS').split(), '-mcpu', d)}"
-ARM_VERSION_aarch64 = "8"
-ARM_VERSION_armv7a = "7"
-ARM_VERSION_armv7ve = "7"
-ARM_VERSION_armv6 = "6"
+ARM_VERSION:aarch64 = "8"
+ARM_VERSION:armv7a = "7"
+ARM_VERSION:armv7ve = "7"
+ARM_VERSION:armv6 = "6"
 
 # GN computes and defaults to it automatically where needed
 # forcing it from cmdline breaks build on places where it ends up
 # overriding what GN wants
-TUNE_CCARGS_remove = "-mthumb"
+TUNE_CCARGS:remove = "-mthumb"
 
-GN_ARGS_append_arm = " \
+GN_ARGS:append:arm = " \
         arm_float_abi=\"${ARM_FLOAT_ABI}\" \
         arm_fpu=\"${ARM_FPU}\" \
         arm_tune=\"${ARM_TUNE}\" \
@@ -164,15 +164,15 @@ GN_ARGS_append_arm = " \
 "
 # tcmalloc's atomicops-internals-arm-v6plus.h uses the "dmb" instruction that
 # is not available on (some?) ARMv6 models, which causes the build to fail.
-GN_ARGS_append_armv6 += 'use_allocator="none"'
+GN_ARGS:append:armv6 += 'use_allocator="none"'
 # The WebRTC code fails to build on ARMv6 when NEON is enabled.
 # https://bugs.chromium.org/p/webrtc/issues/detail?id=6574
-GN_ARGS_append_armv6 += 'arm_use_neon=false'
+GN_ARGS:append:armv6 += 'arm_use_neon=false'
 
 # Disable glibc shims on musl
 # tcmalloc does not play well with musl as of M62 (and possibly earlier).
 # https://github.com/gperftools/gperftools/issues/693
-GN_ARGS_append_libc-musl = ' use_allocator_shim=false'
+GN_ARGS:append:libc-musl = ' use_allocator_shim=false'
 
 # More options to speed up the build
 GN_ARGS += "\
@@ -187,12 +187,12 @@ GN_ARGS += "\
 
 # Doesn't build for armv[45]*
 COMPATIBLE_MACHINE = "(-)"
-COMPATIBLE_MACHINE_aarch64 = "(.*)"
-COMPATIBLE_MACHINE_armv6 = "(.*)"
-COMPATIBLE_MACHINE_armv7a = "(.*)"
-COMPATIBLE_MACHINE_armv7ve = "(.*)"
-COMPATIBLE_MACHINE_x86 = "(.*)"
-COMPATIBLE_MACHINE_x86-64 = "(.*)"
+COMPATIBLE_MACHINE:aarch64 = "(.*)"
+COMPATIBLE_MACHINE:armv6 = "(.*)"
+COMPATIBLE_MACHINE:armv7a = "(.*)"
+COMPATIBLE_MACHINE:armv7ve = "(.*)"
+COMPATIBLE_MACHINE:x86 = "(.*)"
+COMPATIBLE_MACHINE:x86-64 = "(.*)"
 
 #CHROMIUM_PLUGINS_PATH = "${libdir}"
 CBE_DATA_PATH = "${libdir}/cbe"
@@ -200,7 +200,7 @@ CBE_DATA_LOCALES_PATH = "${CBE_DATA_PATH}/locales"
 
 # The text relocations are intentional -- see comments in [GF-52468]
 # TODO: check if we need INSANE_SKIP on ldflags
-INSANE_SKIP_${PN} = "textrel ldflags"
+INSANE_SKIP:${PN} = "textrel ldflags"
 
 
 do_compile[progress] = "outof:^\[(\d+)/(\d+)\]\s+"
@@ -318,28 +318,28 @@ WEBOS_SYSTEM_BUS_DIRS_LEGACY_BROWSER_APPLICATION = " \
     ${webos_sysbus_pubrolesdir}/${BROWSER_APPLICATION}.json \
 "
 
-SYSROOT_DIRS_append = " ${bindir_cross}"
+SYSROOT_DIRS:append = " ${bindir_cross}"
 
-PACKAGES_prepend = " \
+PACKAGES:prepend = " \
     ${PN}-cross-mksnapshot \
     ${BROWSER_APPLICATION} \
 "
 
-FILES_${BROWSER_APPLICATION} += " \
+FILES:${BROWSER_APPLICATION} += " \
     ${BROWSER_APPLICATION_DIR} \
     ${WEBOS_SYSTEM_BUS_DIRS_LEGACY_BROWSER_APPLICATION} \
 "
 
-RDEPENDS_${BROWSER_APPLICATION} += "${PN}"
+RDEPENDS:${BROWSER_APPLICATION} += "${PN}"
 
 VIRTUAL-RUNTIME_gpu-libs ?= ""
-RDEPENDS_${PN} += "${VIRTUAL-RUNTIME_gpu-libs}"
+RDEPENDS:${PN} += "${VIRTUAL-RUNTIME_gpu-libs}"
 
 # The text relocations are intentional -- see comments in [GF-52468]
 # TODO: check if we need INSANE_SKIP on ldflags
-INSANE_SKIP_${BROWSER_APPLICATION} += "libdir ldflags textrel"
+INSANE_SKIP:${BROWSER_APPLICATION} += "libdir ldflags textrel"
 
-FILES_${PN} = " \
+FILES:${PN} = " \
     ${libdir}/*.so \
     ${libdir}/swiftshader/*.so \
     ${CBE_DATA_PATH}/* \
@@ -347,8 +347,8 @@ FILES_${PN} = " \
     ${WEBOS_SYSTEM_BUS_DIRS} \
 "
 
-FILES_${PN}-dev = " \
+FILES:${PN}-dev = " \
     ${includedir} \
 "
 
-FILES_${PN}-cross-mksnapshot = "${bindir_cross}/${HOST_SYS}-mksnapshot.gz"
+FILES:${PN}-cross-mksnapshot = "${bindir_cross}/${HOST_SYS}-mksnapshot.gz"

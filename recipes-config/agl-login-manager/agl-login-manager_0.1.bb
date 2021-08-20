@@ -5,9 +5,9 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 
 LOGIN_USER ??="1001 1002"
 
-RDEPENDS_${PN} += "af-main"
+RDEPENDS:${PN} += "af-main"
 
-do_install_append() {
+do_install:append() {
 
     install -d ${D}${systemd_system_unitdir}/multi-user.target.wants/
 
@@ -16,4 +16,4 @@ do_install_append() {
     done
 }
 
-FILES_${PN} += "${systemd_system_unitdir}"
+FILES:${PN} += "${systemd_system_unitdir}"

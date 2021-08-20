@@ -16,5 +16,5 @@ do_install () {
     install -D -m 644 ${WORKDIR}/voice-high.json ${D}${sysconfdir}/xdg/AGL/voice-high.json
 }
 
-RPROVIDES_${PN} += "virtual/voice-high-config"
+RPROVIDES:${PN} += "virtual/voice-high-config"
 

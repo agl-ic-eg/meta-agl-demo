@@ -9,9 +9,9 @@ PACKAGES = "\
     profile-telematics \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-image-boot \
     packagegroup-agl-core-security \
     ${@bb.utils.contains('VIRTUAL-RUNTIME_net_manager','connman','connman connman-client','',d)} \
@@ -22,4 +22,4 @@ RDEPENDS_${PN} += "\
     can-utils \
 "
 
-RDEPENDS_profile-telematics = "${PN}"
+RDEPENDS:profile-telematics = "${PN}"

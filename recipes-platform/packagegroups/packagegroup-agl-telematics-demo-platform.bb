@@ -9,9 +9,9 @@ PACKAGES = "\
     packagegroup-agl-telematics-demo-platform \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-profile-telematics \
     "
 
@@ -23,7 +23,7 @@ AGL_APIS = " \
     agl-service-gps \
     "
 
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     gpsd \
     sw-gpsd-udev-conf \
     usb-can-udev-conf \

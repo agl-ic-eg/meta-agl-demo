@@ -1,7 +1,7 @@
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
                   agl-compositor \
                   "
 # appfw 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
                   agl-login-manager \
                   "

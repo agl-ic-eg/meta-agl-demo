@@ -17,7 +17,7 @@ S = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt pkgconfig
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     qtlocation \
     flite \
     libqtappfw \
@@ -27,5 +27,5 @@ RDEPENDS_${PN} += " \
     agl-service-navigation \
 "
 
-RPROVIDES_${PN} = "virtual/navigation"
+RPROVIDES:${PN} = "virtual/navigation"
 

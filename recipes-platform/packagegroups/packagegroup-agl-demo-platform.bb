@@ -11,13 +11,13 @@ PACKAGES = "\
     packagegroup-agl-demo-platform-devel \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-image-ivi \
     "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-profile-graphical-qt5 \
     packagegroup-hmi-framework \
     packagegroup-agl-demo \
@@ -42,7 +42,7 @@ AGL_APPS = " \
 QTAGLEXTRAS = " libqtappfw"
 
 # add support for websocket in Qt and QML
-QTAGLEXTRAS_append = " qtwebsockets qtwebsockets-qmlplugins"
+QTAGLEXTRAS:append = " qtwebsockets qtwebsockets-qmlplugins"
 #PREFERRED_PROVIDER_virtual/webruntime = "web-runtime"
 
 # Cluster demo support.
@@ -66,7 +66,7 @@ DEMO_UNIT_CONF += " demo-i2c-udev-conf "
 # Preload only if agl-demo-preload is set
 DEMO_PRELOAD = "${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", " ${DEMO_UNIT_CONF} poiapp-api-key", "",d)}"
 
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     weston-ini-conf \
     qtquickcontrols2-agl \
     qtquickcontrols2-agl-style \
@@ -82,7 +82,7 @@ RDEPENDS_${PN}_append = " \
 #       Also, the navigation and mixer debug widgets are currently
 #       specified explicitly, as there's no simple way to derive their
 #       names from the virtual/ RPROVIDES at present.
-RDEPENDS_${PN}-devel = " \
+RDEPENDS:${PN}-devel = " \
     packagegroup-hmi-framework-devel \
     dashboard-dbg \
     hvac-dbg \

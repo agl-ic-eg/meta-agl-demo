@@ -9,10 +9,10 @@ PACKAGES = "\
     packagegroup-agl-appfw-html5 \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
 # add packages for WAM
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     chromium-browser-service \
     wam \
     "

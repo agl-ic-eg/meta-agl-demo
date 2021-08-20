@@ -21,7 +21,7 @@ S  = "${WORKDIR}/git"
 
 inherit pkgconfig cmake_qt5 aglwgt
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     qtquickcontrols \
     qtquickcontrols-qmlplugins \
     qtquickcontrols2 \

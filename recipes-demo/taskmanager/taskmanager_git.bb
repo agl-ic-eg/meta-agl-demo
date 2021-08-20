@@ -23,4 +23,4 @@ S  = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt
 
-RDEPENDS_${PN} += "agl-service-taskmanager libqtappfw"
+RDEPENDS:${PN} += "agl-service-taskmanager libqtappfw"

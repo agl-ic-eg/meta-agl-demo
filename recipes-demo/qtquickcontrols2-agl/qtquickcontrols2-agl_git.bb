@@ -14,9 +14,9 @@ S = "${WORKDIR}/git"
 
 inherit qmake5
 
-FILES_${PN} += "${OE_QMAKE_PATH_QML}/AGL/Demo/Controls/*"
+FILES:${PN} += "${OE_QMAKE_PATH_QML}/AGL/Demo/Controls/*"
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     qtquickcontrols-qmlplugins \
     qtquickcontrols2-qmlplugins \
     qtsvg-plugins \

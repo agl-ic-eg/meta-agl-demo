@@ -9,7 +9,7 @@ PACKAGES = "\
     packagegroup-agl-demo \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
 # MOST out-of-tree kernel drivers
 #################################
@@ -40,9 +40,9 @@ UNICENS ?= " \
 # setting DEMO_ENABLE_BTWILINK to "true" in local.conf / site.conf re-enables.
 DEMO_ENABLE_BTWILINK ?= ""
 DEMO_PLATFORM_CONF = ""
-DEMO_PLATFORM_CONF_append_ulcb = "${@bb.utils.contains("DEMO_ENABLE_BTWILINK", "true", "", " btwilink-disable-conf", d)}"
+DEMO_PLATFORM_CONF:append:ulcb = "${@bb.utils.contains("DEMO_ENABLE_BTWILINK", "true", "", " btwilink-disable-conf", d)}"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     udisks2 \
     "
 
@@ -60,7 +60,7 @@ TTF_FONTS = " \
     "
 
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     linux-firmware-ath9k \
     linux-firmware-ralink \
     can-utils \

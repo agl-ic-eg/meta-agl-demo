@@ -1,1 +1,1 @@
-RDEPENDS_${PN}_append = " systemd-agl-sync run-agl-postinsts"
+RDEPENDS:${PN}:append = " systemd-agl-sync run-agl-postinsts"

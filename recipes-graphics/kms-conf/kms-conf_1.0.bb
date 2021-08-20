@@ -6,7 +6,7 @@ SRC_URI = " \
     file://kms.conf \
 "
 
-do_install_append() {
+do_install:append() {
     install -d ${D}/etc
     install -m 644 ${WORKDIR}/kms.conf ${D}/etc
 }

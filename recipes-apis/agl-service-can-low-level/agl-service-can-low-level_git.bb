@@ -18,6 +18,6 @@ inherit cmake aglwgt pkgconfig ptest
 
 # For now, just enable J1939 on the qemu platforms where we know the
 # linux-yocto kernel is new enough (>= 5.4) and has the support enabled.
-AGLWGT_CMAKE_CONFIGURE_ARGS_append_qemuall = " -DWITH_FEATURE_J1939=ON"
+AGLWGT_CMAKE_CONFIGURE_ARGS:append:qemuall = " -DWITH_FEATURE_J1939=ON"
 
-RDEPENDS_${PN} = "virtual/low-can-dev-mapping"
+RDEPENDS:${PN} = "virtual/low-can-dev-mapping"

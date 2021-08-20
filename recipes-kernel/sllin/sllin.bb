@@ -12,7 +12,7 @@ S = "${WORKDIR}/git/sllin"
 
 PV = "0.1+git${SRCPV}"
 
-SRC_URI_append = " \
+SRC_URI:append = " \
 	file://0001_update_makefile.patch;pnum=2 \
 	file://0002_fix_null_operation_check.patch;pnum=2 \
 	file://0003-Allow-recent-kernels-newer-4.11.x-to-build.patch;pnum=2 \
@@ -23,15 +23,15 @@ SRC_URI_append = " \
 	file://lin_config.conf \
 "
 
-KERNEL_MODULE_AUTOLOAD_append = " sllin"
-KERNEL_MODULE_PROBECONF_append = " sllin"
+KERNEL_MODULE_AUTOLOAD:append = " sllin"
+KERNEL_MODULE_PROBECONF:append = " sllin"
 
 SLLINBAUDRATE ??= "9600"
 module_conf_sllin = "options sllin baudrate=${SLLINBAUDRATE}"
 
-SYSTEMD_SERVICE_${PN} = "sllin-demo.service"
+SYSTEMD_SERVICE:${PN} = "sllin-demo.service"
 
-do_install_append () {
+do_install:append () {
 	install -d 644 ${D}/${bindir}
 	install -m 755 ${WORKDIR}/start_lin_demo.sh ${D}/${bindir}/start_lin_demo.sh
 	install -d ${D}${systemd_system_unitdir}
@@ -40,6 +40,6 @@ do_install_append () {
 	install -m 0644 ${WORKDIR}/lin_config.conf ${D}${sysconfdir}/
 }
 
-FILES_${PN} += "${bindir}/start_lin_demo.sh ${sysconfdir}/lin_config.conf"
+FILES:${PN} += "${bindir}/start_lin_demo.sh ${sysconfdir}/lin_config.conf"
 
-RDEPENDS_${PN} += "lin-config"
+RDEPENDS:${PN} += "lin-config"

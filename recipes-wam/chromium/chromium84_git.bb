@@ -18,7 +18,7 @@ BROWSER_APPLICATION = "chromium84-browser"
 BROWSER_APPLICATION_DIR = "/opt/chromium84"
 MKSNAPSHOT_PATH = "v8_snapshot/"
 
-PACKAGECONFIG_remove="jumbo"
+PACKAGECONFIG:remove="jumbo"
 
 GN_ARGS += "use_gtk=false"
 
@@ -60,12 +60,12 @@ GN_ARGS += "\
     use_v8_context_snapshot=false \
 "
 
-GN_ARGS_append = " \
+GN_ARGS:append = " \
   use_system_minigbm=false \
   use_wayland_gbm=false \
 "
 
-GN_ARGS_append = " \
+GN_ARGS:append = " \
   is_webos=false \
   is_agl=true \
 "
@@ -77,5 +77,5 @@ GN_ARGS += "\
 
 # TODO(rzanoni) copied from original recipe to fix qemux86 build.
 # check if it can be removed in the future.
-PACKAGECONFIG_remove_qemux86 = "gstreamer umediaserver neva-media gav neva-webrtc"
+PACKAGECONFIG:remove:qemux86 = "gstreamer umediaserver neva-media gav neva-webrtc"
 #END TODO

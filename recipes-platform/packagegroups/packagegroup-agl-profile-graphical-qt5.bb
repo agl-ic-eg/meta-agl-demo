@@ -9,15 +9,15 @@ PACKAGES = "\
     profile-graphical-qt5 \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-profile-graphical \
     packagegroup-agl-appfw-native-qt5 \
 "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     agl-login-manager \
     "
 
-RDEPENDS_profile-graphical-qt5 = "${PN}"
+RDEPENDS:profile-graphical-qt5 = "${PN}"

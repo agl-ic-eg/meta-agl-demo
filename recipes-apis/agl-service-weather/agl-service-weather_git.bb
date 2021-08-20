@@ -13,6 +13,6 @@ PV = "1.0+git${SRCPV}"
 S  = "${WORKDIR}/git"
 
 DEPENDS = "glib-2.0 json-c"
-RDEPENDS_${PN} = "agl-service-geoclue"
+RDEPENDS:${PN} = "agl-service-geoclue"
 
 inherit cmake aglwgt pkgconfig

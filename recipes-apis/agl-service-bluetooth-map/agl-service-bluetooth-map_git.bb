@@ -13,6 +13,6 @@ PV = "1.0+git${SRCPV}"
 S  = "${WORKDIR}/git"
 
 DEPENDS = "glib-2.0 json-c"
-RDEPENDS_${PN} = "bluez5-obex agl-service-bluetooth"
+RDEPENDS:${PN} = "bluez5-obex agl-service-bluetooth"
 
 inherit cmake aglwgt pkgconfig

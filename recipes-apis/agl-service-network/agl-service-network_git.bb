@@ -16,10 +16,10 @@ DEPENDS = "glib-2.0 json-c"
 
 inherit cmake aglwgt pkgconfig
 
-do_install_append() {
+do_install:append() {
     install -d ${D}${sbindir}
     install -m 755 ${B}/build-release/test/agl-service-network-ctl ${D}${sbindir}
 }
 
-FILES_${PN}-tools = "${sbindir}/agl-service-network-ctl"
-PACKAGES_prepend = "${PN}-tools "
+FILES:${PN}-tools = "${sbindir}/agl-service-network-ctl"
+PACKAGES:prepend = "${PN}-tools "

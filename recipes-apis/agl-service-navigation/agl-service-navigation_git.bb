@@ -15,4 +15,4 @@ S  = "${WORKDIR}/git"
 
 inherit cmake aglwgt pkgconfig
 
-RDEPENDS_${PN} += "json-c libdbus-c++"
+RDEPENDS:${PN} += "json-c libdbus-c++"

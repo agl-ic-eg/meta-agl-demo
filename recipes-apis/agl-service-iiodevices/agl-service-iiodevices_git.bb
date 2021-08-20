@@ -14,6 +14,6 @@ S  = "${WORKDIR}/git"
 
 DEPENDS = "json-c libiio glib-2.0"
 
-RDEPENDS_${PN} = "libiio"
+RDEPENDS:${PN} = "libiio"
 
 inherit cmake aglwgt pkgconfig

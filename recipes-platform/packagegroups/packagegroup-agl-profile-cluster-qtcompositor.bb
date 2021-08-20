@@ -9,9 +9,9 @@ PACKAGES = "\
     profile-cluster-qt5 \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-image-boot \
     packagegroup-agl-core-security \
     packagegroup-agl-core-connectivity \
@@ -28,9 +28,9 @@ QT_LITE = " \
     qtcompositor-conf \
 "
 
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     ${QT_LITE} \
     agl-login-manager \
 "
 
-RDEPENDS_profile-cluster-qt5 = "${PN}"
+RDEPENDS:profile-cluster-qt5 = "${PN}"

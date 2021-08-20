@@ -4,6 +4,6 @@ require agl-image-cluster-qt5.inc
 
 LICENSE = "MIT"
 
-IMAGE_INSTALL_append = "\
+IMAGE_INSTALL:append = "\
     profile-cluster-qt5 \
     "

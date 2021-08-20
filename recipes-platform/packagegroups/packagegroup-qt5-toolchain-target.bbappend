@@ -1,6 +1,6 @@
 # add missing dependencies for SDK
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
 	qttools-plugins \
 	qtquickcontrols-dev \
 	qtquickcontrols-qmlplugins \
@@ -11,7 +11,7 @@ RDEPENDS_${PN} += " \
 
 # remove dependency on qtwebkit (still added to SDK by packagegroup-qt5-toolchain-target)
 # see SPEC-1159
-RDEPENDS_${PN}_remove = " \
+RDEPENDS:${PN}:remove = " \
     qtwebkit-dev \
     qtwebkit-mkspecs \
     qtwebkit-qmlplugins \

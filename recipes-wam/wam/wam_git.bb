@@ -16,7 +16,7 @@ EXTRA_OECMAKE = "\
 PR="r0"
 
 PROVIDES += "virtual/webruntime"
-RPROVIDES_${PN} += "virtual/webruntime"
+RPROVIDES:${PN} += "virtual/webruntime"
 
 # Disable some of securit_flags
 # Disable D_FORTIFY_SOURCE=2 and -fstack-protector-strong
@@ -35,7 +35,7 @@ SRC_URI = "\
 S = "${WORKDIR}/git"
 SRCREV = "2a246d2ea79bd335b86942a5579d6de0c9ddce40"
 
-do_install_append() {
+do_install:append() {
     install -d ${D}${sysconfdir}/wam
     install -v -m 644 ${S}/files/launch/security_policy.conf ${D}${sysconfdir}/wam/security_policy.conf
     install -d ${D}${systemd_system_unitdir}
@@ -52,11 +52,11 @@ do_install_append() {
     ln -sf ../wam-user-setup@.service ${D}${systemd_system_unitdir}/user-runtime-dir@.service.wants/
 }
 
-FILES_${PN} += "${sysconfdir}/init ${sysconfdir}/wam ${libdir}/webappmanager/plugins/*.so ${systemd_system_unitdir}"
+FILES:${PN} += "${sysconfdir}/init ${sysconfdir}/wam ${libdir}/webappmanager/plugins/*.so ${systemd_system_unitdir}"
 
-CXXFLAGS_append_agl-devel = " -DAGL_DEVEL"
+CXXFLAGS:append:agl-devel = " -DAGL_DEVEL"
 
-do_install_append_agl-devel() {
+do_install:append:agl-devel() {
     # Enable remote inspector and dev mode
     install -d ${D}${localstatedir}/agl-devel/preferences
     touch ${D}${localstatedir}/agl-devel/preferences/debug_system_apps

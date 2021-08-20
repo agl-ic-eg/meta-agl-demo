@@ -10,6 +10,6 @@ SRC_URI[sha256sum] = "44bda34c7123f00c3df95d24e2dc8d43c4d17b456fbb8c434ef4f4a7eb
 
 inherit pypi setuptools3
 
-RDEPENDS_${PN} += "${PYTHON_PN}-asyncio ${PYTHON_PN}-cryptography"
+RDEPENDS:${PN} += "${PYTHON_PN}-asyncio ${PYTHON_PN}-cryptography"
 
 BBCLASSEXTEND = "native"

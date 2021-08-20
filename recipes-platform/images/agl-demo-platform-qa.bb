@@ -7,7 +7,7 @@ LICENSE = "MIT"
 
 require agl-demo-platform.bb
 
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
     packagegroup-ivi-common-test \
     packagegroup-agl-demo-platform-qa \
     "

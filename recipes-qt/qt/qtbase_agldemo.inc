@@ -1,1 +1,1 @@
-PACKAGECONFIG_append = " icu fontconfig sql-sqlite"
+PACKAGECONFIG:append = " icu fontconfig sql-sqlite"

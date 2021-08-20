@@ -26,6 +26,6 @@ S       = "${WORKDIR}/git"
 
 inherit qmake5 systemd pkgconfig aglwgt
 
-PATH_prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
+PATH:prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
 
-RDEPENDS_${PN} = "agl-service-homescreen"
+RDEPENDS:${PN} = "agl-service-homescreen"

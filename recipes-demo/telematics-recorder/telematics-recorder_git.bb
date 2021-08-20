@@ -17,7 +17,7 @@ S  = "${WORKDIR}/git"
 
 inherit cmake aglwgt
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     agl-service-can-low-level \
     agl-service-gps \
     agl-service-network \

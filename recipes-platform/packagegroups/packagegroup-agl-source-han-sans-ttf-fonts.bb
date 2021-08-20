@@ -9,11 +9,11 @@ PACKAGES = "\
     packagegroup-agl-source-han-sans-ttf-fonts \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
 
 # fonts
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     source-han-sans-cn-fonts \
     source-han-sans-jp-fonts \
     source-han-sans-tw-fonts \

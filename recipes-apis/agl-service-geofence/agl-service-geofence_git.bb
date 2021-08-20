@@ -13,6 +13,6 @@ PV = "1.0+git${SRCPV}"
 S  = "${WORKDIR}/git"
 
 DEPENDS = "json-c glib-2.0"
-RDEPENDS_${PN} = "agl-service-gps"
+RDEPENDS:${PN} = "agl-service-gps"
 
 inherit cmake aglwgt pkgconfig

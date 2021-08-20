@@ -1,9 +1,9 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI_append = " file://psplash-colors.h"
+SRC_URI:append = " file://psplash-colors.h"
 
 SPLASH_IMAGES = "file://psplash-poky-img.h;outsuffix=default"
 
-do_configure_append () {
+do_configure:append () {
 	cp -f ${WORKDIR}/psplash-colors.h ${S}
 }

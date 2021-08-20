@@ -14,7 +14,7 @@ SRC_URI[sha256sum] = "8a8c3ecc186ef92eda150a4aa687d8638f4f42be52aa2971e72aa960d4
 
 
 DEPENDS = " hts-engine "
-RDEPENDS_${PN} += " flite-voicedata "
+RDEPENDS:${PN} += " flite-voicedata "
 
 inherit autotools-brokensep
 

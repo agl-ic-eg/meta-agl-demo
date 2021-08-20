@@ -4,6 +4,6 @@ require agl-image-cluster.inc
 
 LICENSE = "MIT"
 
-IMAGE_INSTALL_append = "\
+IMAGE_INSTALL:append = "\
     profile-cluster \
     "

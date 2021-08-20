@@ -17,7 +17,7 @@ S  = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     libqtappfw \
     agl-service-signal-composer \
 "

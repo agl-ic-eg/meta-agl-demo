@@ -9,9 +9,9 @@ PACKAGES = "\
     packagegroup-agl-cluster-demo-qtcompositor \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-profile-cluster-qtcompositor \
     packagegroup-agl-ttf-fonts \
     packagegroup-agl-networking \
@@ -33,7 +33,7 @@ AGL_APPS = " \
     cluster-gauges-qtcompositor \
     "
 
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     libva-utils \
     linux-firmware-ralink \
     can-utils \

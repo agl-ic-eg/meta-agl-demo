@@ -16,4 +16,4 @@ DEPENDS += "af-binder af-main-native chromium84"
 
 inherit cmake aglwgt
 
-RDEPENDS_${PN} += "chromium84-browser"
+RDEPENDS:${PN} += "chromium84-browser"

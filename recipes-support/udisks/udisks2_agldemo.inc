@@ -1,14 +1,14 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI_append = " file://automount.service \
+SRC_URI:append = " file://automount.service \
                    file://automount.sh \
                    file://99-udisks2.rules \
 "
 
 SYSTEMD_AUTO_ENABLE = "enable"
-SYSTEMD_SERVICE_${PN}_append = " automount.service"
+SYSTEMD_SERVICE:${PN}:append = " automount.service"
 
-do_install_append () {
+do_install:append () {
     sed -i 's/^WantedBy=.*/WantedBy=multi-user.target/' ${D}${systemd_unitdir}/system/udisks2.service
 
     install -d ${D}${base_libdir}/systemd/system
@@ -21,7 +21,7 @@ do_install_append () {
     install -m 0644 ${WORKDIR}/99-udisks2.rules ${D}${sysconfdir}/udev/rules.d
 }
 
-FILES_${PN}_append = " \
+FILES:${PN}:append = " \
     ${base_libdir}/systemd/system/automount.service \
     ${libexecdir}/automount.sh \
 "

@@ -30,6 +30,6 @@ do_install() {
     fi
 }
 
-FILES_${PN} += "${systemd_unitdir}"
+FILES:${PN} += "${systemd_unitdir}"
 
-RDEPENDS_${PN} += "bash"
+RDEPENDS:${PN} += "bash"

@@ -17,4 +17,4 @@ S  = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt
 
-RDEPENDS_${PN} += "agl-service-mediaplayer libqtappfw"
+RDEPENDS:${PN} += "agl-service-mediaplayer libqtappfw"

@@ -22,4 +22,4 @@ S  = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt
 
-RDEPENDS_${PN} = "agl-service-hvac libqtappfw"
+RDEPENDS:${PN} = "agl-service-hvac libqtappfw"

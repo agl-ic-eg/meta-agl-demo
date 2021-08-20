@@ -1,6 +1,6 @@
 require recipes-platform/images/agl-image-minimal.inc
 
-IMAGE_INSTALL_append = "\
+IMAGE_INSTALL:append = "\
     packagegroup-agl-image-ivi \
     packagegroup-agl-ivi-services \
     agl-service-homescreen \

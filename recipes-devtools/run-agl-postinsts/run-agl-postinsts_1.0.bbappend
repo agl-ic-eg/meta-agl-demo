@@ -1,1 +1,1 @@
-SYSTEMD_SERVICE_AFTER_append = " afm-system-daemon.service"
+SYSTEMD_SERVICE_AFTER:append = " afm-system-daemon.service"

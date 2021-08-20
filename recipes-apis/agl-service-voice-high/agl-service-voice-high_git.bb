@@ -16,4 +16,4 @@ S = "${WORKDIR}/git"
 
 inherit cmake aglwgt
 
-RDEPENDS_${PN} += "virtual/voice-high-config"
+RDEPENDS:${PN} += "virtual/voice-high-config"

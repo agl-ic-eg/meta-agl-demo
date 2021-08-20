@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/linux:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/linux:"
 
 # Enable assorted USB device support for demo systems
 AGL_KCONFIG_FRAGMENTS += " \
@@ -35,4 +35,4 @@ AGL_KCONFIG_FRAGMENTS += "rtc.cfg"
 AGL_KCONFIG_FRAGMENTS += "disable_most.cfg"
 
 # Enable some things on qemuarm64 so MOST drivers will build and load.
-AGL_KCONFIG_FRAGMENTS_append_qemuarm64 = " most_deps.cfg"
+AGL_KCONFIG_FRAGMENTS:append:qemuarm64 = " most_deps.cfg"

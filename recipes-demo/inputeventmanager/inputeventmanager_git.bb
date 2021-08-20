@@ -15,7 +15,7 @@ SRCREV  = "b2f1646ac78cf61acd66c643b7638bd1b007d5a0"
 # PV needs to be modified with SRCPV to work AUTOREV correctly
 PV = "0.0+git${SRCPV}"
 
-PATH_prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
+PATH:prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
 
 do_install() {
     install -d ${D}/usr/AGL/${PN}
@@ -25,6 +25,6 @@ do_install() {
     install -m 0644 ${S}/inputeventmanager/conf/InputEventManager.service ${D}${systemd_user_unitdir}
 }
 
-FILES_${PN} += "/usr/AGL/${PN}/ ${systemd_user_unitdir}"
-FILES_${PN}-dbg += "/usr/AGL/${PN}/.debug"
+FILES:${PN} += "/usr/AGL/${PN}/ ${systemd_user_unitdir}"
+FILES:${PN}-dbg += "/usr/AGL/${PN}/.debug"
 

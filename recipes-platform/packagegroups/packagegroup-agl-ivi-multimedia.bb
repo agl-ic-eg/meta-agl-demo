@@ -8,9 +8,9 @@ PACKAGES = "\
     packagegroup-agl-ivi-multimedia \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     gstreamer1.0-plugins-base-meta \
     gstreamer1.0-plugins-good-meta \
     lightmediascanner-meta \
@@ -22,6 +22,6 @@ PIPEWIRE = "\
     ${@bb.utils.contains('DISTRO_FEATURES', 'pipewire', 'packagegroup-pipewire', '', d)}\
     "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     ${PIPEWIRE} \
     "

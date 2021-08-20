@@ -16,4 +16,4 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/libhomescreen.git;protoco
 SRCREV = "0d65d54ba63508c0ef545d02e94d5702f9c8ecb3"
 S = "${WORKDIR}/git"
 
-RDEPENDS_${PN} = "agl-service-homescreen"
+RDEPENDS:${PN} = "agl-service-homescreen"

@@ -9,15 +9,15 @@ PACKAGES = "\
     profile-graphical-html5 \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-profile-graphical \
     packagegroup-agl-appfw-html5 \
 "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     agl-login-manager \
     "
 
-RDEPENDS_profile-graphical-html5 = "${PN}"
+RDEPENDS:profile-graphical-html5 = "${PN}"

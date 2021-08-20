@@ -7,7 +7,7 @@ require agl-image-ivi.bb
 
 LICENSE = "MIT"
 
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
     packagegroup-agl-test \
     packagegroup-ivi-common-test \
     "

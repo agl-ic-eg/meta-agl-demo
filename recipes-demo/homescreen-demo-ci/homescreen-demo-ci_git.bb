@@ -28,10 +28,10 @@ SRCREV  = "${AGL_APP_REVISION}"
 PV      = "1.0+git${SRCPV}"
 S       = "${WORKDIR}/git"
 
-PATH_prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
+PATH:prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
 
-OE_QMAKE_CXXFLAGS_append = " ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', '' , '-DQT_NO_DEBUG_OUTPUT', d)}"
+OE_QMAKE_CXXFLAGS:append = " ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', '' , '-DQT_NO_DEBUG_OUTPUT', d)}"
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
         libqtappfw \
 "

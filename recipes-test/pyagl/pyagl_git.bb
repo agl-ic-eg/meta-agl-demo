@@ -11,11 +11,11 @@ S = "${WORKDIR}/git"
 
 inherit setuptools3
 
-do_install_append() {
+do_install:append() {
     install -D -m 0755 ${S}/pyagl/scripts/pyagl ${D}${bindir}/pyagl
 }
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     python3-asyncio \
     python3-asyncssh \
     python3-core \

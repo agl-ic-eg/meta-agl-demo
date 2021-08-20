@@ -13,4 +13,4 @@ do_install() {
     fi
 }
 
-RDEPENDS_${PN} += "systemd"
+RDEPENDS:${PN} += "systemd"

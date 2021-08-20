@@ -9,11 +9,11 @@ PACKAGES = "\
      packagegroup-agl-ttf-fonts \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
 
 # fonts
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     ttf-bitstream-vera \
     ttf-dejavu-sans \
     ttf-dejavu-sans-mono \

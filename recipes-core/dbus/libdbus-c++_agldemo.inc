@@ -1,2 +1,2 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/libdbus-c++:"
-SRC_URI_append = " file://dbus-c++-threading.patch"
+FILESEXTRAPATHS:prepend := "${THISDIR}/libdbus-c++:"
+SRC_URI:append = " file://dbus-c++-threading.patch"

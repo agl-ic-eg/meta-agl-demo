@@ -23,7 +23,7 @@ S  = "${WORKDIR}/git"
 
 inherit cmake_qt5 pkgconfig aglwgt
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
     gstreamer1.0-plugins-bad \

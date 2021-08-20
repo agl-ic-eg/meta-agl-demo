@@ -7,7 +7,7 @@ PACKAGES = "\
     packagegroup-agl-ivi-services \
     "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     agl-service-bluetooth \
     agl-service-bluetooth-map \
     agl-service-bluetooth-pbap \

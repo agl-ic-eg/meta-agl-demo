@@ -21,7 +21,7 @@ do_install () {
     install -D -m 644 ${S}/hvac.json ${D}${sysconfdir}/hvac.json
 }
 
-do_install_append_ulcb() {
+do_install:append:ulcb() {
     sed -i -e "s#vcan0#sllin0#g" ${D}${sysconfdir}/hvac.json
 }
 

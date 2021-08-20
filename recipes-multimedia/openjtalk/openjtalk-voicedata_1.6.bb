@@ -19,4 +19,4 @@ do_install() {
     install -m 0644 -p ${S}/Voice/mei/*.htsvoice ${D}/${datadir}/Voice/mei/
 }
 
-FILES_${PN} += " ${datadir}/Voice/mei/*.htsvoice "
+FILES:${PN} += " ${datadir}/Voice/mei/*.htsvoice "

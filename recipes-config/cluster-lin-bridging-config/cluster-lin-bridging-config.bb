@@ -9,8 +9,8 @@ SRC_URI = "\
 inherit systemd
 
 SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE_${PN} = "cluster-lin-bridging.service"
-SYSTEMD_AUTO_ENABLE_${PN} = "enable"
+SYSTEMD_SERVICE:${PN} = "cluster-lin-bridging.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
@@ -20,9 +20,9 @@ do_install() {
     install -m 0644 ${WORKDIR}/cluster-lin-bridging.service ${D}${systemd_system_unitdir}
 }
 
-FILES_${PN} += "${systemd_system_unitdir}"
+FILES:${PN} += "${systemd_system_unitdir}"
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
 	can-utils \
 	sllin \
 "

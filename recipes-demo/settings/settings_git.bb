@@ -22,7 +22,7 @@ S  = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     qt-qrcode \
     agl-service-bluetooth \
     agl-service-network \

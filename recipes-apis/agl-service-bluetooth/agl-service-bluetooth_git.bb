@@ -13,6 +13,6 @@ PV = "1.0+git${SRCPV}"
 S  = "${WORKDIR}/git"
 
 DEPENDS = "glib-2.0 json-c"
-RDEPENDS_${PN} = "agl-service-data-persistence agl-service-network"
+RDEPENDS:${PN} = "agl-service-data-persistence agl-service-network"
 
 inherit cmake aglwgt pkgconfig

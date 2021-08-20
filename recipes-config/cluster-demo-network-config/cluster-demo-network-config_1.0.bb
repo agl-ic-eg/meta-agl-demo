@@ -30,4 +30,4 @@ do_install() {
         ${D}${sysconfdir}/systemd/system/network.target.wants/cluster-demo-network-conf@${AGL_CLUSTER_NET_DEVICE}.service
 }
 
-FILES_${PN} += "${systemd_system_unitdir}"
+FILES:${PN} += "${systemd_system_unitdir}"

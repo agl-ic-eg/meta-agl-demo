@@ -22,21 +22,21 @@ inherit autotools pkgconfig
 inherit systemd
 
 SYSTEMD_AUTO_ENABLE = "enable"
-SYSTEMD_SERVICE_${PN} = "bluez-alsa.service"
+SYSTEMD_SERVICE:${PN} = "bluez-alsa.service"
 
 PACKAGECONFIG += "ofono"
 
 # enable debug tools in devel images
 PACKAGECONFIG[hcitop] = "--enable-hcitop, --disable-hcitop, libbsd ncurses"
 PACKAGECONFIG[rfcomm] = "--enable-rfcomm, --disable-rfcomm,"
-PACKAGECONFIG_append_agl-devel = " hcitop rfcomm"
+PACKAGECONFIG:append:agl-devel = " hcitop rfcomm"
 
-do_install_append () {
+do_install:append () {
     install -d ${D}${base_libdir}/systemd/system
     install -m 0644 ${WORKDIR}/bluez-alsa.service ${D}${base_libdir}/systemd/system
 }
 
-FILES_${PN} += "\
+FILES:${PN} += "\
    ${datadir}/alsa/alsa.conf.d/20-bluealsa.conf\
    ${libdir}/alsa-lib/libasound_module_ctl_bluealsa.so\
    ${libdir}/alsa-lib/libasound_module_pcm_bluealsa.so\

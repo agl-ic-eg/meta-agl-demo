@@ -20,4 +20,4 @@ S = "${WORKDIR}/git"
 
 inherit cmake_qt5 pkgconfig aglwgt
 
-RDEPENDS_${PN} = "qtbase libqtappfw"
+RDEPENDS:${PN} = "qtbase libqtappfw"

@@ -16,7 +16,7 @@ inherit autotools pkgconfig
 
 PACKAGES =+ "${PN}-tools ${PN}-tools-dbg"
 
-FILES_${PN}-tools = "${libexecdir}/ncl"
-FILES_${PN}-tools-dbg += "${libexecdir}/.debug"
+FILES:${PN}-tools = "${libexecdir}/ncl"
+FILES:${PN}-tools-dbg += "${libexecdir}/.debug"
 
-RDEPENDS_${PN}-tools = "bash"
+RDEPENDS:${PN}-tools = "bash"

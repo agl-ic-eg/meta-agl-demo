@@ -1,6 +1,6 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-SRC_URI_append = " \
+SRC_URI:append = " \
         file://0002-src-most-add-auto-conf-feature.patch \
         file://0003-core-remove-kernel-log-for-MBO-status.patch \
         file://0004-most-video-set-device_caps.patch \

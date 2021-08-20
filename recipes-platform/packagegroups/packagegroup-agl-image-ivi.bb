@@ -8,19 +8,19 @@ PACKAGES = "\
     packagegroup-agl-image-ivi \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-image-minimal \
 "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-ivi-connectivity \
     packagegroup-agl-ivi-graphics \
     packagegroup-agl-ivi-multimedia \
     packagegroup-agl-ivi-navigation \
     "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     agl-login-manager \
     "

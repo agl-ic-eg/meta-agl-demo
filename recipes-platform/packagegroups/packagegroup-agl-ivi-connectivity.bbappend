@@ -1,5 +1,5 @@
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     agl-service-nfc \
 "
 

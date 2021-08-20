@@ -16,5 +16,5 @@ DEPENDS = "json-c"
 
 inherit cmake aglwgt pkgconfig
 
-RDEPENDS_${PN} += "agl-service-identity-agent agl-service-can-low-level"
-RRECOMMENDS_${PN} += "agl-service-hvac-conf"
+RDEPENDS:${PN} += "agl-service-identity-agent agl-service-can-low-level"
+RRECOMMENDS:${PN} += "agl-service-hvac-conf"

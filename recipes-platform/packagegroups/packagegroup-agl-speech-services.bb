@@ -7,7 +7,7 @@ PACKAGES = "\
     packagegroup-agl-speech-services \
     "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     agl-service-voice-high \
     agl-service-voice-high-capabilities \
 "

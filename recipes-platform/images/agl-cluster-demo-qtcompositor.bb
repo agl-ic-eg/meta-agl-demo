@@ -5,11 +5,11 @@ require agl-cluster-demo-qtcompositor.inc
 
 LICENSE = "MIT"
 
-IMAGE_FEATURES_append = " \
+IMAGE_FEATURES:append = " \
     "
 
 # add packages for cluster demo qtcompositor
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
     packagegroup-agl-cluster-demo-qtcompositor \
     "
 

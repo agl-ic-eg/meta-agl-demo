@@ -1,14 +1,14 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/bluez5:"
-SRC_URI_append = " \
+FILESEXTRAPATHS:prepend := "${THISDIR}/bluez5:"
+SRC_URI:append = " \
     file://bluetooth.conf \
     file://tmpdir.conf \
     file://obex.service \
     file://bluetooth.service \
 "
 
-FILES_${PN}_append = " ${systemd_user_unitdir}/obex.service.d/tmpdir.conf"
+FILES:${PN}:append = " ${systemd_user_unitdir}/obex.service.d/tmpdir.conf"
 
-do_install_append() {
+do_install:append() {
     install -m 0644 ${WORKDIR}/bluetooth.conf ${D}${sysconfdir}/dbus-1/system.d/bluetooth.conf
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then

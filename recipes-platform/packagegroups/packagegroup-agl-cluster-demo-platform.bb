@@ -9,9 +9,9 @@ PACKAGES = "\
     packagegroup-agl-cluster-demo-platform \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-profile-cluster-qt5 \
     packagegroup-agl-ttf-fonts \
     packagegroup-agl-source-han-sans-ttf-fonts \
@@ -31,7 +31,7 @@ AGL_APIS = " \
     agl-service-signal-composer \
     "
 
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     hmi-debug \
     can-utils \
     linux-firmware-ralink \

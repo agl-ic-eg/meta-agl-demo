@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/weston-init:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/weston-init:"
 
 inherit agl-graphical
 
@@ -6,9 +6,9 @@ AGL_DEFAULT_WESTONSTART ??= "/usr/bin/agl-compositor --config ${sysconfdir}/xdg/
 WESTON_USE_PIXMAN ??= "0"
 
 WESTONSTART ??= "${AGL_DEFAULT_WESTONSTART} ${WESTONARGS}"
-WESTONSTART_append = " ${@bb.utils.contains("IMAGE_FEATURES", "debug-tweaks", " --log=${DISPLAY_XDG_RUNTIME_DIR}/compositor.log", "",d)}"
-WESTONSTART_append = " ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", " --debug", "",d)}"
-WESTONSTART_append = " ${@bb.utils.contains("WESTON_USE_PIXMAN", "1", " --use-pixman", "",d)}"
+WESTONSTART:append = " ${@bb.utils.contains("IMAGE_FEATURES", "debug-tweaks", " --log=${DISPLAY_XDG_RUNTIME_DIR}/compositor.log", "",d)}"
+WESTONSTART:append = " ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", " --debug", "",d)}"
+WESTONSTART:append = " ${@bb.utils.contains("WESTON_USE_PIXMAN", "1", " --use-pixman", "",d)}"
 
 # Systemd name of DRM device to have weston/agl-compositor startup depend
 # upon, if required.  Currently only x86-64 seems to need a dependency to
@@ -27,13 +27,13 @@ WIFILES = " \
     file://zz-video.rules.in \
 "
 
-WIFILES_append_imx = " \
+WIFILES:append:imx = " \
     file://zz-dri-imx.rules.in \
 "
 
-SRC_URI_append = " ${WIFILES}"
+SRC_URI:append = " ${WIFILES}"
 
-do_install_append() {
+do_install:append() {
     # Remove upstream weston udev rules just to be safe
     rm -f ${D}${sysconfdir}/udev/rules.d/71-weston-drm.rules
 
@@ -75,7 +75,7 @@ do_install_append() {
     done
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${libdir}/tmpfiles.d/ \
     ${systemd_system_unitdir}/weston@.service.d/ \
 "

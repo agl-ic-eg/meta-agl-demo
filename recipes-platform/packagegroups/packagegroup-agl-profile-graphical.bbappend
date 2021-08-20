@@ -1,3 +1,3 @@
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-graphical-services \
 "

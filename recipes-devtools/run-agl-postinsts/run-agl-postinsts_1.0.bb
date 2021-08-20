@@ -11,7 +11,7 @@ S = "${WORKDIR}"
 
 inherit allarch systemd
 
-SYSTEMD_SERVICE_${PN} = "run-agl-postinsts.service"
+SYSTEMD_SERVICE:${PN} = "run-agl-postinsts.service"
 
 SYSTEMD_SERVICE_AFTER ?= "dbus.service cynagora.service"
 

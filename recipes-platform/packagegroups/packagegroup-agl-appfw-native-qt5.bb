@@ -9,9 +9,9 @@ PACKAGES = "\
     packagegroup-agl-appfw-native-qt5 \
     "
 
-#ALLOW_EMPTY_${PN} = "1"
+#ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     qtbase \
     qtbase-dev \
     qtbase-plugins \

@@ -9,9 +9,9 @@ PACKAGES = "\
     packagegroup-agl-demo-platform-html5 \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-image-ivi \
     packagegroup-agl-profile-graphical-html5 \
     packagegroup-agl-demo \
@@ -28,7 +28,7 @@ AGL_APPS = " \
     html5-background \
     "
 
-RDEPENDS_${PN}_append = " \
+RDEPENDS:${PN}:append = " \
     weston-ini-conf-landscape \
     ${AGL_APPS} \
     "

@@ -1,7 +1,7 @@
-FILESEXTRAPATHS_append := ":${THISDIR}/qtmultimedia"
+FILESEXTRAPATHS:append := ":${THISDIR}/qtmultimedia"
 
-PACKAGECONFIG_append = " gstreamer"
+PACKAGECONFIG:append = " gstreamer"
 
-SRC_URI_append = " \
+SRC_URI:append = " \
     file://0001-metadata-image-support-with-the-data-URL-scheme-for-.patch \
     "

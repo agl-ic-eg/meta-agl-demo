@@ -4,10 +4,10 @@ require agl-telematics-demo-platform.inc
 
 LICENSE = "MIT"
 
-IMAGE_FEATURES_append = " \
+IMAGE_FEATURES:append = " \
     "
 
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
     packagegroup-agl-telematics-demo-platform \
     "
 

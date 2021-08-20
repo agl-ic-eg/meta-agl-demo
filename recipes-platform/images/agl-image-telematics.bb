@@ -4,6 +4,6 @@ require agl-image-telematics.inc
 
 LICENSE = "MIT"
 
-IMAGE_INSTALL_append = "\
+IMAGE_INSTALL:append = "\
     profile-telematics \
     "

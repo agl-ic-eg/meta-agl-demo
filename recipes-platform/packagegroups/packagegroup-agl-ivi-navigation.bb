@@ -10,7 +10,7 @@ PACKAGES = "\
     packagegroup-agl-ivi-navigation \
     "
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     gpsd \
     geoclue \
     ${@bb.utils.contains('AGL_FEATURES', 'agldemo', 'virtual/gpsd-conf', '', d)} \

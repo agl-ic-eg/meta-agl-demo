@@ -8,9 +8,9 @@ PACKAGES = "\
     packagegroup-agl-ivi-connectivity \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     bluez5-obex \
     ${@bb.utils.contains("DISTRO_FEATURES", "3g", "libqmi", "", d)} \
     rtl-sdr \

@@ -16,6 +16,6 @@ do_install() {
     install -D -m 0755 ${WORKDIR}/${BPN}.sh ${D}${sbindir}/${BPN}.sh
 }
 
-FILES_${PN} += "${systemd_system_unitdir}"
+FILES:${PN} += "${systemd_system_unitdir}"
 
-RDEPENDS_${PN} += "bash"
+RDEPENDS:${PN} += "bash"

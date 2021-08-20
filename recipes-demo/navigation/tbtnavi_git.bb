@@ -29,7 +29,7 @@ S = "${WORKDIR}/git"
 
 inherit qmake5 aglwgt pkgconfig
 
-RDEPENDS_${PN} += " \
+RDEPENDS:${PN} += " \
     qtlocation \
     ondemandnavi-config \
     agl-service-navigation \

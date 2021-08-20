@@ -1,1 +1,1 @@
-AGL_FEATURES_append = " agl-cluster-demo-support"
+AGL_FEATURES:append = " agl-cluster-demo-support"

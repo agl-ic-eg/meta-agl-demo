@@ -29,7 +29,7 @@ KERNEL=="rgnmm", SUBSYSTEM=="misc", MODE="0660", GROUP="display", SECLABEL{smack
 EOF
 }
 
-do_install_append_imx() {
+do_install:append:imx() {
     install -d ${D}${sysconfdir}/udev/rules.d
     cat >>${D}${sysconfdir}/udev/rules.d/zz-dri.rules <<'EOF'
 SUBSYSTEM=="gpu_class", MODE="0660", GROUP="${WESTONGROUP}", SECLABEL{smack}="*"
@@ -37,4 +37,4 @@ EOF
 
 }
 
-RCONFLICTS_${PN} = "weston-init"
+RCONFLICTS:${PN} = "weston-init"

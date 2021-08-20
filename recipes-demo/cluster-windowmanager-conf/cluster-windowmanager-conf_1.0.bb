@@ -16,4 +16,4 @@ do_install() {
     install -m 0644 ${WORKDIR}/roles.db ${D}${sysconfdir}/xdg/windowmanager/roles.db
 }
 
-#FILES_${PN} += "${sysconfdir}/*"
+#FILES:${PN} += "${sysconfdir}/*"

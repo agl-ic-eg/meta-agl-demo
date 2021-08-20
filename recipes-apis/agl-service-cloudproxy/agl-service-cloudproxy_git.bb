@@ -16,8 +16,8 @@ DEPENDS = "azure-iot-sdk-c aws-iot-device-sdk-embedded-c glib-2.0 nlohmann-json"
 inherit cmake aglwgt pkgconfig
 
 # Azure include files
-CXXFLAGS_prepend += "-I${STAGING_INCDIR}/azureiot"
+CXXFLAGS:prepend += "-I${STAGING_INCDIR}/azureiot"
 
-RDEPENDS_${PN} += "azure-iot-sdk-c azure-c-shared-utility aws-iot-device-sdk-embedded-c"
+RDEPENDS:${PN} += "azure-iot-sdk-c azure-c-shared-utility aws-iot-device-sdk-embedded-c"
 
 BBCLASSEXTEND = "native nativesdk"

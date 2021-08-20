@@ -12,4 +12,4 @@ do_install() {
     install -m 0755 ${WORKDIR}/simple_can_simulator.py ${D}${sbindir}
 }
 
-RDEPENDS_${PN} = "python3"
+RDEPENDS:${PN} = "python3"

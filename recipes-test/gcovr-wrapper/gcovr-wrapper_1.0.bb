@@ -14,4 +14,4 @@ do_install() {
     install -D -m 0755 ${WORKDIR}/gcovr-wrapper ${D}${bindir}/gcovr-wrapper
 }
 
-RDEPENDS_${PN} = "bash gcovr"
+RDEPENDS:${PN} = "bash gcovr"

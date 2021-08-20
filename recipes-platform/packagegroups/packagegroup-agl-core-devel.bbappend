@@ -1,4 +1,4 @@
-RDEPENDS_${PN}_append = "\
+RDEPENDS:${PN}:append = "\
         pyagl \
         gcov \
         gcov-symlinks \

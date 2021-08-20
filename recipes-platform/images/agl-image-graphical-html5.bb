@@ -4,7 +4,7 @@ require agl-image-graphical-html5.inc
 
 LICENSE = "MIT"
 
-IMAGE_INSTALL_append = "\
+IMAGE_INSTALL:append = "\
     packagegroup-agl-profile-graphical-html5 \
     "
 

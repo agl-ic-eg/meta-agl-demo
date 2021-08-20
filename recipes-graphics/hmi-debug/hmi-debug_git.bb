@@ -9,7 +9,7 @@ SRC_URI = " \
     file://hmi-debug \
 "
 
-FILES_${PN} = " \
+FILES:${PN} = " \
     ${sysconfdir}/afm/unit.env.d \
 "
 

@@ -1,7 +1,7 @@
 # Disable everything but the roygalty-free formats
 PACKAGECONFIG = "ogg flac wave m3u pls jpeg png"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI += "file://lightmediascanner.service \
             file://plugin-ogg-fix-chucksize-issue.patch \
@@ -9,15 +9,15 @@ SRC_URI += "file://lightmediascanner.service \
             file://dbus-lightmediascanner.conf \
            "
 
-CFLAGS_append = " -D_FILE_OFFSET_BITS=64"
+CFLAGS:append = " -D_FILE_OFFSET_BITS=64"
 
 inherit systemd
 
 SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE_${PN} = "lightmediascanner.service"
-SYSTEMD_AUTO_ENABLE_${PN} = "enable"
+SYSTEMD_SERVICE:${PN} = "lightmediascanner.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
-do_install_append() {
+do_install:append() {
        # Install LMS systemd service
        if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
               install -d ${D}${systemd_system_unitdir}
@@ -28,7 +28,7 @@ do_install_append() {
        install -m 0644 ${WORKDIR}/dbus-lightmediascanner.conf ${D}/etc/dbus-1/system.d/org.lightmediascanner.conf
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_system_unitdir}/lightmediascanner.service', '', d)} \
     "
 
@@ -36,7 +36,7 @@ EXTRA_OECONF = "--enable-static --with-dbus-services=${datadir}/dbus-1/system-se
 PACKAGECONFIG[mp4] = "--enable-mp4,--disable-mp4,libmp4v2"
 
 # add support MP3 because of the format of music files for AGL CES/ALS2017 Demo
-PACKAGECONFIG_append = " id3 mp4"
+PACKAGECONFIG:append = " id3 mp4"
 
 # add required character sets for id3 tag scanning
-RDEPENDS_${PN}_append = " glibc-gconv-utf-16 glibc-gconv-iso8859-1"
+RDEPENDS:${PN}:append = " glibc-gconv-utf-16 glibc-gconv-iso8859-1"

@@ -5,10 +5,10 @@ require agl-demo-platform.inc
 
 LICENSE = "MIT"
 
-IMAGE_FEATURES_append = " \
+IMAGE_FEATURES:append = " \
     "
 
 # add packages for demo platform (include demo apps) here
-IMAGE_INSTALL_append = " \
+IMAGE_INSTALL:append = " \
     packagegroup-agl-demo-platform-html5 \
     "

@@ -9,7 +9,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/Apache-2.0;md5=89aea4e17d99a7ca
 inherit cmake pkgconfig aglwgt ptest
 
 DEPENDS += "lua lua-native libappcontroller libafb-helpers"
-RDEPENDS_${PN} += "lua"
+RDEPENDS:${PN} += "lua"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-service-signal-composer;protocol=https;branch=${AGL_BRANCH}"
 SRCREV = "${AGL_APP_REVISION}"

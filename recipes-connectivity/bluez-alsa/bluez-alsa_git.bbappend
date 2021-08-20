@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/bluez-alsa:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/bluez-alsa:"
 
 SRC_URI += "\
     file://0001-utils-add-a-gstreamer-helper-application-for-interco.patch \
@@ -8,7 +8,7 @@ SRC_URI += "\
 PACKAGECONFIG += "gsthelper"
 PACKAGECONFIG[gsthelper] = "--enable-gsthelper, --disable-gsthelper, gstreamer1.0"
 
-do_install_append() {
+do_install:append() {
     if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
         # install the service file
         mkdir -p ${D}${systemd_system_unitdir}/
@@ -22,12 +22,12 @@ do_install_append() {
 
 PACKAGES =+ "${PN}-pipewire"
 
-FILES_${PN}-pipewire = "\
+FILES:${PN}-pipewire = "\
     ${bindir}/bluealsa-gst-helper \
     ${systemd_system_unitdir}/bluealsa-gst-helper@.service \
     ${systemd_system_unitdir}/afm-user-session@.target.wants/bluealsa-gst-helper@.service \
     "
-RDEPENDS_${PN}-pipewire += "\
+RDEPENDS:${PN}-pipewire += "\
     bluez-alsa \
     pipewire \
     gstreamer1.0-plugins-base \

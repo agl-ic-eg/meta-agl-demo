@@ -15,5 +15,5 @@ S  = "${WORKDIR}/git"
 inherit cmake aglwgt pkgconfig
 
 DEPENDS += "alsa-lib json-c systemd af-binder glib-2.0 libxml2 libafb-helpers"
-RDEPENDS_${PN} += "libxml2 "
+RDEPENDS:${PN} += "libxml2 "
 

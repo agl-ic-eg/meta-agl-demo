@@ -9,12 +9,12 @@ PACKAGES = "\
     profile-cluster \
     "
 
-ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY:${PN} = "1"
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     packagegroup-agl-image-boot \
     packagegroup-agl-core-security \
     packagegroup-agl-graphical-weston \
 "
 
-RDEPENDS_profile-cluster = "${PN}"
+RDEPENDS:profile-cluster = "${PN}"

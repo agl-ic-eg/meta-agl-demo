@@ -12,4 +12,4 @@ do_install() {
         ${WORKDIR}/cluster.config > ${D}${localstatedir}/lib/connman/cluster.config
 }
 
-FILES_${PN} += "${localstatedir}/*"
+FILES:${PN} += "${localstatedir}/*"

@@ -15,7 +15,7 @@ PACKAGES = "\
     packagegroup-hmi-framework-devel \
     "
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
   agl-service-homescreen \
   homescreen \
   libhomescreen \
@@ -25,11 +25,11 @@ RDEPENDS_${PN} = " \
 "
 
 # temporarily disable due to failure to install package when AGLCI is on
-#RDEPENDS_append_${PN} = " ${@bb.utils.contains('DISTRO_FEATURES', 'AGLCI', 'homescreen-demo-ci', '', d)}"
+#RDEPENDS:append_${PN} = " ${@bb.utils.contains('DISTRO_FEATURES', 'AGLCI', 'homescreen-demo-ci', '', d)}"
 
 # NOTE: Currently no coverage versions of these widgets, they should
 #       be added here when available.
-RDEPENDS_${PN}-devel = " \
+RDEPENDS:${PN}-devel = " \
   agl-service-homescreen-dbg \
   homescreen-dbg \
   launcher-dbg \

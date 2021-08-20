@@ -36,4 +36,4 @@ EOF
     chmod a+x ${D}/${sysconfdir}/agl-postinsts/${POST_INSTALL_SCRIPT}
 }
 
-FILES_${PN} = "${sysconfdir}/agl-postinsts/${POST_INSTALL_SCRIPT}"
+FILES:${PN} = "${sysconfdir}/agl-postinsts/${POST_INSTALL_SCRIPT}"

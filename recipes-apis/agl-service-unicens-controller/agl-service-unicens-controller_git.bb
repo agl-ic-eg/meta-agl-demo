@@ -15,5 +15,5 @@ S  = "${WORKDIR}/git"
 inherit cmake aglwgt pkgconfig
 
 DEPENDS += "json-c af-binder libafb-helpers"
-RDEPENDS_${PN} += "agl-service-unicens"
+RDEPENDS:${PN} += "agl-service-unicens"
 

@@ -20,8 +20,8 @@ AGL_EXTRA_IMAGE_FSTYPES ?= ""
 
 # important settings imported from poky-agl.conf
 # we do not import 
-DISTRO_FEATURES_append = " systemd smack"
-DISTRO_FEATURES_BACKFILL_CONSIDERED_append = " sysvinit"
+DISTRO_FEATURES:append = " systemd smack"
+DISTRO_FEATURES_BACKFILL_CONSIDERED:append = " sysvinit"
 VIRTUAL-RUNTIME_init_manager = "systemd"
 
 # workaround:

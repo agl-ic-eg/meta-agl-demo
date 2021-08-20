@@ -1,6 +1,6 @@
 inherit packagegroup
 
-RDEPENDS_${PN} += "\
+RDEPENDS:${PN} += "\
     agl-service-data-persistence \
     agl-service-identity-agent \
 "
