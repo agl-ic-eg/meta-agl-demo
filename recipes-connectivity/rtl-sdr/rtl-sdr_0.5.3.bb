@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe \
 
 DEPENDS = "libusb1"
 
-SRC_URI = "git://git.osmocom.org/rtl-sdr \
+SRC_URI = "git://git.osmocom.org/rtl-sdr;branch=master \
            file://0001-remove-I-usr-include-in-pkg-config.patch \
            "
 SRCREV = "e3c03f738f5aef4dc51e2b741fbdb542b9cc1bb1"

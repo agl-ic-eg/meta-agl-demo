@@ -4,7 +4,7 @@ LIC_FILES_CHKSUM = "file://lin_config.c;beginline=4;endline=9;md5=196a29df19a30d
 
 DEPENDS += "libnl libxml2"
 
-SRC_URI = "git://github.com/trainman419/linux-lin.git;protocol=https"
+SRC_URI = "git://github.com/trainman419/linux-lin.git;protocol=https;branch=master"
 SRCREV = "155d885e8ccc907a56f6c86c4b159fac27ef6fec"
 S = "${WORKDIR}/git/lin_config/src"
 

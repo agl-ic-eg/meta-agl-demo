@@ -1,6 +1,6 @@
 require neardal.inc
 
-SRC_URI = "git://github.com/connectivity/neardal.git;protocol=https \
+SRC_URI = "git://github.com/connectivity/neardal.git;protocol=https;branch=master \
 	file://ncl.patch \
 	file://0001-neardal-ncl-fix-segfault-on-help-page-being-displaye.patch	\
 	file://0002-neardal-lib-fix-memory-corruption.patch		\

@@ -10,7 +10,7 @@ DEPENDS = "file gawk glib-2.0 sqlite3"
 
 PV = "0.5.1+git${SRCPV}"
 SRCREV = "adfddb3486276a5ed2f5008c9e43a811e1271cc9"
-SRC_URI = "git://github.com/profusion/lightmediascanner.git \
+SRC_URI = "git://github.com/profusion/lightmediascanner.git;branch=master;protocol=https \
            file://id3-plugin-support-out-of-tree-build.patch \
            file://0001-Define-comparison_fn_t-for-non-glibc-systems.patch \
           "

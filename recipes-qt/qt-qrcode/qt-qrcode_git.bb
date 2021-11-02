@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=94a3f3bdf61243b5e5cf569fbfbbea52"
 
 DEPENDS = "qtbase qtdeclarative qtquickcontrols2 qtsvg qrencode"
 
-SRC_URI = "git://github.com/danielsanfr/qt-qrcode.git;protocol=https \
+SRC_URI = "git://github.com/danielsanfr/qt-qrcode.git;protocol=https;branch=master \
            file://0001-rework-library-build.patch \
            file://0002-fix-dangling-pointer.patch \
            "

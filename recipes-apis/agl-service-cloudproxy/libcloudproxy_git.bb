@@ -12,7 +12,7 @@ DEPENDS = "af-binder json-c"
 
 inherit cmake
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/libcloudproxy;protocol=https"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/libcloudproxy;protocol=https;branch=master"
 SRCREV = "2d66933b9bf25af66696b097283109c8a6e87151"
 
 S = "${WORKDIR}/git"

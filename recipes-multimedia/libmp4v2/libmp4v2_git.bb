@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=eb3014b036b6d2151d944aef6a84c36f"
 inherit autotools-brokensep pkgconfig
 
 SRC_URI = " \
-    git://github.com/sergiomb2/${BPN}.git \
+    git://github.com/sergiomb2/${BPN}.git;branch=master;protocol=https \
     file://0001-add-a-configure-option-to-disable-build-of-man-pages.patch \
     file://gcc10.patch \
 "

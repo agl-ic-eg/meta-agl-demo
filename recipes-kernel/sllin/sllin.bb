@@ -6,7 +6,7 @@ inherit module systemd
 
 DEPENDS = "virtual/kernel"
 
-SRC_URI = "git://github.com/trainman419/linux-lin.git;protocol=https"
+SRC_URI = "git://github.com/trainman419/linux-lin.git;protocol=https;branch=master"
 SRCREV = "155d885e8ccc907a56f6c86c4b159fac27ef6fec"
 S = "${WORKDIR}/git/sllin"
 
