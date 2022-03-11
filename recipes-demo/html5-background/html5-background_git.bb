@@ -17,9 +17,10 @@ SRCREV = "3b8dae349d428c0230b9885f86d421d43cda5638"
 DEPENDS = "nodejs-native"
 
 do_compile() {
-  bldcmd=${S}/autobuild/agl/autobuild
   cd ${S}
-  $bldcmd build
+  rm -rf package node_modules package-lock.json
+  npm install
+  npm run build
 }
 
 WAM_APPLICATIONS_DIR="${libdir}/wam_apps"
