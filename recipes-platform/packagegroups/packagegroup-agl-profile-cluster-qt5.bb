@@ -6,6 +6,7 @@ inherit packagegroup
 
 PACKAGES = "\
     packagegroup-agl-profile-cluster-qt5 \
+    profile-cluster-qt5-wayland \
     profile-cluster-qt5 \
     "
 
@@ -17,4 +18,5 @@ RDEPENDS:${PN} += "\
     packagegroup-agl-graphical-weston \
 "
 
-RDEPENDS:profile-cluster-qt5 = "${PN}"
+RDEPENDS:profile-cluster-qt5-wayland = "${PN}"
+RDEPENDS:profile-cluster-qt5 = "profile-cluster-qt5-wayland"

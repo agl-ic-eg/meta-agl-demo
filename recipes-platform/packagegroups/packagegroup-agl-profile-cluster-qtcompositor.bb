@@ -6,7 +6,7 @@ inherit packagegroup
 
 PACKAGES = "\
     packagegroup-agl-profile-cluster-qtcompositor \
-    profile-cluster-qt5 \
+    profile-cluster-qt5-egl \
     "
 
 ALLOW_EMPTY:${PN} = "1"
@@ -23,13 +23,10 @@ QT_LITE = " \
     qtwayland \
     qtgraphicaleffects-qmlplugins \
     qtsvg-plugins \
-    qtwebsockets \
-    qtwebsockets-qmlplugins \
-    qtcompositor-conf \
 "
 
 RDEPENDS:${PN}:append = " \
     ${QT_LITE} \
 "
 
-RDEPENDS:profile-cluster-qt5 = "${PN}"
+RDEPENDS:profile-cluster-qt5-egl = "${PN}"
