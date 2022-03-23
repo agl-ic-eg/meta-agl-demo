@@ -7,7 +7,7 @@ After=WebAppMgr.service dbus.service
 Type=simple
 Environment=AFM_ID=homescreen
 Environment=AFM_APP_INSTALL_DIR=/usr/lib/wam_apps/html5-homescreen/
-ExecStartPre=sleep 1
+ExecStartPre=sleep 5
 ExecStart=/usr/bin/WebAppMgr
 Restart=on-failure
 
