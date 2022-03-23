@@ -1,4 +1,4 @@
-SUMMARY     = "AGL HTML5 HVAC Application"
+SUMMARY     = "AGL HTML5 Launcher Application"
 HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-launcher/"
 SECTION     = "apps"
 LICENSE     = "Apache-2.0"
