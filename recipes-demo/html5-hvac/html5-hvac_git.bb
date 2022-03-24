@@ -17,9 +17,10 @@ SRCREV = "${AGL_APP_REVISION}"
 DEPENDS = "nodejs-native"
 
 do_compile() {
-  bldcmd=${S}/autobuild/agl/autobuild
   cd ${S}
-  $bldcmd build
+  rm -rf package node_modules package-lock.json
+  npm install
+  npm run build
 }
 
 WAM_APPLICATIONS_DIR="${libdir}/wam_apps"
