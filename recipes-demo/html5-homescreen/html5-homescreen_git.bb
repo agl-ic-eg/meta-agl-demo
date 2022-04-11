@@ -12,7 +12,7 @@ SRC_URI = " \
   git://gerrit.automotivelinux.org/gerrit/apps/html5-homescreen;protocol=https;branch=${AGL_BRANCH} \
   file://homescreen.service \
 "
-SRCREV = "${AGL_APP_REVISION}"
+SRCREV = "21bd1dcdffeafa82948b969062f5221f6e8d480c"
 
 DEPENDS = "nodejs-native"
 

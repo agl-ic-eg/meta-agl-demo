@@ -12,7 +12,7 @@ SRC_URI = " \
   git://gerrit.automotivelinux.org/gerrit/apps/html5-launcher;protocol=https;branch=${AGL_BRANCH} \
   file://launcher.desktop \
 "
-SRCREV = "${AGL_APP_REVISION}"
+SRCREV = "b37179742fac1053ba621cfa12938ec6536cf1f7"
 
 DEPENDS = "nodejs-native"
 

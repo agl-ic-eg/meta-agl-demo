@@ -12,7 +12,7 @@ SRC_URI = " \
   git://gerrit.automotivelinux.org/gerrit/apps/html5-hvac;protocol=https;branch=${AGL_BRANCH} \
   file://webapps-hvac.desktop \
 "
-SRCREV = "${AGL_APP_REVISION}"
+SRCREV = "45641bf053eade93cd3590b2286377869bb799cf"
 
 DEPENDS = "nodejs-native"
 
