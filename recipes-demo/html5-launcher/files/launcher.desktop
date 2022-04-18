@@ -3,7 +3,7 @@ Version=1.0
 Name=HTML5 Launcher
 Comment=Launcher
 GenericName=Launcher
-Exec=env AFM_ID=launcher AFM_APP_INSTALL_DIR=/usr/lib/wam_apps/html5-launcher/ /usr/bin/WebAppMgr
+Exec=/usr/bin/WebAppMgr --appid=launcher --app-install-dir=/usr/lib/wam_apps/html5-launcher/
 Icon=settings
 Terminal=false
 Type=Application

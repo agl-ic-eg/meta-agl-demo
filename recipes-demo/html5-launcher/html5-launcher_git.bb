@@ -9,10 +9,10 @@ S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
 SRC_URI = " \
-  git://gerrit.automotivelinux.org/gerrit/apps/html5-launcher;protocol=https;branch=${AGL_BRANCH} \
+  git://gerrit.automotivelinux.org/gerrit/apps/html5-launcher;protocol=https;branch=master \
   file://launcher.desktop \
 "
-SRCREV = "b37179742fac1053ba621cfa12938ec6536cf1f7"
+SRCREV = "cb6b66c3bd94a6ab18cad3ad87c827d4f7e623e9"
 
 DEPENDS = "nodejs-native"
 

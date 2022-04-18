@@ -3,7 +3,7 @@ Version=1.0
 Name=HTML5 Background
 Comment=Background
 GenericName=Background
-Exec=env AFM_ID=webapps-html5-background AFM_APP_INSTALL_DIR=/usr/lib/wam_apps/html5-background/ /usr/bin/WebAppMgr
+Exec=/usr/bin/WebAppMgr --appid=webapps-html5-background --app-install-dir=/usr/lib/wam_apps/html5-background/
 Icon=settings
 Terminal=false
 Type=Application

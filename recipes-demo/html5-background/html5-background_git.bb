@@ -9,10 +9,10 @@ S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
 SRC_URI = " \
-  git://github.com/AGL-web-applications/background.git;protocol=https;branch=master \
+  git://gerrit.automotivelinux.org/gerrit/apps/html5-background;protocol=https;branch=master \
   file://webapps-html5-background.desktop \
 "
-SRCREV = "3b8dae349d428c0230b9885f86d421d43cda5638"
+SRCREV = "7b796408f4ee1ca1b92a02445513d939079af46e"
 
 DEPENDS = "nodejs-native"
 
