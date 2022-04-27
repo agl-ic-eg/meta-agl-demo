@@ -1,18 +1,18 @@
 require chromium.inc
 
 SRC_URI = "\
-    git://github.com/igalia/chromium87;branch=@10.agl.marlin;protocol=https;rev=${SRCREV_chromium87};name=chromium87 \
-    git://github.com/webosose/chromium-v8;branch=@chromium87;destsuffix=git/src/v8;rev=${SRCREV_v8};name=v8;protocol=https \
+    git://github.com/igalia/chromium91;branch=@11.agl;protocol=https;rev=${SRCREV_chromium91};name=chromium91 \
+    git://github.com/webosose/chromium-v8;branch=@chromium91;destsuffix=git/src/v8;rev=${SRCREV_v8};name=v8;protocol=https \
 "
 
 # Needed by catapult
 DEPENDS += "python-six-native python-beautifulsoup4-native python-lxml-native python-html5lib-native python-webencodings-native"
 
-SRCREV_chromium87 = "c9a66f75a7f40b9fe39e168b596b9743467d7378"
-SRCREV_v8 = "935065d097cce0090bc858746e6aee0919b222de"
+SRCREV_chromium91 = "2c7cb6949542f7e16b2ffc64b4300ccc4212392b"
+SRCREV_v8 = "b958ec542dcb086f422a1216a959be38a4cc0339"
 
-CHROMIUM_VERSION = "87.0.4280.88"
-PV_BRANCH_SUFFIX = "ose10.agl.marlin"
+CHROMIUM_VERSION = "91.0.4472.114"
+PV_BRANCH_SUFFIX = "ose11.agl"
 
 PV = "${CHROMIUM_VERSION}.${PV_BRANCH_SUFFIX}+git"
 

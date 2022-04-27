@@ -25,14 +25,14 @@ lcl_maybe_fortify = ""
 SECURITY_STACK_PROTECTOR = ""
 
 SRC_URI = "\
-    git://github.com/igalia/${BPN}.git;branch=@55.agl.marlin;protocol=https \
+    git://github.com/igalia/${BPN}.git;branch=@57.agl;protocol=https \
     file://WebAppMgr.service \
     file://WebAppMgr.env \
 "
 S = "${WORKDIR}/git"
-SRCREV = "f4c2e95afb0ed0cd22095d567fa437a6ccb8c5ab"
+SRCREV = "692f706b8794b093035915bc401576c55a6e03fc"
 
-PV = "ose55.agl.marlin"
+PV = "ose57.agl"
 
 do_install:append() {
     install -v -d ${D}${sysconfdir}/wam

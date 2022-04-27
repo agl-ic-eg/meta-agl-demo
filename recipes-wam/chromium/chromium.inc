@@ -14,7 +14,7 @@ require gn-utils.inc
 
 inherit gettext qemu pythonnative
 
-DEPENDS = "virtual/gettext wayland wayland-native pixman freetype glib-2.0 fontconfig openssl pango cairo icu libxkbcommon libexif dbus pciutils udev libcap alsa-lib virtual/egl elfutils-native libdrm atk at-spi2-atk gperf-native gconf nss nss-native nspr nspr-native bison-native qemu-native"
+DEPENDS = "virtual/gettext wayland wayland-native pixman freetype glib-2.0 fontconfig openssl pango cairo icu libxkbcommon libexif dbus pciutils udev libcap alsa-lib virtual/egl elfutils-native libdrm atk at-spi2-atk gperf-native gconf nss nss-native nspr nspr-native bison-native qemu-native curl"
 
 PROVIDES = "${BROWSER_APPLICATION}"
 
@@ -103,6 +103,9 @@ GN_ARGS += "is_debug=false is_official_build=true"
 #          "is_cfi requires setting is_clang = true in 'gn args'")
 GN_ARGS += "is_cfi=false"
 
+# use_thin_lto should be also disabled for GCC
+GN_ARGS += "use_thin_lto=false"
+
 # We do not want to use Chromium's own Debian-based sysroots, it is easier to
 # just let Chromium's build system assume we are not using a sysroot at all and
 # let Yocto handle everything.
@@ -158,6 +161,7 @@ GN_ARGS += "\
     enable_nacl=false\
     disable_ftp_support=true\
     enable_print_preview=false\
+    enable_basic_printing=false\
     enable_remoting=false\
     use_glib=true\
     use_gnome_keyring=false\
