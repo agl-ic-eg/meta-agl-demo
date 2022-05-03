@@ -156,6 +156,9 @@ GN_ARGS:append:armv6 = ' arm_use_neon=false'
 # https://github.com/gperftools/gperftools/issues/693
 GN_ARGS:append:libc-musl = ' use_allocator_shim=false'
 
+# Chromium 91 build of highway with NEON is broken. Do not build.
+GN_ARGS:append:aarch64 = ' enable_jxl_decoder=false'
+
 # More options to speed up the build
 GN_ARGS += "\
     enable_nacl=false\
