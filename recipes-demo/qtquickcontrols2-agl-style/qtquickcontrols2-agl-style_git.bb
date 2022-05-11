@@ -1,5 +1,5 @@
 SUMMARY     = "AGL QtQuickControls2 style customizations"
-HOMEPAGE    = "https://git.automotivelinux.org/gerrit/#/admin/projects/src/qtquickcontrols2-agl-style"
+HOMEPAGE    = "https://git.automotivelinux.org/src/qtquickcontrols2-agl-style"
 LICENSE     = "MPL-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=815ca599c9df247a0c7f619bab123dad"
 
