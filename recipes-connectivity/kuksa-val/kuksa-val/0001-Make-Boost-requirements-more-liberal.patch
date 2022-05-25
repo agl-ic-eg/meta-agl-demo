@@ -1,0 +1,40 @@
+From 6c1495df3c78a2e7d86ec141950f342835c0b8c7 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Mon, 23 May 2022 14:59:33 -0400
+Subject: [PATCH 1/4] Make Boost requirements more liberal
+
+To allow building with Yocto Project 3.1/dunfell or newer releases,
+tweak the version requirement in boost.cmake to 1.72.0 and remove the
+EXACT specifier from the find_package call.
+
+Upstream-Status: Pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ boost.cmake | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/boost.cmake b/boost.cmake
+index 9f0e512..2dff60a 100644
+--- a/boost.cmake
++++ b/boost.cmake
+@@ -11,14 +11,14 @@
+ # *****************************************************************************
+ 
+ set(Boost_USE_STATIC_LIBS OFF)
+-set(BOOST_VER 1.75.0)
++set(BOOST_VER 1.72.0)
+ set(Boost_NO_BOOST_CMAKE ON)
+ set(BOOST_COMPONENTS filesystem program_options system log thread)
+ ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
+ 
+ # Workaround function to allow cmake call `find_package` twice. Avoide side effects from local variables, which are produced be `find_package`
+ function(findBoost Required)
+-    find_package(Boost ${BOOST_VER} EXACT ${Required} 
++    find_package(Boost ${BOOST_VER} ${Required}
+         COMPONENTS ${BOOST_COMPONENTS}
+         OPTIONAL_COMPONENTS unit_test_framework
+     )
+-- 
+2.35.1
+

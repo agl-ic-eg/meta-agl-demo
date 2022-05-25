@@ -1,0 +1,59 @@
+From f6c8584e181d3591b08e1f05a4f685912d7a94ce Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Mon, 23 May 2022 15:00:37 -0400
+Subject: [PATCH 2/4] Fix gRPC configuration for OE cross-compiling
+
+The gRPC CMake package that kuksa.val pulls in is problematic with
+respect to cross-compiling with OpenEmbedded's split native and
+target sysroots, as the location of the grpc_cpp_plugin does not
+match the (somewhat ill-advised) assumptions in the original
+upstream gRPC configuration.  To work around this, a patch to
+gRPC is separately applied to split the plugins into their own
+optional package, and the logic in grpc.cmake here tweaked to
+explicitly take cross-compilation into account.  Additionally, the
+explicit version requirement for gRPC is tweaked to 1.24.3 to allow
+building with Yocto Project 3.1 aka dunfell or newer.
+
+Upstream-Status: Pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ grpc.cmake | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/grpc.cmake b/grpc.cmake
+index c0228a0..30b3757 100644
+--- a/grpc.cmake
++++ b/grpc.cmake
+@@ -11,17 +11,24 @@
+ # *****************************************************************************
+ 
+ set(gRPC_SSL_PROVIDER "package" CACHE STRING "Provider of ssl library")
+-set(GRPC_VER 1.44.0)
++set(GRPC_VER 1.24.3)
+ 
+ find_package(Protobuf)
+-find_package(gRPC ${GRPC_VER} EXACT CONFIG)
++find_package(gRPC ${GRPC_VER} CONFIG)
++if(NOT CMAKE_CROSSCOMPILING)
++    find_package(gRPCPlugin ${GRPC_VER} CONFIG)
++    if(gRPCPlugin_FOUND)
++        set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
++    endif()
++else()
++    find_program(_GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin)
++endif()
+ 
+-if(Protobuf_FOUND AND gRPC_FOUND)
++if(Protobuf_FOUND AND gRPC_FOUND AND _GRPC_CPP_PLUGIN_EXECUTABLE)
+     message(STATUS "Using protobuf ${protobuf_VERSION}")
+     message(STATUS "Using gRPC ${gRPC_VERSION}")
+ 
+     set(_GRPC_GRPCPP gRPC::grpc++)
+-    set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
+     set(_REFLECTION gRPC::grpc++_reflection)
+     set(_PROTOBUF_PROTOC $<TARGET_FILE:protobuf::protoc>)
+ 
+-- 
+2.35.1
+

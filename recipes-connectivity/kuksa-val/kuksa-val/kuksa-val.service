@@ -1,0 +1,11 @@
+[Unit]
+Description=Eclipse KUKSA.val VIS server
+After=network.target
+
+[Service]
+User=kuksa
+ExecStart=/usr/bin/kuksa-val-server
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

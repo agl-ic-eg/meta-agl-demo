@@ -1,0 +1,185 @@
+From 535993001d8a24162e972b4a4e88387f94c9f539 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Mon, 23 May 2022 15:21:07 -0400
+Subject: [PATCH 3/4] Make install locations configurable
+
+Make binary, certificate, and configuration file install locations
+configurable, including generation and installation of an accurate
+default config.ini as well as a header file so that the server
+binary uses the specified defaults.  This allows configuring a
+build that installs files into locations more along the lines of
+the Linux FHS.  An effort has been made to ensure that the previous
+default locations are maintained.
+
+Upstream-Status: Pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ config.ini         |  7 -------
+ config.ini.in      |  7 +++++++
+ src/CMakeLists.txt | 52 ++++++++++++++++++++++++++++++++++++----------
+ src/config.hpp.in  | 21 +++++++++++++++++++
+ src/main.cpp       |  5 +++--
+ 5 files changed, 72 insertions(+), 20 deletions(-)
+ delete mode 100644 config.ini
+ create mode 100644 config.ini.in
+ create mode 100644 src/config.hpp.in
+
+diff --git a/config.ini b/config.ini
+deleted file mode 100644
+index f3162d4..0000000
+--- a/config.ini
++++ /dev/null
+@@ -1,7 +0,0 @@
+-vss = vss_release_2.2.json
+-log-level = ALL
+-cert-path = .
+-
+-[mqtt]
+-    publish = 
+-    topic-prefix = vss
+diff --git a/config.ini.in b/config.ini.in
+new file mode 100644
+index 0000000..5bdce91
+--- /dev/null
++++ b/config.ini.in
+@@ -0,0 +1,7 @@
++vss = @KUKSA_DEFAULT_DATADIR@/vss_release_2.2.json
++log-level = ALL
++cert-path = @KUKSA_DEFAULT_CERTDIR@
++
++[mqtt]
++    publish = 
++    topic-prefix = vss
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 0ff5f9c..b7d4d4f 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -162,6 +162,35 @@ if(BUILD_EXE)
+   ######
+   # Setup server install and packaging
+ 
++  set(KUKSA_INSTALL_BINDIR "bin/${SERVER_EXE_NAME}" CACHE STRING "Server binary install directory")
++
++  if(DEFINED KUKSA_INSTALL_DATADIR)
++    set(KUKSA_DEFAULT_DATADIR_INTERNAL "${KUKSA_INSTALL_DATADIR}")
++  else()
++    set(KUKSA_DEFAULT_DATADIR_INTERNAL ".")
++  endif()
++  set(KUKSA_INSTALL_DATADIR "${KUKSA_INSTALL_BINDIR}" CACHE STRING "Data install directory")
++  set(KUKSA_DEFAULT_DATADIR "${KUKSA_DEFAULT_DATADIR_INTERNAL}" CACHE STRING "Default data location")
++
++  if(DEFINED KUKSA_INSTALL_CONFIGDIR)
++    set(KUKSA_DEFAULT_CONFIG "${KUKSA_INSTALL_CONFIGDIR}/config.ini" CACHE STRING "Default config.ini location")
++  else()
++    set(KUKSA_DEFAULT_CONFIG "config.ini" CACHE STRING "Default config.ini location")
++  endif()
++  set(KUKSA_INSTALL_CONFIGDIR "${KUKSA_INSTALL_BINDIR}" CACHE STRING "config.ini install directory")
++
++  if(DEFINED KUKSA_INSTALL_CERTDIR)
++    set(KUKSA_DEFAULT_CERTDIR_INTERNAL "${KUKSA_INSTALL_CERTDIR}")
++  else()
++    set(KUKSA_DEFAULT_CERTDIR_INTERNAL ".")
++  endif()
++  set(KUKSA_INSTALL_CERTDIR "${KUKSA_INSTALL_BINDIR}" CACHE STRING "Certificate install directory")
++  set(KUKSA_DEFAULT_CERTDIR "${KUKSA_DEFAULT_CERTDIR_INTERNAL}" CACHE STRING "Default certificate location")
++
++  # Generate header for main.cpp to pick up default locations
++  configure_file(config.hpp.in config.hpp @ONLY)
++  include_directories(${CMAKE_CURRENT_BINARY_DIR})
++
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/jwt/jwt.key.pub  ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Server.pem  ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Server.key  ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+@@ -171,19 +200,20 @@ if(BUILD_EXE)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.0.json ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.1.json ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.2.json ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../config.ini ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
++  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../config.ini.in ${CMAKE_CURRENT_BINARY_DIR}/config.ini @COPY)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../config_grpc_client.ini ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+ 
+-  install( TARGETS ${SERVER_EXE_NAME} DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/jwt/jwt.key.pub DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Server.pem DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Server.key DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Client.pem DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Client.key DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/CA.pem DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.0.json DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.1.json DESTINATION bin/${SERVER_EXE_NAME})
+-  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.2.json DESTINATION bin/${SERVER_EXE_NAME})
++  install( TARGETS ${SERVER_EXE_NAME} DESTINATION ${KUKSA_INSTALL_BINDIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/jwt/jwt.key.pub DESTINATION ${KUKSA_INSTALL_CERTDIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Server.pem DESTINATION ${KUKSA_INSTALL_CERTDIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Server.key DESTINATION ${KUKSA_INSTALL_CERTDIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Client.pem DESTINATION ${KUKSA_INSTALL_CERTDIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/Client.key DESTINATION ${KUKSA_INSTALL_CERTDIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../kuksa_certificates/CA.pem DESTINATION ${KUKSA_INSTALL_CERTDIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.0.json DESTINATION ${KUKSA_INSTALL_DATADIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.1.json DESTINATION ${KUKSA_INSTALL_DATADIR})
++  install( FILES ${CMAKE_CURRENT_SOURCE_DIR}/../data/vss-core/vss_release_2.2.json DESTINATION ${KUKSA_INSTALL_DATADIR})
++  install( FILES ${CMAKE_CURRENT_BINARY_DIR}/config.ini DESTINATION ${KUKSA_INSTALL_CONFIGDIR})
+ 
+ 
+   #GRPC client
+diff --git a/src/config.hpp.in b/src/config.hpp.in
+new file mode 100644
+index 0000000..89586c2
+--- /dev/null
++++ b/src/config.hpp.in
+@@ -0,0 +1,21 @@
++/*
++ * ******************************************************************************
++ * Copyright (c) 2022 Konsulko Group
++ *
++ * All rights reserved. This program and the accompanying materials
++ * are made available under the terms of the Eclipse Public License v2.0
++ * which accompanies this distribution, and is available at
++ * https://www.eclipse.org/org/documents/epl-2.0/index.php
++ *
++ * *****************************************************************************
++ */
++
++#ifndef __CONFIG_H___
++
++// Default configuration file location
++#cmakedefine KUKSA_DEFAULT_CONFIG "@KUKSA_DEFAULT_CONFIG@"
++
++// Default Certificate directory
++#cmakedefine KUKSA_DEFAULT_CERTDIR "@KUKSA_DEFAULT_CERTDIR@"
++
++#endif
+diff --git a/src/main.cpp b/src/main.cpp
+index 417e2e8..fdfeacd 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -40,6 +40,7 @@
+ #include "exception.hpp"
+ #include "grpcHandler.hpp"
+ #include "OverlayLoader.hpp"
++#include "config.hpp"
+ 
+ 
+ #include "../buildinfo.h"
+@@ -101,7 +102,7 @@ int main(int argc, const char *argv[]) {
+   program_options::options_description desc{"OPTIONS"};
+   desc.add_options()
+     ("help,h", "Help screen")
+-    ("config-file,c", program_options::value<boost::filesystem::path>()->default_value(boost::filesystem::path{"config.ini"}),
++    ("config-file,c", program_options::value<boost::filesystem::path>()->default_value(boost::filesystem::path{KUKSA_DEFAULT_CONFIG}),
+       "Configuration file with `kuksa-val-server` input parameters."
+       "Configuration file can replace command-line parameters and through different files multiple configurations can be handled more easily (e.g. test and production setup)."
+       "Sample of configuration file parameters looks like:\n"
+@@ -110,7 +111,7 @@ int main(int argc, const char *argv[]) {
+       "log-level = ALL\n")
+     ("vss", program_options::value<boost::filesystem::path>()->required(), "[mandatory] Path to VSS data file describing VSS data tree structure which `kuksa-val-server` shall handle. Sample 'vss_release_2.1.json' file can be found under [data](./data/vss-core/vss_release_2.1.json)")
+     ("overlays", program_options::value<boost::filesystem::path>(), "Path to a directory cotaiing additional VSS models. All json files will be applied on top of the main vss file given by the -vss parameter in alphanumerical order")
+-    ("cert-path", program_options::value<boost::filesystem::path>()->required()->default_value(boost::filesystem::path(".")),
++    ("cert-path", program_options::value<boost::filesystem::path>()->required()->default_value(boost::filesystem::path(KUKSA_DEFAULT_CERTDIR)),
+       "[mandatory] Directory path where 'Server.pem', 'Server.key' and 'jwt.key.pub' are located. ")
+     ("insecure", program_options::bool_switch()->default_value(false), "By default, `kuksa-val-server` shall accept only SSL (TLS) secured connections. If provided, `kuksa-val-server` shall also accept plain un-secured connections for Web-Socket and REST API connections, and also shall not fail connections due to self-signed certificates.")
+     ("use-keycloak", "Use KeyCloak for permission management")
+-- 
+2.35.1
+

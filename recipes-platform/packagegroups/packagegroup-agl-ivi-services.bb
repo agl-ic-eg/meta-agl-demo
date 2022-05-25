@@ -8,4 +8,5 @@ PACKAGES = "\
     "
 
 RDEPENDS:${PN} += "\
+    kuksa-val \
     "

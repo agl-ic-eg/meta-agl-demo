@@ -1,0 +1,83 @@
+From 73701bc4ac7e0c21990f73139839bc633afdd772 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Tue, 24 May 2022 10:21:44 -0400
+Subject: [PATCH 4/4] Disable default fetch and build of googletest
+
+The logic in test/unit-test/CMakeLists.txt was always fetching and
+building googletest even if the unit-test was not enabled (which is
+the default), rework it a bit to only do so when the unit-test is
+desired.
+
+Upstream-Status: Pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ test/unit-test/CMakeLists.txt | 42 +++++++++++++++++------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/test/unit-test/CMakeLists.txt b/test/unit-test/CMakeLists.txt
+index 873d604..976eb18 100644
+--- a/test/unit-test/CMakeLists.txt
++++ b/test/unit-test/CMakeLists.txt
+@@ -16,18 +16,6 @@ enable_testing()
+ include(CTest)
+ include(FetchContent)
+ 
+-FetchContent_Declare(
+-  googletest
+-  GIT_REPOSITORY https://github.com/google/googletest.git
+-  GIT_TAG        release-1.11.0
+-)
+-
+-FetchContent_GetProperties(googletest)
+-if(NOT googletest_POPULATED)
+-  FetchContent_Populate(googletest)
+-  add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+-endif()
+-
+ ######
+ # CMake configuration responsible for building kuksa-val optional unit tests based on core library
+ 
+@@ -37,18 +25,30 @@ set(UNITTEST_EXE_NAME "kuksaval-unit-test" )
+ 
+ set(BUILD_UNIT_TEST OFF CACHE BOOL "Build unit tests")
+ 
+-###
+-# Setup targets
++if(BUILD_UNIT_TEST)
++  FetchContent_Declare(
++    googletest
++    GIT_REPOSITORY https://github.com/google/googletest.git
++    GIT_TAG        release-1.11.0
++  )
+ 
+-set(proto_gen_dir "${CMAKE_BINARY_DIR}/proto")
+-include_directories(${proto_gen_dir})
+-include_directories(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
++  FetchContent_GetProperties(googletest)
++  if(NOT googletest_POPULATED)
++    FetchContent_Populate(googletest)
++    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
++  endif()
+ 
+-# Prevent GoogleTest from overriding our compiler/linker options
+-# when building with Visual Studio
+-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
++  ###
++  # Setup targets
++
++  set(proto_gen_dir "${CMAKE_BINARY_DIR}/proto")
++  include_directories(${proto_gen_dir})
++  include_directories(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
++
++  # Prevent GoogleTest from overriding our compiler/linker options
++  # when building with Visual Studio
++  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+ 
+-if(BUILD_UNIT_TEST)
+   add_executable(${UNITTEST_EXE_NAME}
+     AccessCheckerTests.cpp
+     AuthenticatorTests.cpp
+-- 
+2.35.1
+
