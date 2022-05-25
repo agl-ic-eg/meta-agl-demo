@@ -1,0 +1,95 @@
+From 3150cb043363e05588062dd392b940be25594713 Mon Sep 17 00:00:00 2001
+From: Stefan Herbrechtsmeier <stefan.herbrechtsmeier@weidmueller.com>
+Date: Tue, 18 Feb 2020 14:17:07 +0100
+Subject: [PATCH] cmake: add separate export for plugin targets
+
+Upstream-Status: Submitted [https://github.com/grpc/grpc/pull/29328]
+
+[backported to grpc 1.24.3]
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+
+---
+ CMakeLists.txt | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 139eb12315..c2ac14cc17 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13570,7 +13570,7 @@ target_link_libraries(grpc_cpp_plugin
+ 
+ 
+ if (gRPC_INSTALL)
+-  install(TARGETS grpc_cpp_plugin EXPORT gRPCTargets
++  install(TARGETS grpc_cpp_plugin EXPORT gRPCPluginTargets
+     RUNTIME DESTINATION ${gRPC_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${gRPC_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${gRPC_INSTALL_LIBDIR}
+@@ -13611,7 +13611,7 @@ target_link_libraries(grpc_csharp_plugin
+ 
+ 
+ if (gRPC_INSTALL)
+-  install(TARGETS grpc_csharp_plugin EXPORT gRPCTargets
++  install(TARGETS grpc_csharp_plugin EXPORT gRPCPluginTargets
+     RUNTIME DESTINATION ${gRPC_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${gRPC_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${gRPC_INSTALL_LIBDIR}
+@@ -13733,7 +13733,7 @@ target_link_libraries(grpc_node_plugin
+ 
+ 
+ if (gRPC_INSTALL)
+-  install(TARGETS grpc_node_plugin EXPORT gRPCTargets
++  install(TARGETS grpc_node_plugin EXPORT gRPCPluginTargets
+     RUNTIME DESTINATION ${gRPC_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${gRPC_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${gRPC_INSTALL_LIBDIR}
+@@ -13774,7 +13774,7 @@ target_link_libraries(grpc_objective_c_plugin
+ 
+ 
+ if (gRPC_INSTALL)
+-  install(TARGETS grpc_objective_c_plugin EXPORT gRPCTargets
++  install(TARGETS grpc_objective_c_plugin EXPORT gRPCPluginTargets
+     RUNTIME DESTINATION ${gRPC_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${gRPC_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${gRPC_INSTALL_LIBDIR}
+@@ -13815,7 +13815,7 @@ target_link_libraries(grpc_php_plugin
+ 
+ 
+ if (gRPC_INSTALL)
+-  install(TARGETS grpc_php_plugin EXPORT gRPCTargets
++  install(TARGETS grpc_php_plugin EXPORT gRPCPluginTargets
+     RUNTIME DESTINATION ${gRPC_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${gRPC_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${gRPC_INSTALL_LIBDIR}
+@@ -13856,7 +13856,7 @@ target_link_libraries(grpc_python_plugin
+ 
+ 
+ if (gRPC_INSTALL)
+-  install(TARGETS grpc_python_plugin EXPORT gRPCTargets
++  install(TARGETS grpc_python_plugin EXPORT gRPCPluginTargets
+     RUNTIME DESTINATION ${gRPC_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${gRPC_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${gRPC_INSTALL_LIBDIR}
+@@ -13897,7 +13897,7 @@ target_link_libraries(grpc_ruby_plugin
+ 
+ 
+ if (gRPC_INSTALL)
+-  install(TARGETS grpc_ruby_plugin EXPORT gRPCTargets
++  install(TARGETS grpc_ruby_plugin EXPORT gRPCPluginTargets
+     RUNTIME DESTINATION ${gRPC_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${gRPC_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${gRPC_INSTALL_LIBDIR}
+@@ -19499,6 +19499,10 @@ if (gRPC_INSTALL)
+     DESTINATION ${gRPC_INSTALL_CMAKEDIR}
+     NAMESPACE gRPC::
+   )
++  install(EXPORT gRPCPluginTargets
++    DESTINATION ${gRPC_INSTALL_CMAKEDIR}
++    NAMESPACE gRPC::
++  )
+ endif()
+ 
+ foreach(_config gRPCConfig gRPCConfigVersion)
+-- 
+2.35.1
+
