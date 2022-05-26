@@ -1,0 +1,166 @@
+From 6e7176cf6cbf7587c7e7999da56b59a32cf81f82 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Wed, 11 May 2022 15:31:25 -0400
+Subject: [PATCH] dbc2val: add installation mechanism
+
+Add setup.py and setup.cfg to allow installing the dbc2val module
+and dbcfeeder.py in a way suitable for packaging.  Some of the
+imports in the scripts have been tweaked to enable running against
+an installed copy of dbc2val.
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ kuksa_feeders/dbc2val/__init__.py      |  0
+ kuksa_feeders/dbc2val/dbc2vssmapper.py | 12 ++++-----
+ kuksa_feeders/dbc2val/dbcfeeder.py     |  6 ++---
+ kuksa_feeders/setup.cfg                | 31 ++++++++++++++++++++++
+ kuksa_feeders/setup.py                 | 36 ++++++++++++++++++++++++++
+ 5 files changed, 75 insertions(+), 10 deletions(-)
+ create mode 100644 kuksa_feeders/dbc2val/__init__.py
+ create mode 100644 kuksa_feeders/setup.cfg
+ create mode 100644 kuksa_feeders/setup.py
+
+diff --git a/kuksa_feeders/dbc2val/__init__.py b/kuksa_feeders/dbc2val/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/kuksa_feeders/dbc2val/dbc2vssmapper.py b/kuksa_feeders/dbc2val/dbc2vssmapper.py
+index a43d1bd..1718154 100644
+--- a/kuksa_feeders/dbc2val/dbc2vssmapper.py
++++ b/kuksa_feeders/dbc2val/dbc2vssmapper.py
+@@ -11,8 +11,8 @@
+ ########################################################################
+ 
+ import yaml 
+-import transforms.mapping
+-import transforms.math
++from dbc2val.transforms import mapping
++from dbc2val.transforms import math
+ 
+ 
+ class mapper:
+@@ -22,9 +22,9 @@ class mapper:
+             self.mapping = yaml.full_load(file)
+ 
+         self.transforms={}
+-        self.transforms['fullmapping']=transforms.mapping.mapping(discard_non_matching_items=True)
+-        self.transforms['partialmapping']=transforms.mapping.mapping(discard_non_matching_items=False)
+-        self.transforms['math']=transforms.math.math()
++        self.transforms['fullmapping']=mapping.mapping(discard_non_matching_items=True)
++        self.transforms['partialmapping']=mapping.mapping(discard_non_matching_items=False)
++        self.transforms['math']=math.math()
+ 
+ 
+ 
+@@ -62,4 +62,4 @@ class mapper:
+ 
+     def __getitem__(self, item):
+         return self.mapping[item]
+-    
+\ No newline at end of file
++    
+diff --git a/kuksa_feeders/dbc2val/dbcfeeder.py b/kuksa_feeders/dbc2val/dbcfeeder.py
+index 26a0c23..a7cec86 100755
+--- a/kuksa_feeders/dbc2val/dbcfeeder.py
++++ b/kuksa_feeders/dbc2val/dbcfeeder.py
+@@ -16,10 +16,7 @@ import configparser
+ import queue
+ import json
+ 
+-import dbc2vssmapper
+-import dbcreader
+-import j1939reader
+-import elm2canbridge
++from dbc2val import dbc2vssmapper, dbcreader, j1939reader, elm2canbridge
+ 
+ scriptDir= os.path.dirname(os.path.realpath(__file__))
+ sys.path.append(os.path.join(scriptDir, "../../"))
+@@ -27,6 +24,7 @@ from kuksa_viss_client import KuksaClientThread
+ 
+ print("kuksa.val DBC example feeder")
+ config_candidates=['/config/dbc_feeder.ini', '/etc/dbc_feeder.ini', os.path.join(scriptDir, 'config/dbc_feeder.ini')]
++configfile = None
+ for candidate in config_candidates:
+     if os.path.isfile(candidate):
+         configfile=candidate
+diff --git a/kuksa_feeders/setup.cfg b/kuksa_feeders/setup.cfg
+new file mode 100644
+index 0000000..ca6ad0b
+--- /dev/null
++++ b/kuksa_feeders/setup.cfg
+@@ -0,0 +1,31 @@
++[metadata]
++name = dbc2val
++author = Sebastian Schildt, Naresh Nayak, Wenwen Chen
++author_email = sebastian.schildt@de.bosch.com, naresh.nayak@de.bosch.com, wenwen.chen@de.bosch.com
++description = kuksa.val DBC feeder
++long_description = file:README.md
++long_description_content_type = text/markdown
++url=https://github.com/eclipse/kuksa.val
++project_urls=
++  Source=https://github.com/eclipse/kuksa.val/tree/master/kuksa_feeders/dbc2val
++  Bug Tracker=https://github.com/eclipse/kuksa.val/issues
++classifiers = 
++    Intended Audience :: Developers
++    Development Status :: 3 - Alpha
++    Environment :: Console
++    Programming Language :: Python :: 3
++    License :: OSI Approved :: Eclipse Public License 2.0 (EPL-2.0)
++    Operating System :: OS Independent
++    Topic :: Software Development
++    
++license_file = LICENSE
++
++[options]
++python_requires = >=3.6
++install_requires=
++    pyserial
++    pyyaml
++    kuksa-viss-client
++packages=find:
++include_package_data = True
++scripts=dbc2val/dbcfeeder.py
+diff --git a/kuksa_feeders/setup.py b/kuksa_feeders/setup.py
+new file mode 100644
+index 0000000..ad08d17
+--- /dev/null
++++ b/kuksa_feeders/setup.py
+@@ -0,0 +1,36 @@
++# To avoid shipping dbcfeeder.py in the module itself, use the
++# technique outlined at:
++#
++# https://stackoverflow.com/a/50592100
++#
++# This can be removed if the directory structure is ever reorganized
++# more along the lines of upstream recommendations.
++#
++
++import fnmatch
++from setuptools import find_packages, setup
++from setuptools.command.build_py import build_py as build_py_orig
++
++exclude = ['dbc2val.dbcfeeder']
++
++class build_py(build_py_orig):
++    def find_package_modules(self, package, package_dir):
++        modules = super().find_package_modules(package, package_dir)
++        print("modules = %s" % modules)
++        return [(pkg, mod, file, ) for (pkg, mod, file, ) in modules
++                if not any(fnmatch.fnmatchcase(pkg + '.' + mod, pat=pattern)
++                           for pattern in exclude)]
++
++setup(
++    version_config={
++        "template": "{tag}",
++        "dev_template": "{tag}-{ccount}",
++        "dirty_template": "{tag}-{ccount}-dirty",
++        "starting_version": "0.1.11",
++        "version_callback": None,
++        "version_file": None,
++        "count_commits_from_version_file": False
++    },
++    setup_requires=['setuptools-git-versioning'],
++    cmdclass={'build_py': build_py},
++)
+-- 
+2.35.1
+

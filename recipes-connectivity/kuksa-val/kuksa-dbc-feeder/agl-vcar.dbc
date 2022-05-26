@@ -1,0 +1,31 @@
+VERSION "AGL Virtual Car 1.0"
+
+BS_:
+
+BO_ 1001 Vehicle_Status_1: 8 Vector_XXX
+  SG_ PT_VehicleAvgSpeed : 7|15@0+ (0.015625,0) [0|0] "" Vector_XXX
+
+BO_ 985 Vehicle_Status_2: 8 Vector_XXX
+  SG_ PT_FuelLevelPct : 8|8@1+ (0.392157,0) [0|0] "" Vector_XXX
+  SG_ PT_EngineSpeed : 23|16@0+ (0.25,0) [0|0] "" Vector_XXX
+  SG_ PT_FuelLevelLow : 55|1@1+ (1,0) [0|1] "" Vector_XXX
+
+BO_ 33 Steering_Wheel: 8 Vector_XXX
+  SG_ SW_Previous : 32|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_VolumeUp : 33|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_Mode : 34|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_VolumeDown : 35|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_Next : 36|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_Info : 38|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_VolumeMute : 39|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_Voice : 45|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_PhoneHangup : 46|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_PhoneCall : 47|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_CruiseEnable : 48|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_CruiseResume : 49|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_CruiseSet : 51|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_CruiseCancel : 52|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_CruiseLimit : 54|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_CruiseDistance : 55|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_Horn : 56|1@1+ (1,0) [0|1] "" Vector_XXX
+  SG_ SW_LaneDepartureWarning : 63|1@1+ (1,0) [0|1] "" Vector_XXX

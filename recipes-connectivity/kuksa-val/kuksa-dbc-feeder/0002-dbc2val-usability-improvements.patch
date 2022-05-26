@@ -1,0 +1,120 @@
+From fe10a3645e77cd8122d3d312d317bedcb88bc683 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Thu, 12 May 2022 17:39:56 +0200
+Subject: [PATCH] dbc2val: usability improvements
+
+Changes:
+- Tweaked default configuration file search path to better match
+  Linux FHS and kuksa-val-server.  First look for a config.ini in
+  /etc/kuksa-dbc-feeder, then /etc/dbc_feeder.ini.
+- Added a command-line option to specify configuration file, this
+  should allow running two instances against different interfaces.
+- Added verbosity command-line option and made several messages
+  verbose mode only to avoid log spamming.
+- Added '-u' option to python invocation to disable output buffering.
+  The intent is to make logging immediate, otherwise errors may not
+  get logged for some time (or at all).
+- Add catching of exceptions around CAN device opening so that the
+  script can exit cleanly with an error message if the device is
+  not available.
+
+Upstream-Status: pending
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ kuksa_feeders/dbc2val/dbcfeeder.py | 40 ++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 11 deletions(-)
+
+diff --git a/kuksa_feeders/dbc2val/dbcfeeder.py b/kuksa_feeders/dbc2val/dbcfeeder.py
+index 56c316a..d2d70b9 100755
+--- a/kuksa_feeders/dbc2val/dbcfeeder.py
++++ b/kuksa_feeders/dbc2val/dbcfeeder.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env -S python -u
+ 
+ ########################################################################
+ # Copyright (c) 2020 Robert Bosch GmbH
+@@ -15,15 +15,21 @@ import os, sys, signal
+ import configparser
+ import queue
+ import json
++import argparse
+ 
+ from dbc2val import dbc2vssmapper, dbcreader, j1939reader, elm2canbridge
+-
+-scriptDir= os.path.dirname(os.path.realpath(__file__))
+-sys.path.append(os.path.join(scriptDir, "../../"))
+ from kuksa_viss_client import KuksaClientThread
+ 
+-print("kuksa.val DBC example feeder")
+-config_candidates=['/config/dbc_feeder.ini', '/etc/dbc_feeder.ini', os.path.join(scriptDir, 'config/dbc_feeder.ini')]
++parser = argparse.ArgumentParser("kuksa.val DBC example feeder")
++parser.add_argument("-c", "--config", dest="userconfig")
++parser.add_argument("-v", "--verbose", action="store_true")
++args = parser.parse_args()
++
++if args.verbose:
++    print("kuksa.val DBC example feeder")
++config_candidates=['/etc/kuksa-dbc-feeder/config.ini', '/etc/dbc_feeder.ini']
++if args.userconfig is not None:
++    config_candidates.insert(0, args.userconfig)
+ configfile = None
+ for candidate in config_candidates:
+     if os.path.isfile(candidate):
+@@ -54,10 +60,12 @@ cancfg = config['can']
+ canport = cancfg['port']
+ 
+ if config["can"].getboolean("j1939", False):
+-    print("Use j1939 reader")
++    if args.verbose:
++        print("Use j1939 reader")
+     reader = j1939reader.J1939Reader(cancfg,canQueue,mapping)
+ else:
+-    print("Use dbc reader")
++    if args.verbose:
++        print("Use dbc reader")
+     reader = dbcreader.DBCReader(cancfg, canQueue,mapping)
+ 
+ if canport == 'elmcan':
+@@ -65,10 +73,18 @@ if canport == 'elmcan':
+         print("section {} missing from configuration, exiting".format(canport))
+         sys.exit(-1)
+ 
+-    print("Using elmcan. Trying to set up elm2can bridge")
++    if args.verbose:
++        print("Using elmcan. Trying to set up elm2can bridge")
+     elmbr=elm2canbridge.elm2canbridge(canport, config[canport], reader.canidwl)
+ 
+-reader.start_listening()
++try:
++    reader.start_listening()
++except:
++    print("Could not open {}, exiting".format(canport))
++    kuksa.stop()
++    reader.stop()
++    sys.exit(-1)
++
+ running = True
+ 
+ def terminationSignalreceived(signalNumber, frame):
+@@ -77,6 +93,7 @@ def terminationSignalreceived(signalNumber, frame):
+     kuksa.stop()
+     reader.stop()
+     print("Received termination signal. Shutting down")
++    sys.exit(0)
+ 
+ signal.signal(signal.SIGINT, terminationSignalreceived)
+ signal.signal(signal.SIGQUIT, terminationSignalreceived)
+@@ -88,7 +105,8 @@ while running:
+         for target in mapping[signal]['targets']:
+             tv=mapping.transform(signal,target,value)
+             if tv is not None: #none indicates the transform decided to not set the value
+-                print("Update VSS path {} to {} based on signal {}".format(target, tv, signal))
++                if args.verbose:
++                    print("Update VSS path {} to {} based on signal {}".format(target, tv, signal))
+                 resp=json.loads(kuksa.setValue(target, str(tv)))
+                 if "error" in resp:
+                     if "message" in resp["error"]: 
+-- 
+2.35.1
+

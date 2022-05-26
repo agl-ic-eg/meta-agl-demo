@@ -1,0 +1,10 @@
+[Unit]
+Description=CAN interface helper
+Before=kuksa-dbc-feeder.service
+
+[Service]
+ExecStart=/usr/sbin/can-dev-helper.sh
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+# Mapping Speed
+PT_VehicleAvgSpeed:
+  minupdatedelay: 100
+  targets: 
+    Vehicle.Speed: {}
+
+PT_EngineSpeed:
+  minupdatedelay: 100
+  targets: 
+    Vehicle.Powertrain.CombustionEngine.Engine.Speed:
+      transform:
+        math: "floor(x+0.5)"
