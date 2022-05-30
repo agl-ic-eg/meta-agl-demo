@@ -9,7 +9,8 @@ PACKAGES = "\
     packagegroup-agl-demo \
     "
 
-ALLOW_EMPTY:${PN} = "1"
+# HVAC and steering wheel demo dependency
+LIN_DRIVERS ??= " sllin"
 
 # Hook for demo platform configuration
 # ATM, only used to disable btwilink module on [MH]3ULCB + Kingfisher by default,
@@ -17,10 +18,6 @@ ALLOW_EMPTY:${PN} = "1"
 DEMO_ENABLE_BTWILINK ?= ""
 DEMO_PLATFORM_CONF = ""
 DEMO_PLATFORM_CONF:append:ulcb = "${@bb.utils.contains("DEMO_ENABLE_BTWILINK", "true", "", " btwilink-disable-conf", d)}"
-
-RDEPENDS:${PN} += "\
-    udisks2 \
-    "
 
 # fonts
 TTF_FONTS = " \
@@ -35,13 +32,14 @@ TTF_FONTS = " \
     source-han-sans-kr-fonts \
     "
 
-
 RDEPENDS:${PN} += " \
+    udisks2 \
     linux-firmware-ath9k \
     linux-firmware-ralink \
     can-utils \
     cannelloni \
     iproute2 \
+    ${LIN_DRIVERS} \
     ${DEMO_PLATFORM_CONF} \
     ${TTF_FONTS} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'webruntime', 'virtual/webruntime', '', d)} \

@@ -3,7 +3,7 @@
 # Attach serial LIN->CAN bridge and set up LIN polling
 if [ -c /dev/ttyUSB0 ]; then
     sleep 1
-    /usr/bin/lin_config -c /etc/lin_config.conf -a sllin:/dev/ttyUSB0
+    /usr/bin/lin_config -m -c /etc/lin_config.conf -a sllin:/dev/ttyUSB0
     mkdir -p /run/lin_config/
     pidof lin_config > /run/lin_config/lin_config.pid
     sleep 1

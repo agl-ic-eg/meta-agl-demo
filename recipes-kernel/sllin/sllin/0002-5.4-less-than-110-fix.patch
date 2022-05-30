@@ -1,0 +1,25 @@
+Fix compilation against kernels < 5.4.110
+
+The fix to handle the backport of 4e096a18 to linux-5.4.y is a bit
+too broad, as it breaks building against kernels older than 5.4.110,
+add a version check to fix.
+
+Upstream-Status: pending
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+
+diff --git a/sllin/sllin.c b/sllin/sllin.c
+index b3f2636..a6fb120 100644
+--- a/sllin/sllin.c
++++ b/sllin/sllin.c
+@@ -1604,7 +1604,11 @@ static struct sllin *sll_alloc(dev_t line)
+ 	sl = netdev_priv(dev);
+ 	#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)
+ 		can_ml = (void *)sl + ALIGN(sizeof(*sl), NETDEV_ALIGN);
++	#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 110)
+ 		can_set_ml_priv(dev, can_ml);
++	#else
++		dev->ml_priv = can_ml;
++	#endif
+ 	#endif
+ 	/* Initialize channel control data */
+ 	sl->magic = SLLIN_MAGIC;
