@@ -1,18 +1,10 @@
+require agl-ivi-demo-platform.bb
+
 SUMMARY = "Cross SDK of Full AGL Distribution for IVI profile"
 
 DESCRIPTION = "SDK image for full AGL Distribution for IVI profile. \
 It includes the full meta-toolchain, plus developement headers and libraries \
 to form a standalone cross SDK."
-
-
-require agl-image-ivi.bb
-
-# add packages for demo platform (include demo apps) here
-IMAGE_INSTALL:append = " \
-    packagegroup-agl-demo-platform \
-    "
-
-LICENSE = "MIT"
 
 require recipes-platform/images/agl-image-minimal-crosssdk.inc
 
@@ -50,10 +42,10 @@ TOOLCHAIN_TARGET_TASK += "waltham-dev"
 
 TOOLCHAIN_HOST_TASK += " \
     nativesdk-lua \
-    "
+"
 
 # Required dependencies for app and test builds
 TOOLCHAIN_TARGET_TASK += " \
     lua-dev \
     lua-staticdev \
-    "
+"
