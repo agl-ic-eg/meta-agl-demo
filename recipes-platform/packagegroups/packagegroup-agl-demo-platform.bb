@@ -39,7 +39,7 @@ CLUSTER_SUPPORT_PACKAGES = " \
 	tbtnavi \
 	cluster-demo-network-config \
 "
-CLUSTER_SUPPORT = "${@bb.utils.contains("AGL_FEATURES", "agl-cluster-demo-support", "${CLUSTER_SUPPORT_PACKAGES}", "",d)}"
+CLUSTER_SUPPORT = "${@bb.utils.contains("AGL_FEATURES", "agl-demo-cluster-support", "${CLUSTER_SUPPORT_PACKAGES}", "",d)}"
 
 # Hook for demo platform configuration
 # ATM used for:
