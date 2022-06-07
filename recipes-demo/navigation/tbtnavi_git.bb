@@ -22,12 +22,35 @@ DEPENDS = " \
 
 PV = "2.0+git${SRCPV}"
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/tbtnavi;protocol=https;branch=${AGL_BRANCH}"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/tbtnavi;protocol=https;branch=${AGL_BRANCH} \
+           file://tbtnavi.service \
+           file://tbtnavi.conf \
+           file://tbtnavi.token \
+"
 SRCREV = "${AGL_APP_REVISION}"
 
 S = "${WORKDIR}/git"
 
-inherit qmake5 pkgconfig
+inherit qmake5 systemd pkgconfig
+
+do_install:append() {
+    install -d ${D}${systemd_user_unitdir}/agl-session.target.wants
+    install -m0644 ${WORKDIR}/tbtnavi.service ${D}${systemd_user_unitdir}/tbtnavi.service
+    ln -s ../tbtnavi.service ${D}${systemd_user_unitdir}/agl-session.target.wants/tbtnavi.service
+
+    # Currently using default global client and CA certificates
+    # for KUKSA.val SSL, installing app specific ones would go here.
+
+    # VIS authorization token file for KUKSA.val should ideally not
+    # be readable by other users, but currently that's not doable
+    # until a packaging/sandboxing/MAC scheme is (re)implemented or
+    # something like OAuth is plumbed in as an alternative.
+    install -d ${D}${sysconfdir}/xdg/AGL/tbtnavi
+    install -m 0644 ${WORKDIR}/tbtnavi.conf ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/tbtnavi.token ${D}${sysconfdir}/xdg/AGL/tbtnavi/
+}
+
+FILES:${PN} += " ${systemd_user_unitdir}"
 
 RDEPENDS:${PN} += " \
     qtlocation \
