@@ -1,0 +1,12 @@
+[Unit]
+Description=Eclipse KUKSA.val DBC feeder (sllin0)
+Requires=kuksa-val.service sllin-demo.service
+After=kuksa-val.service sllin-demo.service
+
+[Service]
+ExecStartPre=/usr/sbin/can-dev-helper.sh /etc/kuksa-dbc-feeder/config-sllin.ini
+ExecStart=/usr/bin/dbcfeeder.py --config /etc/kuksa-dbc-feeder/config-sllin.ini
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

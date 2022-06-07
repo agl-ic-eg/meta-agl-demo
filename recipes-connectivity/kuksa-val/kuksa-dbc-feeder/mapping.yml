@@ -10,3 +10,86 @@ PT_EngineSpeed:
     Vehicle.Powertrain.CombustionEngine.Engine.Speed:
       transform:
         math: "floor(x+0.5)"
+
+SW_Next:
+  minupdatedelay: 500
+  targets:
+    Vehicle.Cabin.Infotainment.Media.Action:
+      transform:
+        fullmapping:
+          1: "SkipForward"
+
+SW_Previous:
+  minupdatedelay: 500
+  targets:
+    Vehicle.Cabin.Infotainment.Media.Action:
+      transform:
+        fullmapping:
+          1: "SkipBackward"
+
+# NOTE: Dependent on AGL-specific VSS overlay adding the extra action
+SW_Mode:
+  minupdatedelay: 500
+  targets:
+    Vehicle.Cabin.Infotainment.Media.Action:
+      transform:
+        fullmapping:
+          1: "NextSource"
+
+# NOTE: Dependent on AGL-specific VSS overlay adding the signal
+SW_Info:
+  minupdatedelay: 500
+  targets:
+    Vehicle.Cabin.Infotainment.Cluster.Mode:
+      transform:
+        fullmapping:
+          1: "true"
+
+#
+# The following is a little hackish, due to relying on the
+# application to treat IsActive and IsSet = "true" as toggles, and
+# being dependent on the AGL-specific VSS overlay to add IsSet.
+# A standalone LIN feeder with some state knowledge would maybe
+# be cleaner.  Another possible option would be the addition of
+# another type of transform that has state to the DBC feeder.
+#
+
+SW_CruiseEnable:
+  minupdatedelay: 500
+  targets:
+    Vehicle.ADAS.CruiseControl.IsActive:
+      transform:
+        fullmapping:
+          1: "true"
+
+SW_CruiseSet:
+  minupdatedelay: 500
+  targets:
+    Vehicle.ADAS.CruiseControl.IsSet:
+      transform:
+        fullmapping:
+          1: "true"
+
+SW_CruiseResume:
+  minupdatedelay: 500
+  targets:
+    Vehicle.ADAS.CruiseControl.IsSet:
+      transform:
+        fullmapping:
+          1: "true"
+
+SW_CruiseCancel:
+  minupdatedelay: 500
+  targets:
+    Vehicle.ADAS.CruiseControl.IsSet:
+      transform:
+        fullmapping:
+          1: "false"
+
+SW_LaneDepartureWarning:
+  minupdatedelay: 500
+  targets:
+    Vehicle.ADAS.LaneDepartureDetection.IsActive:
+      transform:
+        fullmapping:
+          1: "true"

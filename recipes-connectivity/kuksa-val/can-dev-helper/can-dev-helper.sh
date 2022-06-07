@@ -15,6 +15,9 @@ vcan_up() {
 }
 
 CONF=/etc/kuksa-dbc-feeder/config.ini
+if [ $# -gt 0 ]; then
+    CONF=$1
+fi
 
 if [ ! -f $CONF ]; then
     exit 0

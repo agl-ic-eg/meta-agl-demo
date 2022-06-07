@@ -16,6 +16,10 @@ PACKAGES = " \
 #     Adds systemd unit and scripting to drive configuring sllin
 #     driver with lin-config utility, enabling HVAC fan control and
 #     steering wheel controls in the demo.
+# - kuksa-dbc-feeder-sllin:
+#     Adds configuration and systemd unit to run a second instance of
+#     the DBC feeder against the sllin0 interface to connect the
+#     steering wheel controls into VIS.
 # - simple-can-simulator:
 #     CAN message simulator for vehicle and engine speed message
 #     generation, with some support for the cruise control events from
@@ -25,5 +29,6 @@ RDEPENDS:${PN} = "\
     packagegroup-agl-demo-platform \
     demo-i2c-udev-conf \
     sllin-demo \
+    kuksa-dbc-feeder-sllin \
     simple-can-simulator \
 "
