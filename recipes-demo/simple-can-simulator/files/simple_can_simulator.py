@@ -350,13 +350,18 @@ class StatusMessageSender(object):
 def main():
     parser = argparse.ArgumentParser(description='Simple CAN vehicle simulator.')
     parser.add_argument('interface', type=str, help='interface name (e.g. vcan0)')
+    parser.add_argument('--lin-interface', help='Separate LIN interface name (e.g. sllin0)')
     parser.add_argument('-v', '--verbose', help='increase output verbosity', action='store_true')
     args = parser.parse_args()
+
+    lin_interface = args.lin_interface
+    if lin_interface == None:
+        lin_interface = args.interface
 
     try:
         can_sock = CANSocket(args.interface)
         diag_can_sock = CANSocket(args.interface)
-        steeringwheel_can_sock = CANSocket(args.interface)
+        steeringwheel_can_sock = CANSocket(lin_interface)
     except OSError as e:
         sys.stderr.write('Could not listen on interface {0}\n'.format(args.interface))
         sys.exit(e.errno)
