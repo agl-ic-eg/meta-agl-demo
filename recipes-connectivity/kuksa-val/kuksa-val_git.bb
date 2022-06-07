@@ -40,7 +40,7 @@ EXTRA_OECMAKE = " \
 
 do_install:append() {
     # Lower the logging level used in the installed config.ini from the upstream
-    # default of "ALL", which seems to cause performance issues at the moment.
+    # default of "ALL", which spams the logs.
     sed -i 's/^log-level = .*/log-level = WARNING/' ${D}/${sysconfdir}/kuksa-val/config.ini
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
@@ -58,5 +58,17 @@ do_install:append() {
     chgrp 900 ${D}${sysconfdir}/kuksa-val/Server.pem
 }
 
+# Put client certificates into their own package so we can avoid
+# duplicates of them for e.g. cluster clients.  Longer term this
+# will need to be revisited.
+PACKAGE_BEFORE_PN += "${PN}-client-certificates"
+
+FILES:${PN}-client-certificates = " \
+    ${sysconfdir}/kuksa-val/Client.key \
+    ${sysconfdir}/kuksa-val/Client.pem \
+    ${sysconfdir}/kuksa-val/CA.pem \
+"
+
 FILES:${PN} += "${systemd_system_unitdir} ${datadir}"
 
+RDEPENDS:${PN} += "${PN}-client-certificates"
