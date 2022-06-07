@@ -1,0 +1,81 @@
+{
+  "Vehicle": {
+    "children": {
+      "ADAS": {
+        "children": {
+          "CruiseControl": {
+            "children": {
+              "IsSet": {
+                "datatype": "boolean",
+                "description": "Indicates if cruise control speed is set. True = Enabled. False = Disabled.",
+                "type": "sensor",
+                "uuid": "65444a5d94dd45c59187f4179bf541ad"
+              }
+            }
+          }
+        }
+      },
+      "Cabin": {
+        "children": {
+          "Infotainment": {
+            "children": {
+              "Media": {
+                "children": {
+                  "Action": {
+                    "datatype": "string",
+                    "description": "Tells if the media was",
+                    "enum": [
+                      "unknown",
+                      "Stop",
+                      "Play",
+                      "FastForward",
+                      "FastBackward",
+                      "SkipForward",
+                      "SkipBackward",
+                      "NextSource"
+                    ],
+                    "type": "actuator",
+                    "uuid": "0357aea525bf505981a14e4fc720094e"
+                  }
+                }
+              },
+              "Navigation": {
+                "children": {
+                  "State": {
+                    "datatype": "string",
+                    "description": "Navigation state",
+                    "enum": [
+                      "unknown",
+                      "Active",
+                      "Arrived",
+                      "Stopped"
+                    ],
+                    "type": "sensor",
+                    "uuid": "4c16a4aace5a418580c6370356d2acb9"
+                  },
+                  "ElapsedDistance": {
+                    "datatype": "float",
+                    "description": "Navigation elapsed distance",
+                    "type": "sensor",
+                    "unit": "km",
+                    "uuid": "0bef606dcf5b4a75bfd7e5f3c68359ec"
+                  }
+                }
+              },
+              "Cluster": {
+                "children": {
+                  "Mode": {
+                    "datatype": "boolean",
+                    "description": "Cluster mode switch engaged",
+                    "type": "actuator",
+                    "uuid": "7df1649ebed447ef81bb6e92786514d9"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

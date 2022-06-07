@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 User=kuksa
-ExecStart=/usr/bin/kuksa-val-server
+EnvironmentFile=-/etc/default/kuksa-val
+ExecStart=/usr/bin/kuksa-val-server $EXTRA_ARGS
 Restart=on-abort
 
 [Install]

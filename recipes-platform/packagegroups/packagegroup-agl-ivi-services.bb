@@ -9,5 +9,6 @@ PACKAGES = "\
 
 RDEPENDS:${PN} += "\
     kuksa-val \
+    kuksa-val-agl \
     kuksa-dbc-feeder \
     "
