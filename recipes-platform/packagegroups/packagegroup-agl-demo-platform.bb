@@ -34,4 +34,5 @@ RDEPENDS:${PN}:append = " \
     qtquickcontrols2-agl-style \
     ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', 'unzip mpc' , '', d)} \
     ${AGL_APPS} \
+    psplash-portrait-config \
     "
