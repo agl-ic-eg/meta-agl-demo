@@ -11,85 +11,142 @@ PT_EngineSpeed:
       transform:
         math: "floor(x+0.5)"
 
+#
+# NOTE:
+#
+# The following mappings depend on the AGL-specific VSS overlay
+# that adds the extra Vehicle.Cabin.SteeringWheel.Switches sensors.
+# Since the CAN events are coming from LIN polling, applications
+# need to filter/debounce themselves.  The minupdatedelay of 0 is
+# intentional to avoid missing events.
+#
+
 SW_Next:
-  minupdatedelay: 500
+  minupdatedelay: 0
   targets:
-    Vehicle.Cabin.Infotainment.Media.Action:
+    Vehicle.Cabin.SteeringWheel.Switches.Next:
+      filter-duplicates: "true"
       transform:
         fullmapping:
-          1: "SkipForward"
-
-SW_Previous:
-  minupdatedelay: 500
-  targets:
-    Vehicle.Cabin.Infotainment.Media.Action:
-      transform:
-        fullmapping:
-          1: "SkipBackward"
-
-# NOTE: Dependent on AGL-specific VSS overlay adding the extra action
-SW_Mode:
-  minupdatedelay: 500
-  targets:
-    Vehicle.Cabin.Infotainment.Media.Action:
-      transform:
-        fullmapping:
-          1: "NextSource"
-
-# NOTE: Dependent on AGL-specific VSS overlay adding the signal
-SW_Info:
-  minupdatedelay: 500
-  targets:
-    Vehicle.Cabin.Infotainment.Cluster.Mode:
-      transform:
-        fullmapping:
+          0: "false"
           1: "true"
 
-#
-# The following is a little hackish, due to relying on the
-# application to treat IsActive and IsSet = "true" as toggles, and
-# being dependent on the AGL-specific VSS overlay to add IsSet.
-# A standalone LIN feeder with some state knowledge would maybe
-# be cleaner.  Another possible option would be the addition of
-# another type of transform that has state to the DBC feeder.
-#
-
-SW_CruiseEnable:
-  minupdatedelay: 500
+SW_Previous:
+  minupdatedelay: 0
   targets:
-    Vehicle.ADAS.CruiseControl.IsActive:
+    Vehicle.Cabin.SteeringWheel.Switches.Previous:
+      filter-duplicates: "true"
       transform:
         fullmapping:
+          0: "false"
+          1: "true"
+
+SW_Mode:
+  minupdatedelay: 0
+  targets:
+    Vehicle.Cabin.SteeringWheel.Switches.Mode:
+      filter-duplicates: "true"
+      transform:
+        fullmapping:
+          0: "false"
+          1: "true"
+
+SW_Info:
+  minupdatedelay: 0
+  targets:
+    Vehicle.Cabin.SteeringWheel.Switches.Info:
+      filter-duplicates: "true"
+      transform:
+        fullmapping:
+          0: "false"
+          1: "true"
+
+SW_CruiseEnable:
+  minupdatedelay: 0
+  targets:
+    Vehicle.Cabin.SteeringWheel.Switches.CruiseEnable:
+      filter-duplicates: "true"
+      transform:
+        fullmapping:
+          0: "false"
           1: "true"
 
 SW_CruiseSet:
-  minupdatedelay: 500
+  minupdatedelay: 0
   targets:
-    Vehicle.ADAS.CruiseControl.IsSet:
+    Vehicle.Cabin.SteeringWheel.Switches.CruiseSet:
+      filter-duplicates: "true"
       transform:
         fullmapping:
+          0: "false"
           1: "true"
 
 SW_CruiseResume:
-  minupdatedelay: 500
+  minupdatedelay: 0
   targets:
-    Vehicle.ADAS.CruiseControl.IsSet:
+    Vehicle.Cabin.SteeringWheel.Switches.CruiseResume:
+      filter-duplicates: "true"
       transform:
         fullmapping:
+          0: "false"
           1: "true"
 
 SW_CruiseCancel:
-  minupdatedelay: 500
+  minupdatedelay: 0
   targets:
-    Vehicle.ADAS.CruiseControl.IsSet:
+    Vehicle.Cabin.SteeringWheel.Switches.CruiseCancel:
+      filter-duplicates: "true"
       transform:
         fullmapping:
-          1: "false"
+          0: "false"
+          1: "true"
+
+SW_VolumeUp:
+  minupdatedelay: 0
+  targets:
+    Vehicle.Cabin.SteeringWheel.Switches.VolumeUp:
+      filter-duplicates: "true"
+      transform:
+        fullmapping:
+          0: "false"
+          1: "true"
+
+SW_VolumeDown:
+  minupdatedelay: 0
+  targets:
+    Vehicle.Cabin.SteeringWheel.Switches.VolumeDown:
+      filter-duplicates: "true"
+      transform:
+        fullmapping:
+          0: "false"
+          1: "true"
+
+SW_VolumeMute:
+  minupdatedelay: 0
+  targets:
+    Vehicle.Cabin.SteeringWheel.Switches.VolumeMute:
+      filter-duplicates: "true"
+      transform:
+        fullmapping:
+          0: "false"
+          1: "true"
+
+SW_Horn:
+  minupdatedelay: 0
+  targets:
+    Vehicle.Cabin.SteeringWheel.Switches.Horn:
+      filter-duplicates: "true"
+      transform:
+        fullmapping:
+          0: "false"
+          1: "true"
 
 SW_LaneDepartureWarning:
-  minupdatedelay: 500
+  minupdatedelay: 0
   targets:
-    Vehicle.ADAS.LaneDepartureDetection.IsActive:
+    Vehicle.Cabin.SteeringWheel.Switches.LaneDepartureWarning:
+      filter-duplicates: "true"
       transform:
         fullmapping:
+          0: "false"
           1: "true"

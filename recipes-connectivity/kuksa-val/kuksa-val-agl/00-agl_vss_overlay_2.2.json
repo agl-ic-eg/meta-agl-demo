@@ -1,44 +1,126 @@
 {
   "Vehicle": {
     "children": {
-      "ADAS": {
-        "children": {
-          "CruiseControl": {
-            "children": {
-              "IsSet": {
-                "datatype": "boolean",
-                "description": "Indicates if cruise control speed is set. True = Enabled. False = Disabled.",
-                "type": "sensor",
-                "uuid": "65444a5d94dd45c59187f4179bf541ad"
-              }
-            }
-          }
-        }
-      },
       "Cabin": {
         "children": {
-          "Infotainment": {
+          "SteeringWheel": {
             "children": {
-              "Media": {
+              "Switches": {
                 "children": {
-                  "Action": {
-                    "datatype": "string",
-                    "description": "Tells if the media was",
-                    "enum": [
-                      "unknown",
-                      "Stop",
-                      "Play",
-                      "FastForward",
-                      "FastBackward",
-                      "SkipForward",
-                      "SkipBackward",
-                      "NextSource"
-                    ],
-                    "type": "actuator",
-                    "uuid": "0357aea525bf505981a14e4fc720094e"
+                  "VolumeUp": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel volume up switch engaged",
+                    "type": "sensor",
+                    "uuid": "b1b71c0d19684170bbf9fc40eb4d0d0e"
+                  },
+                  "VolumeDown": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel volume down switch engaged",
+                    "type": "sensor",
+                    "uuid": "03ff9703a5604ab190cf518eec08ba07"
+                  },
+                  "VolumeMute": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel volume mute switch engaged",
+                    "type": "sensor",
+                    "uuid": "c20467086cf846dc9f27da93d611af12"
+                  },
+                  "Next": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel next switch engaged",
+                    "type": "sensor",
+                    "uuid": "a2a997e5e6a848d0be1bf8b8bc45e215"
+                  },
+                  "Previous": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel previous switch engaged",
+                    "type": "sensor",
+                    "uuid": "1505a53421044bccb249f08c270e3912"
+                  },
+                  "Mode": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel mode switch engaged",
+                    "type": "sensor",
+                    "uuid": "6cba659f06ae4809adb5de53786ab0b6"
+                  },
+                  "Info": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel info switch engaged",
+                    "type": "sensor",
+                    "uuid": "5dd6d297edfb4cb99ab2ed7723877cd0"
+                  },
+                  "CruiseEnable": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel cruise enable switch engaged",
+                    "type": "sensor",
+                    "uuid": "f4f383fbf3ff4a7b99ea71203cd8a446"
+                  },
+                  "CruiseSet": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel cruise set switch engaged",
+                    "type": "sensor",
+                    "uuid": "14bd5c2326a043b79898df4e80403a93"
+                  },
+                  "CruiseResume": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel cruise resume switch engaged",
+                    "type": "sensor",
+                    "uuid": "000cc121e98345f2976615f550b91639"
+                  },
+                  "CruiseCancel": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel cruise cancel switch engaged",
+                    "type": "sensor",
+                    "uuid": "b953dac89a2b40fdace6c74bb212afb8"
+                  },
+                  "CruiseLimit": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel cruise limit switch engaged",
+                    "type": "sensor",
+                    "uuid": "1c211ac5dd4d42249d7e1c104ef81df9"
+                  },
+                  "CruiseDistance": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel cruise distance switch engaged",
+                    "type": "sensor",
+                    "uuid": "744c8913afe641d0903c44932879ab43"
+                  },
+                  "Voice": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel voice switch engaged",
+                    "type": "sensor",
+                    "uuid": "9d78ab3889d74209acf6974e070d9d57"
+                  },
+                  "PhoneCall": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel phone call switch engaged",
+                    "type": "sensor",
+                    "uuid": "3b505e5d962546c7a03509a5c14cfd60"
+                  },
+                  "PhoneSwitch": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel phone call switch engaged",
+                    "type": "sensor",
+                    "uuid": "f19d7c584f2f4f0080a10f773e472359"
+                  },
+                  "Horn": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel horn switch engaged",
+                    "type": "sensor",
+                    "uuid": "e025a116b74a41a0a283815621a41fb2"
+                  },
+                  "LaneDepartureWarning": {
+                    "datatype": "boolean",
+                    "description": "Steering wheel lane departure warning switch engaged",
+                    "type": "sensor",
+                    "uuid": "6dd9c149da8449df885e6250e912e986"
                   }
                 }
-              },
+              }
+            }
+          },
+          "Infotainment": {
+            "children": {
               "Navigation": {
                 "children": {
                   "State": {
@@ -59,16 +141,6 @@
                     "type": "sensor",
                     "unit": "km",
                     "uuid": "0bef606dcf5b4a75bfd7e5f3c68359ec"
-                  }
-                }
-              },
-              "Cluster": {
-                "children": {
-                  "Mode": {
-                    "datatype": "boolean",
-                    "description": "Cluster mode switch engaged",
-                    "type": "actuator",
-                    "uuid": "7df1649ebed447ef81bb6e92786514d9"
                   }
                 }
               }

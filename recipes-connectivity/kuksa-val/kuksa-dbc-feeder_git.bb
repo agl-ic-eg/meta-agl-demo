@@ -11,6 +11,7 @@ require kuksa-val.inc
 
 SRC_URI += "file://0001-dbc2val-add-installation-mechanism.patch \
             file://0002-dbc2val-usability-improvements.patch \
+            file://0003-dbc2val-add-duplicate-filtering-option.patch \
             file://config.ini \
             file://dbc_feeder.json.token \
             file://mapping.yml \
