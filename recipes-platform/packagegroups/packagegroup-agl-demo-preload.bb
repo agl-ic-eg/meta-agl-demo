@@ -9,7 +9,7 @@ PACKAGES = " \
 "
 
 # NOTES:
-# - demo-i2x-udev-conf:
+# - demo-i2c-udev-conf:
 #     Adds udev configuration and scripts for supporting USB attached
 #     I2C devices for RTC and HVAC LED support.
 # - sllin-demo:
@@ -20,6 +20,9 @@ PACKAGES = " \
 #     Adds configuration and systemd unit to run a second instance of
 #     the DBC feeder against the sllin0 interface to connect the
 #     steering wheel controls into VIS.
+# - agl-service-hvac-demo-conf:
+#     Adds configuration to make agl-service-hvac use sllin0 for its
+#     HVAC board control via CAN -> LIN.
 # - simple-can-simulator:
 #     CAN message simulator for vehicle and engine speed message
 #     generation, with some support for the cruise control events from
@@ -30,5 +33,6 @@ RDEPENDS:${PN} = "\
     demo-i2c-udev-conf \
     sllin-demo \
     kuksa-dbc-feeder-sllin \
+    agl-service-hvac-demo-conf \
     simple-can-simulator \
 "
