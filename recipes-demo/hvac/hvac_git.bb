@@ -16,12 +16,28 @@ DEPENDS = " \
 
 PV = "2.0+git${SRCPV}"
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/hvac;protocol=https;branch=${AGL_BRANCH}"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/hvac;protocol=https;branch=${AGL_BRANCH} \
+           file://hvac.conf \
+           file://hvac.token \
+"
 SRCREV = "${AGL_APP_REVISION}"
 
 S = "${WORKDIR}/git"
 
 inherit qmake5 pkgconfig
+
+do_install:append() {
+    # Currently using default global client and CA certificates
+    # for KUKSA.val SSL, installing app specific ones would go here.
+
+    # VIS authorization token file for KUKSA.val should ideally not
+    # be readable by other users, but currently that's not doable
+    # until a packaging/sandboxing/MAC scheme is (re)implemented or
+    # something like OAuth is plumbed in as an alternative.
+    install -d ${D}${sysconfdir}/xdg/AGL/hvac
+    install -m 0644 ${WORKDIR}/hvac.conf ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/hvac.token ${D}${sysconfdir}/xdg/AGL/hvac/
+}
 
 FILES:${PN} += "${datadir}/icons/"
 
