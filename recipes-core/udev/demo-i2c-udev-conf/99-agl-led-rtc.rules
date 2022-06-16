@@ -6,7 +6,7 @@ ACTION=="add", ENV{DEVTYPE}=="usb_interface", ENV{DRIVER}=="i2c-tiny-usb", RUN+=
 ACTION=="add", ENV{DEVTYPE}=="usb_interface", ENV{DRIVER}=="i2c-tiny-usb", RUN+="/usr/bin/logger 'Loading rtc driver'", RUN+="/sbin/modprobe rtc-ds1307"
 
 # %k is the blinkm i2c device e.g. 6-0009
-ACTION=="add", ENV{DRIVER}=="blinkm", SUBSYSTEM=="i2c", RUN+="/usr/bin/logger 'the blinkm device is %k'", TAG+="systemd", ENV{SYSTEMD_WANTS}="hvac-json-in-rewrite@%k.service", GOTO="very_end"
+ACTION=="add", ENV{DRIVER}=="blinkm", SUBSYSTEM=="i2c", RUN+="/usr/bin/logger 'the blinkm device is %k'", TAG+="systemd", ENV{SYSTEMD_WANTS}="hvac-conf-in-rewrite@%k.service", GOTO="very_end"
 # FIXME: We do not exclude the blinkm on the next lines, yet. The rule is too broad, but that is all we know already. Above is actually later in time.
 #        For now this is not critical as the rtc init will just fail and we're done.
 

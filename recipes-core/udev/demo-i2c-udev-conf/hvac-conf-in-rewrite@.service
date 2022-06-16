@@ -1,0 +1,8 @@
+[Unit]
+Description=AGL hvac LED write agl-service-hvac-leds.conf
+Before=agl-service-hvac.service
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/logger '#hvac i2c device has been attached - %i'
+ExecStart=/usr/sbin/hvac-conf-in-rewrite.sh %i
