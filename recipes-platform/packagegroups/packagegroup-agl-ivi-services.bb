@@ -12,4 +12,5 @@ RDEPENDS:${PN} += "\
     kuksa-val-agl \
     kuksa-dbc-feeder \
     agl-service-hvac \
+    agl-service-audiomixer \
     "
