@@ -25,7 +25,7 @@ SRC_URI = " \
         git://gerrit.automotivelinux.org/gerrit/apps/launcher;protocol=https;branch=${AGL_BRANCH} \
         file://launcher.service \
         "
-SRCREV  = "${AGL_APP_REVISION}"
+SRCREV  = "21a1fef41137a1dffc6ff0a602665999a7f6cc66"
 
 S       = "${WORKDIR}/git"
 

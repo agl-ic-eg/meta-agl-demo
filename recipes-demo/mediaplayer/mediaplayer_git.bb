@@ -14,7 +14,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/mediaplayer;protocol=htt
            file://mediaplayer.conf \
            file://mediaplayer.token \
 "
-SRCREV  = "${AGL_APP_REVISION}"
+SRCREV  = "5461945a951debb86430b4e8c94e5666e543ba22"
 
 S  = "${WORKDIR}/git"
 

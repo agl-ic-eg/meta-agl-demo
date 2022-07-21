@@ -15,7 +15,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-cluster-demo-gauges;
            file://cluster-gauges-qtcompositor.service \
 "
 
-SRCREV  = "${AGL_APP_REVISION}"
+SRCREV  = "4bc6493ef950a6654067665578594b697527221f"
 
 S  = "${WORKDIR}/git"
 

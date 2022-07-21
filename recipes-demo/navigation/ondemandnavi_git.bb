@@ -14,7 +14,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/ondemandnavi;protocol=ht
            file://navigation.conf \
            file://navigation.token \
 "
-SRCREV = "${AGL_APP_REVISION}"
+SRCREV = "9ec20127855f3c48ed58589f9674100edbec3f92"
 
 S = "${WORKDIR}/git"
 

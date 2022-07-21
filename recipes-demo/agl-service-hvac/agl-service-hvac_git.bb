@@ -11,7 +11,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-service-hvac;protoco
            file://agl-service-hvac.conf \
            file://agl-service-hvac.token \
 "
-SRCREV  = "${AGL_APP_REVISION}"
+SRCREV  = "471656151c2b35b0f2f96983c09ffb51aec310eb"
 
 PV = "2.0+git${SRCPV}"
 S  = "${WORKDIR}/git"

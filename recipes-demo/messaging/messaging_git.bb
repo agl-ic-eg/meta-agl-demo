@@ -11,7 +11,7 @@ DEPENDS = "qtquickcontrols2 libqtappfw"
 PV = "1.0+git${SRCPV}"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/messaging;protocol=https;branch=${AGL_BRANCH}"
-SRCREV  = "${AGL_APP_REVISION}"
+SRCREV  = "b895fde2c991117f910a62b54072dcad348b166e"
 
 S  = "${WORKDIR}/git"
 
