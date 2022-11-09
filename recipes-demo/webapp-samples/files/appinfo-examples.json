@@ -1,0 +1,11 @@
+{
+  "id": "webapps-examples",
+  "title": "Examples",
+  "description": "HTML5 examples",
+  "version": "0.0.0",
+  "vendor": "Igalia, S.L.",
+  "type": "web",
+  "main": "index.html",
+  "uiRevision": "2",
+  "icon": "icon.svg"
+}

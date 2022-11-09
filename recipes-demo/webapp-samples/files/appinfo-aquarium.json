@@ -1,0 +1,11 @@
+{
+  "id": "webapps-aquarium",
+  "title": "Aquarium",
+  "description": "HTML5 WebGL Aquarium sample",
+  "version": "0.0.0",
+  "vendor": "Igalia, S.L.",
+  "type": "web",
+  "main": "aquarium.html",
+  "uiRevision": "2",
+  "icon": "icon.svg"
+}

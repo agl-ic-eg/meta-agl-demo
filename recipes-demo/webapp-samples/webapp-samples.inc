@@ -7,20 +7,17 @@ B       = "${WORKDIR}/build"
 
 SRC_URI = " \
   git://github.com/AGL-web-applications/webapp-samples.git;protocol=https;branch=master \
-  file://${DESKTOP_FILE} \
+  file://${APPINFO_FILE} \
 "
 SRCREV = "b24a62cc524bdec98a61acc03fc53cbab24c1571"
 
 WAM_APPLICATIONS_DIR="${libdir}/wam_apps"
-APPLICATIONS_DIR="${datadir}/applications"
 
 do_install() {
   install -d ${D}${WAM_APPLICATIONS_DIR}/${PN}
-  install -d ${D}${APPLICATIONS_DIR}
-  install ${WORKDIR}/${DESKTOP_FILE} ${D}${APPLICATIONS_DIR}
+  install ${WORKDIR}/${APPINFO_FILE} ${D}${WAM_APPLICATIONS_DIR}/${PN}/appinfo.json
 }
 
 FILES:${PN} = " \
   ${WAM_APPLICATIONS_DIR}/${PN} \
-  ${APPLICATIONS_DIR} \
 "
