@@ -13,7 +13,7 @@ SRC_URI = " \
 "
 SRCREV = "07adebd03e37a790462f80b6f3bb001bad7e6748"
 
-inherit pythonnative agl-app
+inherit python3native agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
 AGL_APP_ID = "webapps-mediaplayer"

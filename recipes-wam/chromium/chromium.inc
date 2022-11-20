@@ -12,7 +12,7 @@ LIC_FILES_CHKSUM = "\
 
 require gn-utils.inc
 
-inherit gettext qemu pythonnative pkgconfig
+inherit gettext qemu python3native pkgconfig
 
 DEPENDS = "virtual/gettext wayland wayland-native pixman freetype glib-2.0 fontconfig openssl pango cairo icu libxkbcommon libexif dbus pciutils udev libcap alsa-lib virtual/egl elfutils-native libdrm atk at-spi2-atk gperf-native gconf nss nss-native nspr nspr-native bison-native qemu-native curl"
 

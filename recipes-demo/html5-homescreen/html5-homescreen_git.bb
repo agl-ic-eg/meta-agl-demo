@@ -14,7 +14,7 @@ SRC_URI = " \
 "
 SRCREV = "f3cecb6e79d7fcac14535108c06cb5a922159d78"
 
-inherit pythonnative
+inherit python3native
 
 DEPENDS = "nodejs-native"
 

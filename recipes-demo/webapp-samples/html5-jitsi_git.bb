@@ -5,7 +5,7 @@ APPINFO_FILE = "appinfo-jitsi.json"
 
 require webapp-samples.inc
 
-inherit pythonnative agl-app
+inherit python3native agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
 AGL_APP_ID = "webapps-jitsi"

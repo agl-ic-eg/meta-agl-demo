@@ -17,8 +17,3 @@ AGL_META_CLANG = "${METADIR}/external/meta-clang"
 BBLAYERS =+ " \
    ${METADIR}/external/meta-qt5 \
 "
-
-# Chromium recipes do still require python2
-BBLAYERS =+ " \
-   ${METADIR}/external/meta-python2 \
-"
