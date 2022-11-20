@@ -17,3 +17,8 @@ AGL_FEATURES:append = " agldemo"
 
 # install virtualbox drivers for vmdk
 #IMAGE_INSTALL:append = "${@bb.utils.contains_any('IMAGE_FSTYPES', 'wic.vmdk wic.vmdk.xz', ' open-vm-tools vboxguestdrivers', '', d)}"
+
+# Mask out Flutter recipes until meta-flutter has > kirkstone support
+BBMASK += "meta-agl-demo/recipes-demo/flutter-"
+BBMASK += "meta-agl-demo/recipes-platform/images/.*-flutter.bb"
+BBMASK += "meta-agl-demo/recipes-platform/packagegroups/packagegroup-agl-demo-platform-flutter.bb"
