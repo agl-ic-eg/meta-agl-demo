@@ -33,6 +33,7 @@ IMAGE_INSTALL:append = "\
 # Flutter
 IMAGE_INSTALL:append = "\
     flutter-cluster-dashboard \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "cluster-demo-config-flutter", "", d)} \
     ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "flutter-cluster-dashboard-conf-demo", "flutter-cluster-dashboard-conf", d)} \
     flutter-auto-runtimerelease \
     "
