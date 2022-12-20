@@ -34,12 +34,6 @@ APP_CONFIG = "flutter_cluster_dashboard_on_bg-release.json"
 APP_CONFIG:class-runtimedebug = "flutter_cluster_dashboard_on_bg-debug.json"
 APP_CONFIG:class-runtimeprofile = "flutter_cluster_dashboard_on_bg-profile.json"
 
-do_configure:prepend() {
-    if [ "${OPENROUTE_API_KEY}" = "YOU_NEED_TO_SET_IT_IN_LOCAL_CONF" ]; then
-		bbwarn "WARNING: You should set openrouteservice API key to OPENROUTE_API_KEY variable in local.conf."
-	fi
-}
-
 do_install:append() {
     install -D -m 0644 ${WORKDIR}/flutter-cluster-dashboard.service ${D}${systemd_user_unitdir}/flutter-cluster-dashboard.service
     install -d ${D}${systemd_user_unitdir}/agl-session.target.wants
