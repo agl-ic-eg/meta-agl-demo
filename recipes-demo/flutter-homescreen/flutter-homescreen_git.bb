@@ -11,8 +11,9 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-homescreen;proto
            file://flutter-homescreen-profile.json \
            file://flutter-homescreen-release.json \
            file://flutter-homescreen.service \
+           file://homescreen_config.yaml \
 "
-SRCREV = "89a7561a10a16466b8f5b4e84c3bc94c21e6e6da"
+SRCREV = "05f80b44ce8a1beb8d2ef6a1850128e58a651187"
 
 S = "${WORKDIR}/git"
 
@@ -33,6 +34,9 @@ do_install:append() {
     ln -s ../flutter-homescreen.service ${D}${systemd_user_unitdir}/agl-session.target.wants/flutter-homescreen.service
 
     install -D -m 0644 ${WORKDIR}/${APP_CONFIG} ${D}${datadir}/flutter/flutter-homescreen.json
+
+    install -d ${D}${sysconfdir}/xdg/AGL
+    install -m 0644 ${WORKDIR}/homescreen_config.yaml ${D}${sysconfdir}/xdg/AGL/
 }
 
-FILES:${PN} += "${datadir} ${systemd_user_unitdir}"
+FILES:${PN} += "${datadir} ${systemd_user_unitdir} ${sysconfdir}/xdg/AGL"
