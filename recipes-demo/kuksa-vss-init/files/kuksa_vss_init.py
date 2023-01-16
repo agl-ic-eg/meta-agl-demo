@@ -28,9 +28,9 @@ class VSS:
         self.client = client
 
         self.speed = "Vehicle.Speed"
-        self.engineRPM = "Vehicle.Powertrain.CombustionEngine.Engine.Speed"
+        self.engineRPM = "Vehicle.Powertrain.CombustionEngine.Speed"
         self.fuelLevel = "Vehicle.Powertrain.FuelSystem.Level"
-        self.coolantTemp = "Vehicle.Powertrain.CombustionEngine.Engine.ECT"
+        self.coolantTemp = "Vehicle.Powertrain.CombustionEngine.ECT"
         self.leftIndicator = "Vehicle.Body.Lights.IsLeftIndicatorOn"
         self.rightIndicator = "Vehicle.Body.Lights.IsRightIndicatorOn"
         #   // Selected Gear output = > 0 = Neutral, 1/2/.. = Forward, -1/.. = Reverse, 126 = Park, 127 = Drive
@@ -40,19 +40,19 @@ class VSS:
         self.parkingLightOn = "Vehicle.Body.Lights.IsParkingOn"
         self.hazardLightOn = "Vehicle.Body.Lights.IsHazardOn"
         self.travelledDistance = "Vehicle.TravelledDistance"
-        self.trunkLocked = "Vehicle.Body.Trunk.IsLocked"
-        self.trunkOpen = "Vehicle.Body.Trunk.IsOpen"
+        self.trunkLocked = "Vehicle.Body.Trunk.Rear.IsLocked"
+        self.trunkOpen = "Vehicle.Body.Trunk.Rear.IsOpen"
         #   // \"normal\", \"sport\", \"economy\", \"snow\", \"rain\"]
         self.performanceMode = "Vehicle.Powertrain.Transmission.PerformanceMode"
-        self.ambientAirTemperature = "Vehicle.AmbientAirTemperature"
-        self.mil = "Vehicle.OBD.Status.MIL"
-        self.cruiseControlError = "Vehicle.ADAS.CruiseControl.Error"
+        self.ambientAirTemperature = "Vehicle.Exterior.AirTemperature"
+        self.mil = "Vehicle.OBD.Status.IsMILOn"
+        self.cruiseControlError = "Vehicle.ADAS.CruiseControl.IsError"
         self.cruiseControlSpeedSet = "Vehicle.ADAS.CruiseControl.SpeedSet"
         self.cruiseControlisActive = "Vehicle.ADAS.CruiseControl.IsActive"
-        self.batteryChargingStatus = "Vehicle.Powertrain.Battery.Charging.Status"
+        self.batteryChargingStatus = "Vehicle.Powertrain.TractionBattery.Charging.IsCharging"
         # 
-        self.currLat = "Vehicle.Cabin.Infotainment.Navigation.CurrentLocation.Latitude"
-        self.currLng = "Vehicle.Cabin.Infotainment.Navigation.CurrentLocation.Longitude"
+        self.currLat = "Vehicle.Cabin.CurrentLocation.Latitude"
+        self.currLng = "Vehicle.Cabin.CurrentLocation.Longitude"
         self.desLat = "Vehicle.Cabin.Infotainment.Navigation.DestinationSet.Latitude"
         self.desLng = "Vehicle.Cabin.Infotainment.Navigation.DestinationSet.Longitude"
         self.steeringInfo = "Vehicle.Cabin.SteeringWheel.Switches.Info"
@@ -86,7 +86,7 @@ class VSS:
         self.client.setValue(self.desLat, "31.781456")
         self.client.setValue(self.desLng, "76.997469")
         # Show the map
-        self.client.setValue(self.steeringInfo, "true")
+        self.client.setValue(self.steeringInfo, "false")
         print("All value set succesfully")
 
 
