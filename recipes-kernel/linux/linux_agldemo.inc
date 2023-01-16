@@ -40,7 +40,9 @@ AGL_KCONFIG_FRAGMENTS_DEMO:append:qemuarm64 = " most_deps.cfg"
 # We don't want most of the above for the virtio guest kernels,
 # use an explicit list
 AGL_KCONFIG_FRAGMENTS_DEMO:virtio-all = " \
-    virtio-demo-can-devices.cfg \
+    kvm-demo-can-devices.cfg \
+    kvm-demo-usb.cfg \
+    usbaudio.cfg \
     hid.cfg \
 "
 
