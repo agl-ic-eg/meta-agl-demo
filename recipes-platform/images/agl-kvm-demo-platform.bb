@@ -19,6 +19,7 @@ IMAGE_INSTALL:append = " \
     ${QEMU_GUEST_CONFIGS} \
     util-linux-taskset \
     screen \
+    simple-can-simulator \
     alsa-utils \
 "
 
@@ -28,8 +29,8 @@ IMAGE_INSTALL:append = " \
 
 GUEST_MACHINE ?= "virtio-${TUNE_ARCH}"
 
-GUEST_VM1_IMAGE ?= "agl-demo-platform"
-GUEST_VM2_IMAGE ?= "agl-cluster-demo-platform"
+GUEST_VM1_IMAGE ?= "agl-ivi-demo-platform-flutter"
+GUEST_VM2_IMAGE ?= "agl-cluster-demo-platform-flutter"
 
 GUEST_IMAGES ?= "agl-kvm-guest:${GUEST_VM1_IMAGE} agl-kvm-guest:${GUEST_VM2_IMAGE}"
 

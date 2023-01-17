@@ -2,8 +2,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/weston-ini-conf:"
 
 SRC_URI += "file://weston.ini.kvm.in"
 
-GUEST_VM1_IMAGE ?= "agl-demo-platform"
-GUEST_VM2_IMAGE ?= "agl-cluster-demo-platform"
+GUEST_VM1_IMAGE ?= "agl-ivi-demo-platform-flutter"
+GUEST_VM2_IMAGE ?= "agl-cluster-demo-platform-flutter"
 
 do_compile:append() {
     # Put all of our cfg files together for a default portrait
