@@ -37,7 +37,7 @@ if [ -n "$QEMU_TASKSET_CPUS" ]; then
 fi
     
 export SDL_VIDEODRIVER=wayland 
-export XDG_RUNTIME_DIR=/run/user/1001
+export XDG_RUNTIME_DIR=/run/user/200
 # The following may be needed if the socket is not wayland-0, as SDL
 # seems to lack detection logic for that case.
 #export WAYLAND_DISPLAY=wayland-1

@@ -12,3 +12,6 @@ authors: Scott Murray <scott.murray@konsulko.com>
 The following features are pulled:
 
 * agl-demo
+
+Note that enabling this feature results in a configuration where building images
+other than agl-kvm-demo-platform will likely not give the desired results.

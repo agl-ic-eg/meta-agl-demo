@@ -1,11 +1,12 @@
 [Unit]
-Requires=agl-compositor.service
-After=agl-compositor.service
+Requires=weston.service
+After=weston.service
 
 [Service]
 Type=simple
+Environment=XDG_RUNTIME_DIR=/run/user/200
 ExecStart=/usr/bin/native-shell-client
 Restart=on-failure
 
 [Install]
-WantedBy=agl-session.target
+WantedBy=multi-user.target

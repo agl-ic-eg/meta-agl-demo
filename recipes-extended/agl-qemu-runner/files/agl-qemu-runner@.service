@@ -1,6 +1,6 @@
 [Unit]
-Requires=agl-session@agl-driver.service
-After=agl-session@agl-driver.service
+Requires=native-shell-client.service
+After=native-shell-client.service
 
 [Service]
 Type=simple
