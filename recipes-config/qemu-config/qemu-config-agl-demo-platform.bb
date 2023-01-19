@@ -26,4 +26,4 @@ do_install() {
 
 FILES:${PN} += "${systemd_system_unitdir}"
 
-RDEPENDS:${PN} += "agl-qemu-runner"
+RDEPENDS:${PN} += "agl-qemu-runner qemu-config-vmnet0"

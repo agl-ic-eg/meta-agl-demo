@@ -1,0 +1,7 @@
+[Match]
+Name=vmnet0
+
+[Network]
+Address=172.16.10.1/24
+IPForward=yes
+IPMasquerade=yes

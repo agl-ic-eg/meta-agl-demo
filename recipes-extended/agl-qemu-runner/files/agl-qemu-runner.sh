@@ -58,14 +58,13 @@ qemu-system-${arch} \
 	-drive id=disk0,file=${disk},format=raw,if=none \
 	-serial mon:pty \
 	-object rng-random,filename=/dev/urandom,id=rng0 \
-	-netdev user,id=net-user \
 	-device virtio-blk-device,drive=disk0 \
-	-device virtio-net-device,netdev=net-user,mac=52:54:00:12:00:02 \
 	-device virtio-rng-device,rng=rng0 \
+	${QEMU_NET_OPT} \
 	${QEMU_INPUT_OPT} \
 	-global virtio-mmio.force-legacy=false \
 	-device virtio-gpu-gl-device \
 	-display sdl,gl=on -vga std \
-       	${QEMU_AUDIO_OPT} \
-       	${QEMU_EXTRA_OPT} \
+	${QEMU_AUDIO_OPT} \
+	${QEMU_EXTRA_OPT} \
 	-full-screen
