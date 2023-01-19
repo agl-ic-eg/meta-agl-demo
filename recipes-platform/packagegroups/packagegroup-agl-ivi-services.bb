@@ -14,4 +14,5 @@ RDEPENDS:${PN} += "\
     kuksa-vss-init \
     agl-service-hvac \
     agl-service-audiomixer \
+    agl-service-radio \
     "
