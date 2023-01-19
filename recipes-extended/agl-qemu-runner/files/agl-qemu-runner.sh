@@ -66,5 +66,6 @@ qemu-system-${arch} \
 	-device virtio-gpu-gl-device \
 	-display sdl,gl=on -vga std \
 	${QEMU_AUDIO_OPT} \
+	${QEMU_CAN_OPT} \
 	${QEMU_EXTRA_OPT} \
 	-full-screen
