@@ -28,6 +28,8 @@ S  = "${WORKDIR}/git"
 
 inherit pkgconfig cmake_qt5
 
+CLUSTER_DEMO_VISS_HOSTNAME ??= "192.168.10.2"
+
 do_install:append() {
     install -d ${D}${systemd_user_unitdir}/agl-session.target.wants
     install -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_user_unitdir}/${BPN}.service
@@ -39,6 +41,7 @@ do_install:append() {
     # something like OAuth is plumbed in as an alternative.
     install -d ${D}${sysconfdir}/xdg/AGL/cluster-dashboard
     install -m 0644 ${WORKDIR}/cluster-dashboard.conf ${D}${sysconfdir}/xdg/AGL/
+    sed -i "s/^server = .*/server = \"${CLUSTER_DEMO_VISS_HOSTNAME}\"/" ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.conf
     install -m 0644 ${WORKDIR}/cluster-dashboard.token ${D}${sysconfdir}/xdg/AGL/cluster-dashboard/
 }
 

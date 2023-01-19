@@ -30,6 +30,8 @@ OPENROUTE_API_KEY ??= "YOU_NEED_TO_SET_IT_IN_LOCAL_CONF"
 
 inherit flutter-app update-alternatives
 
+CLUSTER_DEMO_VISS_HOSTNAME ??= "192.168.10.2"
+
 APP_CONFIG = "flutter_cluster_dashboard_on_bg-release.json"
 APP_CONFIG:class-runtimedebug = "flutter_cluster_dashboard_on_bg-debug.json"
 APP_CONFIG:class-runtimeprofile = "flutter_cluster_dashboard_on_bg-profile.json"
@@ -45,6 +47,7 @@ do_install:append() {
     install -m 0644 ${WORKDIR}/flutter-cluster-dashboard.yaml \
         ${D}${sysconfdir}/xdg/AGL/flutter-cluster-dashboard.yaml.default
     install -m 0644 ${WORKDIR}/flutter-cluster-dashboard.yaml.demo ${D}${sysconfdir}/xdg/AGL/
+    sed -i "s/^hostname: .*/hostname: ${CLUSTER_DEMO_VISS_HOSTNAME}/" ${D}${sysconfdir}/xdg/AGL/flutter-cluster-dashboard.yaml.demo
 
     install -m 0755 -d ${D}${sysconfdir}/default/ 
     echo 'OPENROUTE_API_KEY:${OPENROUTE_API_KEY}' >> ${D}${sysconfdir}/default/openroutekey
