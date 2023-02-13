@@ -9,7 +9,7 @@ LIC_FILES_CHKSUM = "file://../LICENSE;md5=2b42edef8fa55315f34f2370b4715ca9 \
                     file://3rd-party-libs/turtle/LICENSE_1_0.txt;md5=e4224ccaecb14d942c71d31bef20d78c \
                     file://3rd-party-libs/jwt-cpp/LICENSE;md5=8325a5ce4414c65ffdda392e0d96a9ff"
 
-DEPENDS = "boost openssl mosquitto protobuf-native grpc-native grpc"
+DEPENDS = "boost openssl mosquitto nss protobuf-native grpc-native grpc"
 
 require kuksa-val.inc
 
@@ -77,6 +77,11 @@ do_install:append() {
     chgrp 900 ${D}${sysconfdir}/kuksa-val/Server.pem
 }
 
+pkg_postinst_ontarget:${PN}-client-certificates () {
+    certutil -A -d /home/agl-driver/.pki/nssdb -n "KuksaRootCA" -t "pC,," -i ${sysconfdir}/kuksa-val/CA.pem
+    chown agl-driver:agl-driver -R /home/agl-driver/.pki/
+}
+
 # Put client certificates into their own package so we can avoid
 # duplicates of them for e.g. cluster clients.  Longer term this
 # will need to be revisited.
@@ -90,4 +95,4 @@ FILES:${PN}-client-certificates = " \
 
 FILES:${PN} += "${systemd_system_unitdir} ${datadir}"
 
-RDEPENDS:${PN} += "${PN}-client-certificates"
+RDEPENDS:${PN} += "${PN}-client-certificates nss-agl-driver-db"
