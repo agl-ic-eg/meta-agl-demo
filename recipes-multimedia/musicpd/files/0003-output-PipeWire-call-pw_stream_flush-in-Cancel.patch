@@ -1,0 +1,35 @@
+From 547a084c7ed95c09136159623240b7c92f6a2f5e Mon Sep 17 00:00:00 2001
+From: Max Kellermann <max.kellermann@gmail.com>
+Date: Fri, 8 Jul 2022 23:38:45 +0200
+Subject: [PATCH] output/PipeWire: call pw_stream_flush() in Cancel()
+
+Clear not only MPD's ring buffer, but also libpipewire's buffers, to
+avoid playing some audio from the previous song after a manual song
+change.
+
+Fixes part 1 of https://github.com/MusicPlayerDaemon/MPD/issues/1354
+
+Upstream-Status: Backport [https://github.com/MusicPlayerDaemon/MPD/commit/547a084c7ed95c09136159623240b7c92f6a2f5e]
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+
+---
+diff --git a/src/output/plugins/PipeWireOutputPlugin.cxx b/src/output/plugins/PipeWireOutputPlugin.cxx
+index 7184edfa5..0f8550d41 100644
+--- a/src/output/plugins/PipeWireOutputPlugin.cxx
++++ b/src/output/plugins/PipeWireOutputPlugin.cxx
+@@ -895,7 +895,12 @@ PipeWireOutput::Cancel() noexcept
+ 	if (drained)
+ 		return;
+ 
++	/* clear MPD's ring buffer */
+ 	ring_buffer->reset();
++
++	/* clear libpipewire's buffer */
++	pw_stream_flush(stream, false);
++	drained = true;
+ }
+ 
+ bool
+-- 
+2.39.0
+
