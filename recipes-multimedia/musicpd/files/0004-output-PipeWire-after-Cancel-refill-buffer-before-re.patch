@@ -1,0 +1,39 @@
+From c8dae95eff60419fdff88d55400b6cbaacac137d Mon Sep 17 00:00:00 2001
+From: Max Kellermann <max.kellermann@gmail.com>
+Date: Sat, 9 Jul 2022 00:59:35 +0200
+Subject: [PATCH] output/PipeWire: after Cancel(), refill buffer before
+ resuming playback
+
+Deactivate the stream in Cancel().  This fixes stuttering after a
+manual song change by refilling the whole ring buffer before
+reactivating the stream.
+
+Closes https://github.com/MusicPlayerDaemon/MPD/issues/1354
+
+Upstream-Status: Backport [https://github.com/MusicPlayerDaemon/MPD/commit/c8dae95eff60419fdff88d55400b6cbaacac137d]
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+
+---
+diff --git a/src/output/plugins/PipeWireOutputPlugin.cxx b/src/output/plugins/PipeWireOutputPlugin.cxx
+index 0f8550d41..16febe909 100644
+--- a/src/output/plugins/PipeWireOutputPlugin.cxx
++++ b/src/output/plugins/PipeWireOutputPlugin.cxx
+@@ -901,6 +901,15 @@ PipeWireOutput::Cancel() noexcept
+ 	/* clear libpipewire's buffer */
+ 	pw_stream_flush(stream, false);
+ 	drained = true;
++
++	/* pause the PipeWire stream so libpipewire ceases invoking
++	   the "process" callback (we have no data until our Play()
++	   method gets called again); the stream will be resume by
++	   Play() after the ring_buffer has been refilled */
++	if (active) {
++		active = false;
++		pw_stream_set_active(stream, false);
++	}
+ }
+ 
+ bool
+-- 
+2.39.0
+
