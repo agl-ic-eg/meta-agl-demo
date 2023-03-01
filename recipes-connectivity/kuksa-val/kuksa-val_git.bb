@@ -18,10 +18,12 @@ SRC_URI += "file://kuksa-val.service \
             file://0002-Fix-gRPC-configuration-for-OE-cross-compiling.patch;striplevel=2 \
             file://0003-Make-install-locations-configurable.patch;striplevel=2 \
             file://0004-Disable-default-fetch-and-build-of-googletest.patch;striplevel=2 \
+            file://0005-kuksa-val-server-Add-missing-check_git-dependency.patch;striplevel=2 \
             file://Server.key \
             file://Server.pem \
 "
-#            file://0001-genCerts.sh-add-Subject-Alt-Name-extension-to-server.patch;striplevel=? \
+# NOTE: Ideally this would be applied, but our S definition makes it problematic:
+#   file://0001-genCerts.sh-add-Subject-Alt-Name-extension-to-server.patch;striplevel=?
 #
 
 S = "${WORKDIR}/git/kuksa-val-server"
