@@ -1,0 +1,32 @@
+From 4c232caca95606fe4be6f84fe437c4bb506c885e Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Wed, 1 Mar 2023 16:25:38 -0500
+Subject: [PATCH] kuksa-val-server: Add missing check_git dependency
+
+There was no explicit dependency on the check_git target in
+kuksa-val-server/src/CMakeLists.txt, so there was a race with
+creating buildinfo.h when building parallel, leading to
+intermittent build failures on the AGL CI builders.  Add the
+dependency to improve build robustness.
+
+Upstream-Status: Pending
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ kuksa-val-server/src/CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kuksa-val-server/src/CMakeLists.txt b/kuksa-val-server/src/CMakeLists.txt
+index 9428306..afc570e 100644
+--- a/kuksa-val-server/src/CMakeLists.txt
++++ b/kuksa-val-server/src/CMakeLists.txt
+@@ -142,6 +142,7 @@ endif()
+ if(BUILD_EXE)
+   add_executable(${SERVER_EXE_NAME} main.cpp
+   )
++  add_dependencies(${SERVER_EXE_NAME} check_git)
+ 
+   if (ENABLE_COVERAGE)
+     add_coverage(${SERVER_EXE_NAME})
+-- 
+2.39.2
+
