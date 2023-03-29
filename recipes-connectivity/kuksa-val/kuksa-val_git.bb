@@ -79,7 +79,7 @@ do_install:append() {
 
 pkg_postinst_ontarget:${PN}-client-certificates () {
     certutil -A -d /home/agl-driver/.pki/nssdb -n "KuksaRootCA" -t "pC,," -i ${sysconfdir}/kuksa-val/CA.pem
-    chown agl-driver:agl-driver -R /home/agl-driver/.pki/
+    chown agl-driver:agl-driver -R /home/agl-driver/
 }
 
 # Put client certificates into their own package so we can avoid

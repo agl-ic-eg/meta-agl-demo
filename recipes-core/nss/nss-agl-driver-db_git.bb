@@ -12,10 +12,11 @@ do_compile[noexec] = "1"
 do_install() {
     mkdir -p ${D}/home/agl-driver/.pki/nssdb
     certutil -N -d ${D}/home/agl-driver/.pki/nssdb --empty-password
+    chown -R 1001:1001 ${D}/home/agl-driver
 }
 
 pkg_postinst_ontarget:${PN} () {
-    chown agl-driver:agl-driver -R /home/agl-driver/.pki/
+    chown agl-driver:agl-driver -R /home/agl-driver/
 }
 
 FILES:${PN} += "/home/agl-driver/.pki/*"
