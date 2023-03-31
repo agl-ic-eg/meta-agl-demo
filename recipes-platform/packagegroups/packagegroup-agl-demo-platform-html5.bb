@@ -38,3 +38,7 @@ RDEPENDS:${PN}:append = " \
     qtquickcontrols2-agl-style \
     ${AGL_APPS} \
     "
+
+# nss-agl-driver-db is required to connect to kuksa
+RDEPENDS:${PN}:append = " nss-agl-driver-db "
+

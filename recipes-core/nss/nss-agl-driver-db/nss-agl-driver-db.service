@@ -1,0 +1,12 @@
+[Unit]
+Description=Deploy Kuksa certificates to /home/agl-driver/.pki/
+After=local-fs.target
+Before=agl-session@agl-driver.service
+ConditionPathExists=!/home/agl-driver/.pki
+
+[Service]
+User=agl-driver
+ExecStart=/usr/sbin/nss-agl-driver-db.sh
+
+[Install]
+WantedBy=multi-user.target

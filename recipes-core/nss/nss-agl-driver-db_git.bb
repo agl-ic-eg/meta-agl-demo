@@ -3,20 +3,30 @@ DESCRIPTION = "Custom nss db hosting the kuksa certificates for chromium"
 AUTHOR = "Jan-Simon Moeller <jsmoeller@linuxfoundation.org>"
 HOMEPAGE = "https://git.automotivelinux.org"
 LICENSE = "MIT"
-DEPENDS = " agl-session nss-native"
+LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
+
 PV = "0.1"
+
+SRC_URI = "file://${BPN}.service \
+           file://${BPN}.sh \
+          "
+
+inherit systemd
+
+SYSTEMD_SERVICE:${PN} = "${BPN}.service"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
 do_install() {
-    mkdir -p ${D}/home/agl-driver/.pki/nssdb
-    certutil -N -d ${D}/home/agl-driver/.pki/nssdb --empty-password
-    chown -R 1001:1001 ${D}/home/agl-driver
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
+        install -d ${D}${systemd_system_unitdir}
+        install -d ${D}${sbindir}
+        install -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}
+        install -m 0755 ${WORKDIR}/${BPN}.sh ${D}${sbindir}
+    fi
 }
 
-pkg_postinst_ontarget:${PN} () {
-    chown agl-driver:agl-driver -R /home/agl-driver/
-}
+FILES:${PN} += "${systemd_system_unitdir} ${sbindir}"
 
-FILES:${PN} += "/home/agl-driver/.pki/*"
+RDEPENDS:${PN} += "nss agl-session kuksa-val-client-certificates bash"
