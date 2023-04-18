@@ -1,6 +1,6 @@
-From d0730c0d643738ac683d1b5c19b117893e3b2049 Mon Sep 17 00:00:00 2001
+From 91fb1f5a92e8784446c4e354fe5a8c465d6b3cb8 Mon Sep 17 00:00:00 2001
 From: Scott Murray <scott.murray@konsulko.com>
-Date: Tue, 11 Oct 2022 15:28:07 -0400
+Date: Tue, 2 May 2023 16:27:04 -0400
 Subject: [PATCH 2/2] dbc2val: usability improvements
 
 Changes:
@@ -18,24 +18,16 @@ Upstream-Status: pending
 
 Signed-off-by: Scott Murray <scott.murray@konsulko.com>
 ---
- dbc2val/dbcfeeder.py | 21 +++++++++++++++------
- dbc2val/dbcreader.py | 12 ++++++++----
- 2 files changed, 23 insertions(+), 10 deletions(-)
+ dbc2val/dbcfeeder.py              | 10 ++++++++--
+ dbc2val/dbcfeederlib/dbcreader.py | 11 ++++++++---
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/dbc2val/dbcfeeder.py b/dbc2val/dbcfeeder.py
-index 7daaa2b..33c2212 100755
+index d32bb04..b73b96e 100755
 --- a/dbc2val/dbcfeeder.py
 +++ b/dbc2val/dbcfeeder.py
-@@ -93,6 +93,7 @@ class Feeder:
-         self._connected = False
-         self._registered = False
-         self._can_queue = queue.Queue()
-+        self.kuksa = None
+@@ -170,7 +170,11 @@ class Feeder:
  
-     def start(
-         self,
-@@ -134,7 +135,11 @@ class Feeder:
-         else:
              # use socketCAN
              log.info("Using socket CAN device '%s'", canport)
 -            self._reader.start_listening(bustype="socketcan", channel=canport)
@@ -44,60 +36,29 @@ index 7daaa2b..33c2212 100755
 +            except:
 +                log.error("Could not open {}, exiting".format(canport))
 +                sys.exit(-1)
-        
-         # databroker related
-         if USE_CASE=="databroker":
-@@ -151,6 +156,8 @@ class Feeder:
-         log.info("Shutting down...")
-         self._shutdown = True
-         # Tell others to stop
-+        if USE_CASE=="kuksa" and self.kuksa is not None:
-+            self.kuksa.stop()
-         if self._reader is not None:
-             self._reader.stop()
-         if self._player is not None:
-@@ -204,9 +211,10 @@ class Feeder:
-         # kuksa related
-         if USE_CASE=="kuksa":
-             global kuksaconfig
--            kuksa = KuksaClientThread(kuksaconfig)
--            kuksa.start()
--            kuksa.authorize()
-+            self.kuksa = KuksaClientThread(kuksaconfig)
-+            self.kuksa.start()
-+            if "token" in kuksaconfig:
-+                self.kuksa.authorize(kuksaconfig["token"])
-         
-         while self._shutdown is False:
-             # databroker related
-@@ -255,7 +263,7 @@ class Feeder:
-                             self._provider.update_datapoint(target, value)
-                         # kuksa related
-                         elif USE_CASE=="kuksa":
--                            resp=json.loads(kuksa.setValue(target, str(value)))
-+                            resp=json.loads(self.kuksa.setValue(target, str(value)))
-                             if "error" in resp:
-                                 if "message" in resp["error"]: 
-                                    log.error("Error setting {}: {}".format(target, resp["error"]["message"]))
-@@ -282,8 +290,9 @@ def parse_config(filename):
+ 
+         self._run()
+ 
+@@ -278,8 +282,10 @@ def parse_config(filename):
          configfile = filename
      else:
          config_candidates = [
 -            "/config/dbc_feeder.ini",
 +            "/etc/kuksa-dbc-feeder/config.ini",
++            "/etc/kuksa-dbc-feeder/dbc_feeder.ini",
              "/etc/dbc_feeder.ini",
 +            "/config/dbc_feeder.ini",
              "config/dbc_feeder.ini",
          ]
-         configfile = None
-diff --git a/dbc2val/dbcreader.py b/dbc2val/dbcreader.py
-index 2500832..b537a4d 100644
---- a/dbc2val/dbcreader.py
-+++ b/dbc2val/dbcreader.py
-@@ -54,8 +54,8 @@ class DBCReader:
+         for candidate in config_candidates:
+diff --git a/dbc2val/dbcfeederlib/dbcreader.py b/dbc2val/dbcfeederlib/dbcreader.py
+index 5dad41f..c2f5b55 100644
+--- a/dbc2val/dbcfeederlib/dbcreader.py
++++ b/dbc2val/dbcfeederlib/dbcreader.py
+@@ -56,8 +56,8 @@ class DBCReader:
              Bitrate in bit/s.
          """
-         self.bus = can.interface.Bus(*args, **kwargs)
+         self.bus = can.interface.Bus(*args, **kwargs) # pylint: disable=abstract-class-instantiated
 -        rxThread = threading.Thread(target=self.rxWorker)
 -        rxThread.start()
 +        self.rxThread = threading.Thread(target=self.rxWorker)
@@ -105,7 +66,7 @@ index 2500832..b537a4d 100644
  
      def get_whitelist(self):
          log.info("Collecting signals, generating CAN ID whitelist")
-@@ -83,7 +83,10 @@ class DBCReader:
+@@ -86,7 +86,10 @@ class DBCReader:
      def rxWorker(self):
          log.info("Starting Rx thread")
          while self.run:
@@ -114,16 +75,15 @@ index 2500832..b537a4d 100644
 +                msg = self.bus.recv(timeout=1)
 +            except Exception:
 +                break
+             log.debug("processing message from CAN bus")
              if msg and msg.arbitration_id in self.canidwl:
                  try:
-                     decode = self.db.decode_message(msg.arbitration_id, msg.data)
-@@ -105,4 +108,5 @@ class DBCReader:
+@@ -113,3 +116,5 @@ class DBCReader:
  
      def stop(self):
          self.run = False
--
 +        self.bus.shutdown()
 +        self.rxThread.join()
 -- 
-2.37.3
+2.39.2
 

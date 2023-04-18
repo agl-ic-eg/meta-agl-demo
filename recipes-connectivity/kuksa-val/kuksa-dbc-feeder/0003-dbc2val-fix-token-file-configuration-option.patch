@@ -1,0 +1,32 @@
+From e2b5305a48a8c5ce5c149437e44d1b82f4b94432 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Mon, 8 May 2023 14:58:06 -0400
+Subject: [PATCH] dbc2val: fix token file configuration option
+
+The client library changed the token option name to
+'token_or_tokenfile', update things to match so that token
+location can be configured again for dbcfeeder.py.
+
+Upstream-Status: pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ dbc2val/dbcfeederlib/serverclientwrapper.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dbc2val/dbcfeederlib/serverclientwrapper.py b/dbc2val/dbcfeederlib/serverclientwrapper.py
+index 851516b..4f44913 100644
+--- a/dbc2val/dbcfeederlib/serverclientwrapper.py
++++ b/dbc2val/dbcfeederlib/serverclientwrapper.py
+@@ -60,7 +60,7 @@ class ServerClientWrapper(clientwrapper.ClientWrapper):
+         self._client_config["insecure"] = not self._tls
+         # Do not set token if it is empty to allow default client lib info to be used
+         if self._token_path != "":
+-            self._client_config["token"] = self._token_path
++            self._client_config["token_or_tokenfile"] = self._token_path
+ 
+         # TODO add data for root cert if using TLS and if given
+ 
+-- 
+2.39.2
+

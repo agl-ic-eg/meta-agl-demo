@@ -1,0 +1,51 @@
+From 3c9f74492153817dc4fa405c1724fbf22ce58c98 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Tue, 2 May 2023 16:19:55 -0400
+Subject: [PATCH 1/2] kuksa_viss_client: Add external certificates support
+
+Tweak the definition of __certificate_dir__ in the kuksa_certificates
+package, and certificate location logic in the client library to allow
+picking up alternative certificates from /etc/kuksa-certificates or
+/etc/kuksa-val before falling back to the shipped defaults.  The
+intent is to allow packagers to more straighhtforwardly use their own
+certificates with both the server and clients.
+
+Upstream-Status: pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ kuksa-client/kuksa_client/cli_backend/__init__.py | 2 +-
+ kuksa_certificates/__init__.py                    | 7 ++++++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/kuksa-client/kuksa_client/cli_backend/__init__.py b/kuksa-client/kuksa_client/cli_backend/__init__.py
+index d282a0c..3052859 100644
+--- a/kuksa-client/kuksa_client/cli_backend/__init__.py
++++ b/kuksa-client/kuksa_client/cli_backend/__init__.py
+@@ -29,7 +29,7 @@ class Backend:
+             self.insecure = config.getboolean('insecure', False)
+         except AttributeError:
+             self.insecure = config.get('insecure', False)
+-        self.default_cert_path = pathlib.Path(kuksa_certificates.__path__[0])
++        self.default_cert_path = pathlib.Path(kuksa_certificates.__certificate_dir__)
+         self.cacertificate = config.get(
+             'cacertificate', str(self.default_cert_path / 'CA.pem'))
+         self.certificate = config.get('certificate', str(
+diff --git a/kuksa_certificates/__init__.py b/kuksa_certificates/__init__.py
+index 22ccd3f..8323868 100644
+--- a/kuksa_certificates/__init__.py
++++ b/kuksa_certificates/__init__.py
+@@ -2,4 +2,9 @@ import os
+ 
+ from kuksa_client._metadata import *
+ 
+-__certificate_dir__= os.path.dirname(os.path.realpath(__file__))
++if os.path.isdir("/etc/kuksa-certificates"):
++    __certificate_dir__= "/etc/kuksa-certificates"
++elif os.path.isdir("/etc/kuksa-val"):
++    __certificate_dir__= "/etc/kuksa-val"
++else:
++    __certificate_dir__= os.path.dirname(os.path.realpath(__file__))
+-- 
+2.39.2
+

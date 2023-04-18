@@ -25,7 +25,7 @@ fi
 
 # Ideally the parsing would take the "[can]" section into
 # account, but this should work for now.
-interface=$(grep ^port= $CONF |cut -d= -f2 |tr -d '"')
+interface=$(sed -nr '/\[can\]/,/\[/{s/^port *= *//p}' $CONF)
 if [ -n "$interface" ]; then
     echo "Checking $interface"
     if ! ifconfig $interface >/dev/null 2>&1; then

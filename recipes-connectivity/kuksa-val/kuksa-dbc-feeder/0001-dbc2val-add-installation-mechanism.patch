@@ -1,215 +1,41 @@
-From 22062d99a89922e02b626e4701feaac8947af5fb Mon Sep 17 00:00:00 2001
+From c3774fed42d58f227a4ecb501c6ef1dd3a9cfcf3 Mon Sep 17 00:00:00 2001
 From: Scott Murray <scott.murray@konsulko.com>
-Date: Fri, 7 Oct 2022 15:54:48 -0400
+Date: Wed, 19 Apr 2023 15:55:01 -0400
 Subject: [PATCH 1/2] dbc2val: add installation mechanism
 
-Add setup.py and setup.cfg to allow installing the dbc2val module
-and dbcfeeder.py in a way suitable for packaging.  Some of the
-imports in the scripts have been tweaked to enable running against
-an installed copy of dbc2val.
+Add setup.py and setup.cfg to allow installing the dbcfeederlib
+module and dbcfeeder.py in a way suitable for packaging.
 
 Upstream-Status: pending
 
 Signed-off-by: Scott Murray <scott.murray@konsulko.com>
----
- dbc2val/__init__.py                           |  0
- dbc2val/databroker.py                         |  4 +--
- dbc2val/dbc2vssmapper.py                      | 12 +++----
- dbc2val/dbcfeeder.py                          |  8 ++---
- dbc2val/gen_proto/__init__.py                 |  0
- dbc2val/gen_proto/sdv/__init__.py             |  0
- dbc2val/gen_proto/sdv/databroker/__init__.py  |  0
- .../gen_proto/sdv/databroker/v1/__init__.py   |  0
- .../gen_proto/sdv/databroker/v1/broker_pb2.py |  2 +-
- .../sdv/databroker/v1/broker_pb2_grpc.py      |  2 +-
- .../sdv/databroker/v1/collector_pb2.py        |  2 +-
- .../sdv/databroker/v1/collector_pb2_grpc.py   |  2 +-
- setup.cfg                                     | 31 ++++++++++++++++
- setup.py                                      | 36 +++++++++++++++++++
- 14 files changed, 82 insertions(+), 17 deletions(-)
- create mode 100644 dbc2val/__init__.py
- create mode 100644 dbc2val/gen_proto/__init__.py
- create mode 100644 dbc2val/gen_proto/sdv/__init__.py
- create mode 100644 dbc2val/gen_proto/sdv/databroker/__init__.py
- create mode 100644 dbc2val/gen_proto/sdv/databroker/v1/__init__.py
- create mode 100644 setup.cfg
- create mode 100644 setup.py
 
-diff --git a/dbc2val/__init__.py b/dbc2val/__init__.py
+%% original patch: 0001-dbc2val-add-installation-mechanism.patch
+---
+ dbc2val/setup.cfg | 30 ++++++++++++++++++++++++++++++
+ dbc2val/setup.py  | 14 ++++++++++++++
+ 2 files changed, 44 insertions(+)
+ create mode 100644 dbc2val/setup.cfg
+ create mode 100644 dbc2val/setup.py
+
+diff --git a/dbc2val/setup.cfg b/dbc2val/setup.cfg
 new file mode 100644
-index 0000000..e69de29
-diff --git a/dbc2val/databroker.py b/dbc2val/databroker.py
-index c1a941a..ba52980 100644
---- a/dbc2val/databroker.py
-+++ b/dbc2val/databroker.py
-@@ -16,13 +16,13 @@
- import logging
- 
- import grpc
--from gen_proto.sdv.databroker.v1 import (
-+from dbc2val.gen_proto.sdv.databroker.v1 import (
-     broker_pb2,
-     broker_pb2_grpc,
-     collector_pb2,
-     collector_pb2_grpc,
- )
--from gen_proto.sdv.databroker.v1 import types_pb2 as types  # for export
-+from dbc2val.gen_proto.sdv.databroker.v1 import types_pb2 as types  # for export
- 
- log = logging.getLogger(__name__)
- 
-diff --git a/dbc2val/dbc2vssmapper.py b/dbc2val/dbc2vssmapper.py
-index 05b78f1..d76c068 100644
---- a/dbc2val/dbc2vssmapper.py
-+++ b/dbc2val/dbc2vssmapper.py
-@@ -20,8 +20,8 @@
- 
- 
- import yaml 
--import transforms.mapping
--import transforms.math
-+from dbc2val.transforms import mapping
-+from dbc2val.transforms import math
- import logging
- 
- log = logging.getLogger(__name__)
-@@ -33,13 +33,13 @@ class mapper:
-             self.mapping = yaml.full_load(file)
- 
-         self.transforms = {}
--        self.transforms["fullmapping"] = transforms.mapping.mapping(
-+        self.transforms["fullmapping"] = mapping.mapping(
-             discard_non_matching_items=True
-         )
--        self.transforms["partialmapping"] = transforms.mapping.mapping(
-+        self.transforms["partialmapping"] = mapping.mapping(
-             discard_non_matching_items=False
-         )
--        self.transforms["math"] = transforms.math.math()
-+        self.transforms["math"] = math.math()
- 
-         for key in self.mapping.keys():
-             self.mapping[key]["lastupdate"] = 0.0
-@@ -93,4 +93,4 @@ class mapper:
- 
-     def __getitem__(self, item):
-         return self.mapping[item]
--    
-\ No newline at end of file
-+    
-diff --git a/dbc2val/dbcfeeder.py b/dbc2val/dbcfeeder.py
-index 5267369..7daaa2b 100755
---- a/dbc2val/dbcfeeder.py
-+++ b/dbc2val/dbcfeeder.py
-@@ -28,16 +28,13 @@ import sys
- import time
- from signal import SIGINT, SIGTERM, signal
- 
--import canplayer
--import dbc2vssmapper
--import dbcreader
- import grpc
--import j1939reader
-+from dbc2val import dbc2vssmapper, dbcreader, j1939reader, canplayer
- 
- # kuksa related
- from kuksa_viss_client import KuksaClientThread
- # databroker related
--import databroker
-+from dbc2val import databroker
- 
- # global variable for usecase, default databroker
- USE_CASE = ""
-@@ -289,6 +286,7 @@ def parse_config(filename):
-             "/etc/dbc_feeder.ini",
-             "config/dbc_feeder.ini",
-         ]
-+        configfile = None
-         for candidate in config_candidates:
-             if os.path.isfile(candidate):
-                 configfile = candidate
-diff --git a/dbc2val/gen_proto/__init__.py b/dbc2val/gen_proto/__init__.py
-new file mode 100644
-index 0000000..e69de29
-diff --git a/dbc2val/gen_proto/sdv/__init__.py b/dbc2val/gen_proto/sdv/__init__.py
-new file mode 100644
-index 0000000..e69de29
-diff --git a/dbc2val/gen_proto/sdv/databroker/__init__.py b/dbc2val/gen_proto/sdv/databroker/__init__.py
-new file mode 100644
-index 0000000..e69de29
-diff --git a/dbc2val/gen_proto/sdv/databroker/v1/__init__.py b/dbc2val/gen_proto/sdv/databroker/v1/__init__.py
-new file mode 100644
-index 0000000..e69de29
-diff --git a/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2.py b/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2.py
-index 98dc94a..6deacfb 100644
---- a/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2.py
-+++ b/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2.py
-@@ -12,7 +12,7 @@ from google.protobuf import symbol_database as _symbol_database
- _sym_db = _symbol_database.Default()
- 
- 
--from gen_proto.sdv.databroker.v1 import types_pb2 as sdv_dot_databroker_dot_v1_dot_types__pb2
-+from dbc2val.gen_proto.sdv.databroker.v1 import types_pb2 as sdv_dot_databroker_dot_v1_dot_types__pb2
- 
- 
- DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1esdv/databroker/v1/broker.proto\x12\x11sdv.databroker.v1\x1a\x1dsdv/databroker/v1/types.proto\"*\n\x14GetDatapointsRequest\x12\x12\n\ndatapoints\x18\x01 \x03(\t\"\xb0\x01\n\x12GetDatapointsReply\x12I\n\ndatapoints\x18\x01 \x03(\x0b\x32\x35.sdv.databroker.v1.GetDatapointsReply.DatapointsEntry\x1aO\n\x0f\x44\x61tapointsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.sdv.databroker.v1.Datapoint:\x02\x38\x01\"!\n\x10SubscribeRequest\x12\r\n\x05query\x18\x02 \x01(\t\"\x9c\x01\n\x0eSubscribeReply\x12=\n\x06\x66ields\x18\x01 \x03(\x0b\x32-.sdv.databroker.v1.SubscribeReply.FieldsEntry\x1aK\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.sdv.databroker.v1.Datapoint:\x02\x38\x01\"#\n\x12GetMetadataRequest\x12\r\n\x05names\x18\x01 \x03(\t\"=\n\x10GetMetadataReply\x12)\n\x04list\x18\x01 \x03(\x0b\x32\x1b.sdv.databroker.v1.Metadata2\x9b\x02\n\x06\x42roker\x12_\n\rGetDatapoints\x12\'.sdv.databroker.v1.GetDatapointsRequest\x1a%.sdv.databroker.v1.GetDatapointsReply\x12U\n\tSubscribe\x12#.sdv.databroker.v1.SubscribeRequest\x1a!.sdv.databroker.v1.SubscribeReply0\x01\x12Y\n\x0bGetMetadata\x12%.sdv.databroker.v1.GetMetadataRequest\x1a#.sdv.databroker.v1.GetMetadataReplyb\x06proto3')
-diff --git a/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2_grpc.py b/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2_grpc.py
-index 5c87db1..bc6be8b 100644
---- a/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2_grpc.py
-+++ b/dbc2val/gen_proto/sdv/databroker/v1/broker_pb2_grpc.py
-@@ -2,7 +2,7 @@
- """Client and server classes corresponding to protobuf-defined services."""
- import grpc
- 
--from gen_proto.sdv.databroker.v1 import broker_pb2 as sdv_dot_databroker_dot_v1_dot_broker__pb2
-+from dbc2val.gen_proto.sdv.databroker.v1 import broker_pb2 as sdv_dot_databroker_dot_v1_dot_broker__pb2
- 
- 
- class BrokerStub(object):
-diff --git a/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2.py b/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2.py
-index 25d69dd..ea15409 100644
---- a/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2.py
-+++ b/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2.py
-@@ -12,7 +12,7 @@ from google.protobuf import symbol_database as _symbol_database
- _sym_db = _symbol_database.Default()
- 
- 
--from gen_proto.sdv.databroker.v1 import types_pb2 as sdv_dot_databroker_dot_v1_dot_types__pb2
-+from dbc2val.gen_proto.sdv.databroker.v1 import types_pb2 as sdv_dot_databroker_dot_v1_dot_types__pb2
- 
- 
- DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n!sdv/databroker/v1/collector.proto\x12\x11sdv.databroker.v1\x1a\x1dsdv/databroker/v1/types.proto\"\xba\x01\n\x17UpdateDatapointsRequest\x12N\n\ndatapoints\x18\x01 \x03(\x0b\x32:.sdv.databroker.v1.UpdateDatapointsRequest.DatapointsEntry\x1aO\n\x0f\x44\x61tapointsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.sdv.databroker.v1.Datapoint:\x02\x38\x01\"\xaf\x01\n\x15UpdateDatapointsReply\x12\x44\n\x06\x65rrors\x18\x01 \x03(\x0b\x32\x34.sdv.databroker.v1.UpdateDatapointsReply.ErrorsEntry\x1aP\n\x0b\x45rrorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x30\n\x05value\x18\x02 \x01(\x0e\x32!.sdv.databroker.v1.DatapointError:\x02\x38\x01\"\xba\x01\n\x17StreamDatapointsRequest\x12N\n\ndatapoints\x18\x01 \x03(\x0b\x32:.sdv.databroker.v1.StreamDatapointsRequest.DatapointsEntry\x1aO\n\x0f\x44\x61tapointsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12+\n\x05value\x18\x02 \x01(\x0b\x32\x1c.sdv.databroker.v1.Datapoint:\x02\x38\x01\"\xaf\x01\n\x15StreamDatapointsReply\x12\x44\n\x06\x65rrors\x18\x01 \x03(\x0b\x32\x34.sdv.databroker.v1.StreamDatapointsReply.ErrorsEntry\x1aP\n\x0b\x45rrorsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x30\n\x05value\x18\x02 \x01(\x0e\x32!.sdv.databroker.v1.DatapointError:\x02\x38\x01\"R\n\x19RegisterDatapointsRequest\x12\x35\n\x04list\x18\x01 \x03(\x0b\x32\'.sdv.databroker.v1.RegistrationMetadata\"\x9d\x01\n\x14RegistrationMetadata\x12\x0c\n\x04name\x18\x01 \x01(\t\x12.\n\tdata_type\x18\x02 \x01(\x0e\x32\x1b.sdv.databroker.v1.DataType\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x32\n\x0b\x63hange_type\x18\x04 \x01(\x0e\x32\x1d.sdv.databroker.v1.ChangeType\"\x93\x01\n\x17RegisterDatapointsReply\x12H\n\x07results\x18\x01 \x03(\x0b\x32\x37.sdv.databroker.v1.RegisterDatapointsReply.ResultsEntry\x1a.\n\x0cResultsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x32\xd3\x02\n\tCollector\x12n\n\x12RegisterDatapoints\x12,.sdv.databroker.v1.RegisterDatapointsRequest\x1a*.sdv.databroker.v1.RegisterDatapointsReply\x12h\n\x10UpdateDatapoints\x12*.sdv.databroker.v1.UpdateDatapointsRequest\x1a(.sdv.databroker.v1.UpdateDatapointsReply\x12l\n\x10StreamDatapoints\x12*.sdv.databroker.v1.StreamDatapointsRequest\x1a(.sdv.databroker.v1.StreamDatapointsReply(\x01\x30\x01\x62\x06proto3')
-diff --git a/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2_grpc.py b/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2_grpc.py
-index 419bfde..2dee751 100644
---- a/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2_grpc.py
-+++ b/dbc2val/gen_proto/sdv/databroker/v1/collector_pb2_grpc.py
-@@ -2,7 +2,7 @@
- """Client and server classes corresponding to protobuf-defined services."""
- import grpc
- 
--from gen_proto.sdv.databroker.v1 import collector_pb2 as sdv_dot_databroker_dot_v1_dot_collector__pb2
-+from dbc2val.gen_proto.sdv.databroker.v1 import collector_pb2 as sdv_dot_databroker_dot_v1_dot_collector__pb2
- 
- 
- class CollectorStub(object):
-diff --git a/setup.cfg b/setup.cfg
-new file mode 100644
-index 0000000..70aab60
+index 0000000..03dc6d6
 --- /dev/null
-+++ b/setup.cfg
-@@ -0,0 +1,31 @@
++++ b/dbc2val/setup.cfg
+@@ -0,0 +1,30 @@
 +[metadata]
-+name = dbc2val
++name = dbcfeeder
 +author = Sebastian Schildt, Naresh Nayak, Wenwen Chen
 +author_email = sebastian.schildt@de.bosch.com, naresh.nayak@de.bosch.com, wenwen.chen@de.bosch.com
 +description = kuksa.val DBC feeder
 +long_description = file:README.md
 +long_description_content_type = text/markdown
-+url=https://github.com/eclipse/kuksa.val
++url=https://github.com/eclipse/kuksa.val.feeders
 +project_urls=
-+  Source=https://github.com/eclipse/kuksa.val/tree/master/kuksa_feeders/dbc2val
-+  Bug Tracker=https://github.com/eclipse/kuksa.val/issues
-+classifiers = 
++  Source=https://github.com/eclipse/kuksa.val.feeders/tree/master/dbc2val
++  Bug Tracker=https://github.com/eclipse/kuksa.val.feeders/issues
++classifiers =
 +    Intended Audience :: Developers
 +    Development Status :: 3 - Alpha
 +    Environment :: Console
@@ -217,46 +43,24 @@ index 0000000..70aab60
 +    License :: OSI Approved :: Apache Software License
 +    Operating System :: OS Independent
 +    Topic :: Software Development
-+    
-+license_file = LICENSE.txt
++
++license_file = ../LICENSE.txt
 +
 +[options]
 +python_requires = >=3.6
 +install_requires=
 +    pyserial
 +    pyyaml
-+    kuksa-viss-client
-+packages=find:
-+include_package_data = True
-+scripts=dbc2val/dbcfeeder.py
-diff --git a/setup.py b/setup.py
++    kuksa-client
++packages=dbcfeederlib
++scripts=dbcfeeder.py
+diff --git a/dbc2val/setup.py b/dbc2val/setup.py
 new file mode 100644
-index 0000000..55951cc
+index 0000000..65f9157
 --- /dev/null
-+++ b/setup.py
-@@ -0,0 +1,36 @@
-+# To avoid shipping dbcfeeder.py in the module itself, use the
-+# technique outlined at:
-+#
-+# https://stackoverflow.com/a/50592100
-+#
-+# This can be removed if the directory structure is ever reorganized
-+# more along the lines of upstream recommendations.
-+#
-+
-+import fnmatch
-+from setuptools import find_packages, setup
-+from setuptools.command.build_py import build_py as build_py_orig
-+
-+exclude = ['dbc2val.dbcfeeder']
-+
-+class build_py(build_py_orig):
-+    def find_package_modules(self, package, package_dir):
-+        modules = super().find_package_modules(package, package_dir)
-+        print("modules = %s" % modules)
-+        return [(pkg, mod, file, ) for (pkg, mod, file, ) in modules
-+                if not any(fnmatch.fnmatchcase(pkg + '.' + mod, pat=pattern)
-+                           for pattern in exclude)]
++++ b/dbc2val/setup.py
+@@ -0,0 +1,14 @@
++from setuptools import setup
 +
 +setup(
 +    version_config={
@@ -269,8 +73,7 @@ index 0000000..55951cc
 +        "count_commits_from_version_file": False
 +    },
 +    setup_requires=['setuptools-git-versioning'],
-+    cmdclass={'build_py': build_py},
 +)
 -- 
-2.37.3
+2.39.2
 

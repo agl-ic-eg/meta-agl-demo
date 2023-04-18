@@ -7,22 +7,24 @@ LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=175792518e4ac015ab6696d16c4f607e"
 
 DEPENDS = "python3-setuptools-git-versioning-native"
 
-PV = "0.1.0+git${SRCPV}"
+PV = "0.1.2+git${SRCPV}"
 
 SRC_URI = "git://github.com/eclipse/kuksa.val.feeders.git;protocol=https;branch=main \
            file://0001-dbc2val-add-installation-mechanism.patch \
            file://0002-dbc2val-usability-improvements.patch \
+           file://0003-dbc2val-fix-token-file-configuration-option.patch \
            file://config.ini \
            file://dbc_feeder.json.token \
-           file://mapping.yml \
            file://agl-vcar.dbc \
            file://kuksa-dbc-feeder.service \
 "
-SRCREV = "a857a1d6981b7d62b80ac03e60988a0bded3e255"
+SRCREV = "d5fe991706bd8fc6d92ffbbaa838a380067f201f"
 
 S = "${WORKDIR}/git"
 
 inherit setuptools3 systemd
+
+SETUPTOOLS_SETUP_PATH = "${S}/dbc2val"
 
 SYSTEMD_SERVICE:${PN} = "${BPN}.service"
 
@@ -33,7 +35,6 @@ do_install:append() {
     # The potential for running the feeder as non-root will take some
     # investigation.
     install -m 0600 ${WORKDIR}/dbc_feeder.json.token ${D}${sysconfdir}/kuksa-dbc-feeder/
-    install -m 0644 ${WORKDIR}/mapping.yml ${D}${sysconfdir}/kuksa-dbc-feeder/
     install -m 0644 ${WORKDIR}/agl-vcar.dbc ${D}${sysconfdir}/kuksa-dbc-feeder/
     if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
         install -d ${D}${systemd_system_unitdir}
@@ -51,6 +52,6 @@ RDEPENDS:${PN} += " \
     python3-can-j1939 \
     python3-pyyaml \
     python3-py-expression-eval \
-    kuksa-viss-client \
+    kuksa-client \
     can-dev-helper \
 "
