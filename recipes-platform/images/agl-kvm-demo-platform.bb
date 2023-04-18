@@ -36,9 +36,6 @@ GUEST_IMAGES ?= "agl-kvm-guest:${GUEST_VM1_IMAGE} agl-kvm-guest:${GUEST_VM2_IMAG
 
 QEMU_GUEST_CONFIGS ?= ""
 
-# Handle modification of IMAGE_LINK_NAME done by ULCB builds with Kingfisher support
-MACHINE_SUFFIX = "${@bb.utils.contains('AGL_FEATURES', 'kingfisher', '-kf', '', d)}"
-
 python __anonymous() {
     for c in (d.getVar('GUEST_IMAGES') or "").split():
         (mc, image) = c.split(':')
@@ -56,7 +53,7 @@ install_guest_images() {
         name=${image}
         rm -rf  ${IMAGE_ROOTFS}/var/lib/machines/${name}
         install -m 0755 -d ${IMAGE_ROOTFS}/var/lib/machines/${name}
-        src="${TOPDIR}/tmp-${config}/deploy/images/${GUEST_MACHINE}/${image}-${GUEST_MACHINE}${MACHINE_SUFFIX}.ext4"
+        src="${TOPDIR}/tmp-${config}/deploy/images/${GUEST_MACHINE}/${image}-${GUEST_MACHINE}.ext4"
         bbnote "Installing ${src}"
         install -m 0600 ${src} ${IMAGE_ROOTFS}/var/lib/machines/${name}/
 	# Placeholder until booting from kernel in VM image is worked out
