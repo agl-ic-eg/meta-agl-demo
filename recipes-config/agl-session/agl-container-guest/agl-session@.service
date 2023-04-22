@@ -1,0 +1,24 @@
+[Unit]
+Description=AGL user session
+After=systemd-user-sessions.service
+Wants=dbus.socket
+After=dbus.socket
+After=session-c1.scope
+Before=multi-user.target
+
+[Service]
+Environment=XDG_SESSION_TYPE=wayland
+ExecStart=/bin/systemctl --wait --user start agl-session.target
+TimeoutStartSec=30
+# This is a template service, instantiate for desired user's name or uid
+User=%i
+PAMName=login
+WorkingDirectory=~
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+Restart=always
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target
