@@ -10,6 +10,7 @@ PACKAGES = "\
 RDEPENDS:${PN} += "\
     kuksa-val \
     kuksa-val-agl \
+    kuksa-certificates-agl \
     kuksa-dbc-feeder \
     kuksa-vss-init \
     agl-service-hvac \

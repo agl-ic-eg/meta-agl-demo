@@ -13,7 +13,9 @@ DEPENDS = " \
 
 require kuksa-val.inc
 
-SRC_URI += "file://0001-kuksa_viss_client-Update-cmd2-completer-usage.patch;striplevel=2"
+SRC_URI += "file://0001-kuksa_viss_client-Update-cmd2-completer-usage.patch;patchdir=.. \
+            file://0002-kuksa_viss_client-Add-external-certificates-support.patch;patchdir=.. \
+"
 
 S = "${WORKDIR}/git/kuksa_viss_client"
 
