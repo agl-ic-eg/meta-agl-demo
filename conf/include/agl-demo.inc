@@ -17,3 +17,10 @@ AGL_FEATURES:append = " agldemo"
 
 # install virtualbox drivers for vmdk
 #IMAGE_INSTALL:append = "${@bb.utils.contains_any('IMAGE_FSTYPES', 'wic.vmdk wic.vmdk.xz', ' open-vm-tools vboxguestdrivers', '', d)}"
+
+# It is not clear these definitions affect image generation in a robust
+# way, but define them to both show our intent and quiet the warnings
+# that get spammed otherwise.
+PREFERRED_RPROVIDER_kuksa-val-certificates-ca = "kuksa-certificates-agl"
+PREFERRED_RPROVIDER_kuksa-val-certificates-server = "kuksa-certificates-agl"
+PREFERRED_RPROVIDER_kuksa-val-certificates-client = "kuksa-certificates-agl"

@@ -12,6 +12,7 @@ IMAGE_FEATURES += "splash package-management ssh-server-openssh"
 IMAGE_KUKSA_PACKAGES = " \
     kuksa-val \
     kuksa-val-agl \
+    kuksa-certificates-agl \
     kuksa-dbc-feeder \
     kuksa-vss-init \
 "
