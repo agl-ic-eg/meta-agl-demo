@@ -24,6 +24,7 @@ IMAGE_INSTALL:append = "\
     \
     packagegroup-agl-profile-graphical \
     packagegroup-agl-networking \
+    cluster-receiver \
     \
     ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "${IMAGE_KUKSA_PACKAGES}", d)} \
     simple-can-simulator \
