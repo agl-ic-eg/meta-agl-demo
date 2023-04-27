@@ -6,9 +6,6 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 DEPENDS:remove = "curl"
 
 SRC_URI += "file://0001-output-PipeWire-activate-stream-in-Drain.patch \
-            file://0002-output-PipeWire-skip-Cancel-if-already-drained.patch \
-            file://0003-output-PipeWire-call-pw_stream_flush-in-Cancel.patch \
-            file://0004-output-PipeWire-after-Cancel-refill-buffer-before-re.patch \
             file://mpd-volatiles.conf \
 "
 
