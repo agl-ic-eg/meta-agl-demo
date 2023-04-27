@@ -11,9 +11,10 @@ FILESEXTRAPATHS:append := ":${THISDIR}/qtwayland"
 #    file://0001-protocol-update-3rd-party-ivi-application-protocol.patch \
 #    file://0002-qwaylandwindow-add-support-for-IVI-Surface-ID-proper.patch \
 #
+#  This patch breaks the build with qtwayland 5.15.7 (SPEC-4770)
+#    file://0001-client-qwaylandintegration-Do-not-attempt-to-use-the.patch \
+#
 
 SRC_URI:append = "\
-    file://0001-client-qwaylandintegration-Do-not-attempt-to-use-the.patch \
     file://0001-qwaylandwindow-Short-circuit-isExposed.patch \
     "
-
