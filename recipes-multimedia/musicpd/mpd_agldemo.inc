@@ -5,15 +5,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 # in the upstream recipe.
 DEPENDS:remove = "curl"
 
-SRC_URI += "file://0001-output-PipeWire-activate-stream-in-Drain.patch \
-            file://mpd-volatiles.conf \
-"
-
-# The older meson in poky dunfell complains about the use of the
-# build.{c_std,cpp_std} options even though they work, so we need to
-# flag them to be ignored in the unknown configure option QA test.
-# This can be removed after upgrading to Yocto Project 3.5.
-UNKNOWN_CONFIGURE_OPT_IGNORE = "build.c_std build.cpp_std"
+SRC_URI += "file://mpd-volatiles.conf"
 
 # This also needs to be pushed upstream.
 PACKAGECONFIG[pipewire] = "-Dpipewire=enabled,-Dpipewire=disabled,pipewire"
