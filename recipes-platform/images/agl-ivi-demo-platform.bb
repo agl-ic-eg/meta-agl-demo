@@ -4,6 +4,7 @@ DESCRIPTION = "AGL Demo Platform image currently contains a simple HMI and \
 demos."
 
 require agl-demo-features.inc
+require agl-demo-container-guest-integration.inc
 
 # add packages for demo platform (include demo apps) here
 IMAGE_INSTALL:append = " \
