@@ -24,4 +24,4 @@ ALTERNATIVE:${PN} = "kuksa-val-env"
 ALTERNATIVE_LINK_NAME[kuksa-val-env] = "${sysconfdir}/default/kuksa-val"
 ALTERNATIVE_TARGET[kuksa-val-env] = "${sysconfdir}/default/kuksa-val.agl"
 
-RDEPENDS:${PN} += "kuksa-val"
+RDEPENDS:${PN} += "kuksa-val vss-agl"
