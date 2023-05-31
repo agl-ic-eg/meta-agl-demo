@@ -1,0 +1,23 @@
+From 18aeaf3abf9080174a7a820ac1a50839e6d6b0ca Mon Sep 17 00:00:00 2001
+From: Jan-Simon Moeller <jsmoeller@linuxfoundation.org>
+Date: Wed, 31 May 2023 23:12:59 +0200
+Subject: [PATCH] Fix LINUX_VERSION_CODE check for dim2_hdm
+
+Signed-off-by: Jan-Simon Moeller <jsmoeller@linuxfoundation.org>
+---
+ driver/hdm-dim2/dim2_hdm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/driver/hdm-dim2/dim2_hdm.c b/driver/hdm-dim2/dim2_hdm.c
+index fc02c6b..c1a2e71 100644
+--- a/hdm-dim2/dim2_hdm.c
++++ b/hdm-dim2/dim2_hdm.c
+@@ -54,7 +54,7 @@ MODULE_PARM_DESC(fcnt, "Num of frames per sub-buffer for sync channels as a powe
+ static DEFINE_SPINLOCK(dim_lock);
+ 
+ static void dim2_tasklet_fn(unsigned long data);
+-#if LINUX_VERSION_CODE < KERNEL_VERSION(5,9,0)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5,4,235)
+ static DECLARE_TASKLET(dim2_tasklet, dim2_tasklet_fn, 0);
+ #else
+ static DECLARE_TASKLET_OLD(dim2_tasklet, dim2_tasklet_fn);
