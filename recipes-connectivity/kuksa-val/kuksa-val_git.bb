@@ -19,6 +19,7 @@ SRC_URI += "file://kuksa-val.service \
             file://0003-Make-install-locations-configurable.patch;patchdir=.. \
             file://0004-Disable-default-fetch-and-build-of-googletest.patch;patchdir=.. \
             file://0005-kuksa-val-server-Add-missing-check_git-dependency.patch;patchdir=.. \
+            file://0006-kuksa-val-server-OverlayLoader-explicitly-include-fs.patch;patchdir=.. \
 "
 
 S = "${WORKDIR}/git/kuksa-val-server"

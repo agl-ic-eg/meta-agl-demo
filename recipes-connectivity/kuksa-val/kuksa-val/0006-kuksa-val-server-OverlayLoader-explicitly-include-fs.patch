@@ -1,0 +1,35 @@
+From 60561b755cbfbb3aa99b1a0d736cc89540636c00 Mon Sep 17 00:00:00 2001
+From: Denys Dmytriyenko <denys@konsulko.com>
+Date: Wed, 7 Jun 2023 21:16:30 +0000
+Subject: [PATCH] kuksa-val-server: OverlayLoader: explicitly include fstream
+ header
+
+Otherwise gcc13 now errors out:
+
+| .../kuksa-val-server/src/OverlayLoader.cpp: In function 'void applyOverlays(std::shared_ptr<ILogger>, std::vector<boost::filesystem::path>, std::shared_ptr<IVssDatabase>)':
+| .../kuksa-val-server/src/OverlayLoader.cpp:70:24: error: variable 'std::ifstream is' has initializer but incomplete type
+|    70 |       std::ifstream is(p.generic_string());
+|       |                        ^
+
+Upstream-Status: Pending
+
+Signed-off-by: Denys Dmytriyenko <denys@konsulko.com>
+---
+ kuksa-val-server/src/OverlayLoader.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kuksa-val-server/src/OverlayLoader.cpp b/kuksa-val-server/src/OverlayLoader.cpp
+index bed9234..abd1945 100644
+--- a/kuksa-val-server/src/OverlayLoader.cpp
++++ b/kuksa-val-server/src/OverlayLoader.cpp
+@@ -23,6 +23,7 @@
+ /* helper fuctions to load overlays during server startup */
+ 
+ #include <stdexcept>
++#include <fstream>
+ #include <jsoncons/json.hpp>
+ 
+ #include "OverlayLoader.hpp"
+-- 
+2.25.1
+
