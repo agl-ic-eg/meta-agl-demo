@@ -66,7 +66,7 @@ index 0000000..65f9157
 +    version_config={
 +        "template": "{tag}",
 +        "dev_template": "{tag}-{ccount}",
-+        "dirty_template": "{tag}-{ccount}-dirty",
++        "dirty_template": "{tag}+{ccount}-dirty",
 +        "starting_version": "0.1.0",
 +        "version_callback": None,
 +        "version_file": None,
