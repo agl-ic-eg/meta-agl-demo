@@ -21,7 +21,7 @@ index c53ccb78..6d3d9559 100644
      }
  #endif
  
--    qCDebug(lcQpaWayland) << "using input method:" << inputContext()->metaObject()->className();
+-    qCDebug(lcQpaWayland) << "using input method:" << (inputContext() ? inputContext()->metaObject()->className() : "<none>");
 +    bool mUsingInputContextFromCompositor = qobject_cast<QWaylandInputContext *>(mInputContext.data());
 +    if (mUsingInputContextFromCompositor)
 +        qCDebug(lcQpaWayland) << "using input method:" << inputContext()->metaObject()->className();
