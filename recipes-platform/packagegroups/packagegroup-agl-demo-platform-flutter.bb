@@ -16,24 +16,10 @@ RDEPENDS:${PN} += "\
     packagegroup-agl-demo \
     "
 
-AGL_APPS = " \
-    flutter-dashboard \
-    flutter-hvac \
-    ondemandnavi \
-    settings \
-    mediaplayer \
-    messaging \
-    phone \
-    radio \
-    "
-
 RDEPENDS:${PN}:append = " \
     agl-compositor \
     flutter-auto \
-    flutter-homescreen \
-    qtquickcontrols2-agl \
-    qtquickcontrols2-agl-style \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', 'unzip mpc' , '', d)} \
-    ${AGL_APPS} \
+    agl-flutter-env \
+    applaunchd-template-agl-app-flutter \
     psplash-portrait-config \
     "

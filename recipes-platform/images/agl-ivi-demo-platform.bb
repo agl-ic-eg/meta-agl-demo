@@ -1,20 +1,22 @@
-require agl-image-ivi.bb
+require agl-ivi-demo-base.bb
 
-DESCRIPTION = "AGL Demo Platform image currently contains a simple HMI and demos."
+DESCRIPTION = "AGL Qt Demo Platform image"
 
-require agl-demo-features.inc
-require agl-demo-container-guest-integration.inc
-
-# Add packages for demo platform (include demo apps) here
-
-AGL_DEVEL_INSTALL += "\
-    packagegroup-agl-kuksa-val-databroker-devel \
-    simple-can-simulator \
+AGL_APPS_INSTALL += " \
+    dashboard \
+    hvac \
+    ondemandnavi \
+    settings \
+    mediaplayer \
+    messaging \
+    phone \
+    radio \
+    window-management-client-grpc \
+    camera-gstreamer \
 "
 
 IMAGE_INSTALL += " \
     packagegroup-agl-demo-platform \
     ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "weston-terminal-conf", d)} \
-    ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "${AGL_DEVEL_INSTALL}" , "", d)} \
 "
 

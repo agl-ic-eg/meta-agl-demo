@@ -16,26 +16,11 @@ RDEPENDS:${PN} += "\
     packagegroup-agl-demo \
     "
 
-AGL_APPS = " \
-    dashboard \
-    hvac \
-    ondemandnavi \
-    settings \
-    mediaplayer \
-    messaging \
-    phone \
-    radio \
-    window-management-client-grpc \
-    camera-gstreamer \
-    "
-
 RDEPENDS:${PN}:append = " \
     weston-ini-conf-no-activate \
     homescreen \
     launcher \
     qtquickcontrols2-agl \
     qtquickcontrols2-agl-style \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', 'unzip mpc' , '', d)} \
-    ${AGL_APPS} \
     psplash-portrait-config \
     "

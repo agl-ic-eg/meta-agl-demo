@@ -1,21 +1,21 @@
-require agl-image-ivi.bb
+require agl-ivi-demo-base-flutter.bb
 
-DESCRIPTION = "AGL Flutter based Demo Platform image"
+DESCRIPTION = "AGL Flutter Demo Platform image"
 
-require agl-demo-features.inc
-require agl-demo-container-guest-integration.inc
-
-# Add packages for demo platform (include demo apps) here
-
-AGL_DEVEL_INSTALL += "\
-    packagegroup-agl-kuksa-val-databroker-devel \
-    simple-can-simulator \
+AGL_APPS_INSTALL += " \
+    flutter-homescreen \
+    flutter-dashboard \
+    flutter-hvac \
+    ondemandnavi \
+    settings \
+    mediaplayer \
+    messaging \
+    phone \
+    radio \
 "
 
 IMAGE_INSTALL += " \
-    packagegroup-agl-demo-platform-flutter \
-    weston-ini-conf-flutter \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "weston-terminal-conf", d)} \
-    ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "${AGL_DEVEL_INSTALL}" , "", d)} \
+    qtquickcontrols2-agl \
+    qtquickcontrols2-agl-style \
 "
 

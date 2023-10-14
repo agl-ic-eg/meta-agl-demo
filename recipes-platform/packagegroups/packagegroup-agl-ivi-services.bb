@@ -8,6 +8,8 @@ PACKAGES = "\
     "
 
 RDEPENDS:${PN} += "\
+    applaunchd \
+    applaunchd-template-agl-app \
     agl-service-hvac \
     agl-service-audiomixer \
     agl-service-radio \
