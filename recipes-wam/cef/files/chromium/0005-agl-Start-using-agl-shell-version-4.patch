@@ -1,8 +1,9 @@
-From 87e8811a2fc95b57f958e2bdfe5f3e434ecbff1e Mon Sep 17 00:00:00 2001
+From 98de96755da14f4cabf2447ce88a01cd3cdca770 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Sun, 2 Jul 2023 11:11:07 +0200
-Subject: [PATCH 9/9] Start using agl-shell version 4
+Subject: [PATCH 05/33] [agl] Start using agl-shell version 4
 
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
 ---
  ui/aura/agl/window_tree_host_agl.h            |   1 +
  ui/aura/agl/window_tree_host_platform_agl.cc  |   4 +
@@ -343,5 +344,5 @@ index cab1f42272772..b1a6150fff950 100644
  
  }  // namespace ui
 -- 
-2.39.2
+2.42.1
 

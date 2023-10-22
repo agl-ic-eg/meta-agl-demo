@@ -1,17 +1,17 @@
-From 7b7f5d77e87351cb98b7932eaf8959feaf280215 Mon Sep 17 00:00:00 2001
+From 97e9e8dd589d7d3467d762f6ab25ec4a4f30505f Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Mon, 24 Apr 2023 10:52:57 +0200
-Subject: [PATCH 01/10] Add an option to use an output directory outside src
+Subject: [PATCH 1/9] Add an option to use an output directory outside src
 
 ---
  tools/make_distrib.py | 8 ++++++++
  1 file changed, 8 insertions(+)
 
 diff --git a/tools/make_distrib.py b/tools/make_distrib.py
-index 7122fae19..045430ea3 100644
+index c808ad7df..ea798b86f 100644
 --- a/tools/make_distrib.py
 +++ b/tools/make_distrib.py
-@@ -457,6 +457,12 @@ This utility builds the CEF Binary Distribution.
+@@ -459,6 +459,12 @@ This utility builds the CEF Binary Distribution.
  """
  
  parser = OptionParser(description=disc)
@@ -24,7 +24,7 @@ index 7122fae19..045430ea3 100644
  parser.add_option(
      '--output-dir',
      dest='outputdir',
-@@ -698,6 +704,8 @@ else:
+@@ -700,6 +706,8 @@ else:
  
  # Determine the build directory paths.
  out_dir = os.path.join(src_dir, 'out')
@@ -34,5 +34,5 @@ index 7122fae19..045430ea3 100644
  build_dir_release = os.path.join(out_dir, 'Release' + build_dir_suffix)
  
 -- 
-2.39.2
+2.42.0
 

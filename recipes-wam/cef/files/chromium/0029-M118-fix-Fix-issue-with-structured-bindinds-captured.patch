@@ -1,0 +1,68 @@
+From f7581fa1a0c25d2b76407bb04fd77031f5108411 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Fri, 3 Nov 2023 21:08:22 -0300
+Subject: [PATCH 29/33] [M118-fix] Fix issue with structured bindinds captured
+ by nested lambdas
+
+In clang <=14  the build fails doesn't when lambdas capture
+aliases created in structured bindinds, so we do a few init-captures to
+fix that.
+
+Upstream-Status: Inappropriate
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ .../core/layout/ng/grid/ng_grid_layout_algorithm.cc    | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/third_party/blink/renderer/core/layout/ng/grid/ng_grid_layout_algorithm.cc b/third_party/blink/renderer/core/layout/ng/grid/ng_grid_layout_algorithm.cc
+index 64c7a7481dd15..71eb55954e253 100644
+--- a/third_party/blink/renderer/core/layout/ng/grid/ng_grid_layout_algorithm.cc
++++ b/third_party/blink/renderer/core/layout/ng/grid/ng_grid_layout_algorithm.cc
+@@ -3494,7 +3494,7 @@ void NGGridLayoutAlgorithm::PlaceGridItems(
+         To<NGPhysicalBoxFragment>(result->PhysicalFragment());
+     NGBoxFragment fragment(container_writing_direction, physical_fragment);
+ 
+-    auto BaselineOffset = [&](GridTrackSizingDirection track_direction,
++    auto BaselineOffset = [&, &layout_data = layout_data](GridTrackSizingDirection track_direction,
+                               LayoutUnit size) -> LayoutUnit {
+       if (!grid_item.IsBaselineAligned(track_direction)) {
+         return LayoutUnit();
+@@ -3700,7 +3700,7 @@ void NGGridLayoutAlgorithm::PlaceGridItemsForFragmentation(
+   if (BreakToken())
+     child_break_tokens = BreakToken()->ChildBreakTokens();
+ 
+-  auto PlaceItems = [&]() {
++  auto PlaceItems = [&, &grid_items = grid_items, &layout_data = layout_data]() {
+     // Reset our state.
+     result_and_offsets.clear();
+     out_of_fragmentainer_space_item_placement.clear();
+@@ -3933,7 +3933,7 @@ void NGGridLayoutAlgorithm::PlaceGridItemsForFragmentation(
+ 
+   // Adjust by |delta| the pre-computed item-offset for all grid items with a
+   // row begin index greater or equal than |row_index|.
+-  auto AdjustItemOffsets = [&](wtf_size_t row_index, LayoutUnit delta) {
++  auto AdjustItemOffsets = [&, &grid_items = grid_items](wtf_size_t row_index, LayoutUnit delta) {
+     auto current_item = grid_items.begin();
+ 
+     for (auto& item_placement_data : *grid_items_placement_data) {
+@@ -3944,7 +3944,7 @@ void NGGridLayoutAlgorithm::PlaceGridItemsForFragmentation(
+ 
+   // Adjust our grid break-token data to accommodate the larger item in the row.
+   // Returns true if this function adjusted the break-token data in any way.
+-  auto ExpandRow = [&]() -> bool {
++  auto ExpandRow = [&, &layout_data = layout_data]() -> bool {
+     if (max_row_expansion == 0)
+       return false;
+ 
+@@ -3963,7 +3963,7 @@ void NGGridLayoutAlgorithm::PlaceGridItemsForFragmentation(
+   // Shifts the row where we wish to take a breakpoint (indicated by
+   // |breakpoint_row_set_index|) into the next fragmentainer.
+   // Returns true if this function adjusted the break-token data in any way.
+-  auto ShiftBreakpointIntoNextFragmentainer = [&]() -> bool {
++  auto ShiftBreakpointIntoNextFragmentainer = [&, &layout_data = layout_data]() -> bool {
+     if (breakpoint_row_set_index == kNotFound)
+       return false;
+ 
+-- 
+2.42.1
+

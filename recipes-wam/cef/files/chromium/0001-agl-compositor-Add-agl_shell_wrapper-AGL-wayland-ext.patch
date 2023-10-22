@@ -1,9 +1,13 @@
-From 7e927a21ecaa70c14873d5f06667dfc3bdaa4d25 Mon Sep 17 00:00:00 2001
+From 019d5dea79b9ac8ec17d5925546aab66473f67f5 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Mon, 15 May 2023 20:32:06 +0200
-Subject: [PATCH 5/9] Add the essential parts of wayland extensions and
- agl_shell
+Subject: [PATCH 01/33] [agl][compositor] Add agl_shell_wrapper / AGL wayland
+ extension
 
+This is a backport of the chages we did on top of chromium webosose to
+be able to communicate with the agl-compositor
+
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
 ---
  ui/base/ui_base_switches.cc                   |   2 +
  ui/base/ui_base_switches.h                    |   3 +
@@ -18,9 +22,9 @@ Subject: [PATCH 5/9] Add the essential parts of wayland extensions and
  .../agl/host/wayland_extensions_agl_impl.h    |  54 ++++++
  .../extensions/agl/protocol/agl-shell.xml     | 179 ++++++++++++++++++
  .../wayland/host/wayland_connection.cc        |  12 +-
- .../wayland/host/wayland_connection.h         |   6 +
+ .../wayland/host/wayland_connection.h         |   4 +
  .../wayland/host/wayland_extensions.h         |  56 ++++++
- 15 files changed, 722 insertions(+), 2 deletions(-)
+ 15 files changed, 720 insertions(+), 2 deletions(-)
  create mode 100644 ui/ozone/platform/wayland/extensions/agl/BUILD.gn
  create mode 100644 ui/ozone/platform/wayland/extensions/agl/common/wayland_object_agl.cc
  create mode 100644 ui/ozone/platform/wayland/extensions/agl/common/wayland_object_agl.h
@@ -33,10 +37,10 @@ Subject: [PATCH 5/9] Add the essential parts of wayland extensions and
  create mode 100644 ui/ozone/platform/wayland/host/wayland_extensions.h
 
 diff --git a/ui/base/ui_base_switches.cc b/ui/base/ui_base_switches.cc
-index f8556679a79d8..e72ae83737c04 100644
+index 514bb3cdb580d..d94e2c5e78306 100644
 --- a/ui/base/ui_base_switches.cc
 +++ b/ui/base/ui_base_switches.cc
-@@ -100,4 +100,6 @@ const char kUIDisablePartialSwap[] = "ui-disable-partial-swap";
+@@ -112,4 +112,6 @@ const char kUIDisablePartialSwap[] = "ui-disable-partial-swap";
  // Enables the ozone x11 clipboard for linux-chromeos.
  const char kUseSystemClipboard[] = "use-system-clipboard";
  
@@ -44,10 +48,10 @@ index f8556679a79d8..e72ae83737c04 100644
 +
  }  // namespace switches
 diff --git a/ui/base/ui_base_switches.h b/ui/base/ui_base_switches.h
-index d35e544f2bc2f..019ba0e5151e5 100644
+index ec664b866c5d2..cf483e0339072 100644
 --- a/ui/base/ui_base_switches.h
 +++ b/ui/base/ui_base_switches.h
-@@ -45,6 +45,9 @@ COMPONENT_EXPORT(UI_BASE) extern const char kTopChromeTouchUiEnabled[];
+@@ -53,6 +53,9 @@ COMPONENT_EXPORT(UI_BASE) extern const char kTopChromeTouchUiEnabled[];
  COMPONENT_EXPORT(UI_BASE) extern const char kUIDisablePartialSwap[];
  COMPONENT_EXPORT(UI_BASE) extern const char kUseSystemClipboard[];
  
@@ -58,23 +62,23 @@ index d35e544f2bc2f..019ba0e5151e5 100644
  COMPONENT_EXPORT(UI_BASE) extern const char kDisallowNonExactResourceReuse[];
  COMPONENT_EXPORT(UI_BASE) extern const char kMangleLocalizedStrings[];
 diff --git a/ui/ozone/platform/wayland/BUILD.gn b/ui/ozone/platform/wayland/BUILD.gn
-index e0f0d7dea3747..1a2f889dc8947 100644
+index ae763d441d55c..8a436de0fafe3 100644
 --- a/ui/ozone/platform/wayland/BUILD.gn
 +++ b/ui/ozone/platform/wayland/BUILD.gn
-@@ -407,6 +407,13 @@ source_set("wayland") {
-     ]
-   }
+@@ -397,6 +397,13 @@ source_set("wayland") {
+   ]
  
+   configs += [ "//third_party/khronos:khronos_headers" ]
++
 +  sources += [
 +   "host/wayland_extensions.h",
 +   "host/wayland_extensions_stub.cc",
 +  ]
 +
 +  deps += [ "extensions/agl" ]
-+
-   configs += [ "//third_party/khronos:khronos_headers" ]
  }
  
+ source_set("test_support") {
 diff --git a/ui/ozone/platform/wayland/extensions/agl/BUILD.gn b/ui/ozone/platform/wayland/extensions/agl/BUILD.gn
 new file mode 100644
 index 0000000000000..ce289bc5dbbca
@@ -771,20 +775,20 @@ index 0000000000000..ad5553d61f189
 +  </interface>
 +</protocol>
 diff --git a/ui/ozone/platform/wayland/host/wayland_connection.cc b/ui/ozone/platform/wayland/host/wayland_connection.cc
-index 6d44128e56458..93427c52e1284 100644
+index ad3bbd6e37157..7a47d4a636998 100644
 --- a/ui/ozone/platform/wayland/host/wayland_connection.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_connection.cc
-@@ -64,6 +64,8 @@
+@@ -68,6 +68,8 @@
  #include "ui/ozone/platform/wayland/host/zwp_primary_selection_device_manager.h"
  #include "ui/platform_window/common/platform_window_defaults.h"
  
 +#include "ui/ozone/platform/wayland/host/wayland_extensions.h"
 +
- #if defined(USE_LIBWAYLAND_STUBS)
- #include <dlfcn.h>
+ namespace ui {
  
-@@ -238,6 +240,10 @@ bool WaylandConnection::Initialize() {
-     return false;
+ namespace {
+@@ -212,6 +214,10 @@ bool WaylandConnection::Initialize(bool use_threaded_polling) {
+     use_threaded_polling = false;
    }
  
 +  if (!extensions_) {
@@ -794,31 +798,31 @@ index 6d44128e56458..93427c52e1284 100644
    // Now that the connection with the display server has been properly
    // estabilished, initialize the event source and input objects.
    DCHECK(!event_source_);
-@@ -264,7 +270,7 @@ bool WaylandConnection::Initialize() {
+@@ -243,7 +249,7 @@ bool WaylandConnection::Initialize(bool use_threaded_polling) {
      LOG(ERROR) << "No wl_shm object";
      return false;
    }
--  if (!shell_v6_ && !shell_) {
-+  if (!shell_v6_ && !shell_ && !(extensions_ && extensions_->HasShellObject())) {
+-  if (!shell_) {
++  if (!shell_  && !(extensions_ && extensions_->HasShellObject())) {
      LOG(ERROR) << "No Wayland shell found";
      return false;
    }
-@@ -434,7 +440,9 @@ void WaylandConnection::Global(void* data,
-   auto* connection = static_cast<WaylandConnection*>(data);
- 
-   auto factory_it = connection->global_object_factories_.find(interface);
--  if (factory_it != connection->global_object_factories_.end()) {
-+  if (connection->extensions_->Bind(registry, name, interface, version)) {
+@@ -538,7 +544,9 @@ void WaylandConnection::HandleGlobal(wl_registry* registry,
+                                      const char* interface,
+                                      uint32_t version) {
+   auto factory_it = global_object_factories_.find(interface);
+-  if (factory_it != global_object_factories_.end()) {
++  if (extensions_->Bind(registry, name, interface, version)) {
 +    DVLOG(1) << "Successfully bound to " << interface;
-+  } else if (factory_it != connection->global_object_factories_.end()) {
-     (*factory_it->second)(connection, registry, name, interface, version);
-   } else if (!connection->compositor_ &&
-              strcmp(interface, "wl_compositor") == 0) {
++  } else if (factory_it != global_object_factories_.end()) {
+     (*factory_it->second)(this, registry, name, interface, version);
+   } else if (!compositor_ && strcmp(interface, "wl_compositor") == 0) {
+     compositor_ = wl::Bind<wl_compositor>(
 diff --git a/ui/ozone/platform/wayland/host/wayland_connection.h b/ui/ozone/platform/wayland/host/wayland_connection.h
-index d33959ad4066f..dfd1d060c73f2 100644
+index 6659bc54bd475..ba293e5bcd088 100644
 --- a/ui/ozone/platform/wayland/host/wayland_connection.h
 +++ b/ui/ozone/platform/wayland/host/wayland_connection.h
-@@ -45,6 +45,7 @@ class WaylandBufferManagerHost;
+@@ -50,6 +50,7 @@ class WaylandBufferManagerHost;
  class WaylandCursor;
  class WaylandCursorBufferListener;
  class WaylandEventSource;
@@ -826,7 +830,7 @@ index d33959ad4066f..dfd1d060c73f2 100644
  class WaylandOutputManager;
  class WaylandSeat;
  class WaylandZAuraShell;
-@@ -185,6 +186,8 @@ class WaylandConnection {
+@@ -201,6 +202,8 @@ class WaylandConnection {
  
    WaylandZAuraShell* zaura_shell() const { return zaura_shell_.get(); }
  
@@ -835,16 +839,14 @@ index d33959ad4066f..dfd1d060c73f2 100644
    WaylandZcrColorManager* zcr_color_manager() const {
      return zcr_color_manager_.get();
    }
-@@ -424,6 +427,9 @@ class WaylandConnection {
+@@ -486,6 +489,7 @@ class WaylandConnection {
    std::unique_ptr<OverlayPrioritizer> overlay_prioritizer_;
    std::unique_ptr<SurfaceAugmenter> surface_augmenter_;
- 
+   std::unique_ptr<SinglePixelBuffer> single_pixel_buffer_;
 +  std::unique_ptr<WaylandExtensions> extensions_;
-+
-+
+ 
    // Clipboard-related objects. |clipboard_| must be declared after all
    // DeviceManager instances it depends on, otherwise tests may crash with
-   // UAFs while attempting to access already destroyed manager pointers.
 diff --git a/ui/ozone/platform/wayland/host/wayland_extensions.h b/ui/ozone/platform/wayland/host/wayland_extensions.h
 new file mode 100644
 index 0000000000000..3bd2fd7a211ae
@@ -908,5 +910,5 @@ index 0000000000000..3bd2fd7a211ae
 +
 +#endif  // UI_OZONE_PLATFORM_WAYLAND_HOST_WAYLAND_EXTENSIONS_H_
 -- 
-2.39.2
+2.42.1
 

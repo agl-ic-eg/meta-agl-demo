@@ -1,0 +1,69 @@
+From 99b897cb41f70222477ed55128b38ea78edc78ff Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Tue, 31 Oct 2023 10:29:32 -0300
+Subject: [PATCH 21/33] [M118-fix] Add multiple missing includes
+
+Fix build issues related to missing includes.
+
+Upstream-Status: Apparently the issue only happens on older versions of
+clang, but it's worth checking if it's applicable.
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ chrome/browser/ui/views/dark_mode_manager_linux.h  | 1 +
+ net/cert/pki/general_names.h                       | 1 +
+ net/filter/zstd_source_stream.cc                   | 1 +
+ ui/events/gesture_detection/motion_event_generic.h | 2 ++
+ 4 files changed, 5 insertions(+)
+
+diff --git a/chrome/browser/ui/views/dark_mode_manager_linux.h b/chrome/browser/ui/views/dark_mode_manager_linux.h
+index f9bcd034d141d..e98db21ef1767 100644
+--- a/chrome/browser/ui/views/dark_mode_manager_linux.h
++++ b/chrome/browser/ui/views/dark_mode_manager_linux.h
+@@ -6,6 +6,7 @@
+ #define CHROME_BROWSER_UI_VIEWS_DARK_MODE_MANAGER_LINUX_H_
+ 
+ #include <string>
++#include <vector>
+ 
+ #include "base/gtest_prod_util.h"
+ #include "base/memory/scoped_refptr.h"
+diff --git a/net/cert/pki/general_names.h b/net/cert/pki/general_names.h
+index e35e410a2fba7..7704837970178 100644
+--- a/net/cert/pki/general_names.h
++++ b/net/cert/pki/general_names.h
+@@ -6,6 +6,7 @@
+ #define NET_CERT_PKI_GENERAL_NAMES_H_
+ 
+ #include <memory>
++#include <string_view>
+ #include <vector>
+ 
+ #include "net/base/net_export.h"
+diff --git a/net/filter/zstd_source_stream.cc b/net/filter/zstd_source_stream.cc
+index bd337d14366bb..551729ac542b7 100644
+--- a/net/filter/zstd_source_stream.cc
++++ b/net/filter/zstd_source_stream.cc
+@@ -5,6 +5,7 @@
+ #include "net/filter/zstd_source_stream.h"
+ 
+ #include <algorithm>
++#include <unordered_map>
+ #include <utility>
+ 
+ #define ZSTD_STATIC_LINKING_ONLY
+diff --git a/ui/events/gesture_detection/motion_event_generic.h b/ui/events/gesture_detection/motion_event_generic.h
+index 5460f7f8adf46..e508335d47ae9 100644
+--- a/ui/events/gesture_detection/motion_event_generic.h
++++ b/ui/events/gesture_detection/motion_event_generic.h
+@@ -5,6 +5,8 @@
+ #ifndef UI_EVENTS_GESTURE_DETECTION_MOTION_EVENT_GENERIC_H_
+ #define UI_EVENTS_GESTURE_DETECTION_MOTION_EVENT_GENERIC_H_
+ 
++#include <vector>
++
+ #include <stddef.h>
+ #include <stdint.h>
+ 
+-- 
+2.42.1
+

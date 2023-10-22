@@ -1,0 +1,32 @@
+From f45fd7f3cd85c0d421c37202d0f4dff2f7925162 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Fri, 3 Nov 2023 15:53:09 -0300
+Subject: [PATCH 28/33] [M118-fix] Don't delete ZstdSourceStream copy/move
+ ctors
+
+std::unique_ptr requires the deleted ZstdSourceStream deleted
+constructors and it causes a build issue.
+
+Upstream-Status: Inappropriate
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ net/filter/zstd_source_stream.cc | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/filter/zstd_source_stream.cc b/net/filter/zstd_source_stream.cc
+index 551729ac542b7..81d4565608e7a 100644
+--- a/net/filter/zstd_source_stream.cc
++++ b/net/filter/zstd_source_stream.cc
+@@ -64,9 +64,6 @@ class ZstdSourceStream : public FilterSourceStream {
+     }
+   }
+ 
+-  ZstdSourceStream(const ZstdSourceStream&) = delete;
+-  ZstdSourceStream& operator=(const ZstdSourceStream&) = delete;
+-
+   ~ZstdSourceStream() override {
+     if (ZSTD_isError(decoding_result_)) {
+       ZSTD_ErrorCode error_code = ZSTD_getErrorCode(decoding_result_);
+-- 
+2.42.1
+

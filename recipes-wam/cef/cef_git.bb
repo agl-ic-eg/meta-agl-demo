@@ -7,151 +7,93 @@ LIC_FILES_CHKSUM = "\
     file://third_party/blink/renderer/core/LICENSE-LGPL-2;md5=36357ffde2b64ae177b2494445b79d21 \
     file://third_party/blink/renderer/core/LICENSE-LGPL-2.1;md5=a778a33ef338abbaf8b8a7c36b6eec80 \
 "
-CHROMIUM_URL = "github.com/rogerzanoni/chromium108.git"
-CHROMIUM_VERSION = "108.0.5359.125"
-BRANCH_chromium108 = "5359"
-# Taken from https://bitbucket.org/chromiumembedded/cef/src/5615/CHROMIUM_BUILD_COMPATIBILITY.txt
-SRCREV_chromium108 = "ef52580d516c7f65e11cb7de66cfb3b3507a2219"
-SRCREV_cef = "a98cd4cdc0fdc49b6c38ba10cec800922745441e"
+
+CHROMIUM_VERSION = "118.0.5993.80"
+BRANCH = "5993"
+SRCREV = "3cffa575446727e2fe1f6499efa21f8e096e8ca0"
+
 GN_TARGET_CPU = "${@gn_arch_name('${TUNE_ARCH}')}"
 
-PV = "${CHROMIUM_VERSION}.${BRANCH_chromium108}+git"
+PV = "${CHROMIUM_VERSION}.${BRANCH}+git"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/cef:"
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/chromium:"
 
+# The [agl]-prefixed patches are the changes needed to make WAM work with
+# agl-compositor. The [meta-browser] patches comes from the https://github.com/OSSystems/meta-browser
+# project that does similar work on keeping up to the new chromium milestones
+# and the [MXX-Fix] patches are the fixes done by us to fix build issues for
+# the current chromium milestone. 
+# For more information about the current milestones: https://chromiumdash.appspot.com/releases?platform=Linux
 SRC_URI = "\
-    git://${CHROMIUM_URL};branch=${BRANCH_chromium108};protocol=https;rev=${SRCREV_chromium108};name=chromium108;destsuffix=git/chromium/src \
-    file://0001-sql-relax-constraints-on-VirtualCursor-layout.patch \
-    file://0002-Don-t-look-for-depot_tools-in-chrommium-s-third_part.patch \
-    file://0003-Remove-the-GN-settings-done-for-clang-that-conflict-.patch \
-    file://0004-Don-t-use-DRI-for-renesas.patch \
-    file://0005-Add-the-essential-parts-of-wayland-extensions-and-ag.patch \
-    file://0006-Add-webos-agl-waylandwindow-window-tree-host-essenti.patch \
-    file://0007-Only-bind-to-agl_shell-if-it-s-the-browser-process.patch \
-    file://0008-Add-a-method-to-check-if-the-agl-window-is-configure.patch \
-    file://0009-Start-using-agl-shell-version-4.patch \
+    https://commondatastorage.googleapis.com/chromium-browser-official/chromium-${CHROMIUM_VERSION}.tar.xz \
+    file://0001-agl-compositor-Add-agl_shell_wrapper-AGL-wayland-ext.patch \
+    file://0002-agl-Add-waylandwindow-window-tree-host-essential-par.patch \
+    file://0003-agl-Only-bind-to-agl_shell-if-it-s-the-browser-proce.patch \
+    file://0004-agl-Add-a-method-to-check-if-the-agl-window-is-confi.patch \
+    file://0005-agl-Start-using-agl-shell-version-4.patch \
+    file://0006-agl-Don-t-use-DRI-for-renesas.patch \
+    file://0007-meta-browser-Remove-the-GN-settings-done-for-clang-t.patch \
+    file://0008-meta-browser-Pass-no-static-libstdc-to-gen.py.patch \
+    file://0009-meta-browser-IWYU-Add-includes-for-size_t-and-int64_.patch \
+    file://0010-meta-browser-BUILD-do-not-specify-march-on-arm.patch \
+    file://0011-meta-browser-Avoid-parenthesized-initialization-of-a.patch \
+    file://0012-meta-browser-Fix-constexpr-variable-cannot-have-non-.patch \
+    file://0013-meta-browser-Add-missing-typename-s.patch \
+    file://0014-meta-browser-Avoid-std-ranges-find_if.patch \
+    file://0015-meta-browser-Avoid-capturing-structured-bindings.patch \
+    file://0016-meta-browser-Delete-compiler-options-not-available-i.patch \
+    file://0017-meta-browser-Don-t-pass-disable-auto-upgrade-debug-i.patch \
+    file://0018-meta-browser-Fix-undefined-symbol-PaintOpWriter-Seri.patch \
+    file://0019-upstream-Initialize-ServerCvc-with-designated-initia.patch \
+    file://0020-M118-fix-Don-t-look-for-depot_tools-in-chrommium-s-t.patch \
+    file://0021-M118-fix-Add-multiple-missing-includes.patch \
+    file://0022-M118-fix-Fix-aggregate-initialization-in-trace_log.patch \
+    file://0023-M118-fix-Add-missing-typename-keyword-in-multiple-st.patch \
+    file://0024-M118-fix-Fix-comparison-in-HostResolverCache.patch \
+    file://0025-M118-fix-Avoid-using-std-ranges-any_of-find_if-none_.patch \
+    file://0026-M118-fix-Add-deleted-constructors-operators.patch \
+    file://0027-M118-fix-Initialize-percentages-member-on-blink-Font.patch \
+    file://0028-M118-fix-Don-t-delete-ZstdSourceStream-copy-move-cto.patch \
+    file://0029-M118-fix-Fix-issue-with-structured-bindinds-captured.patch \
+    file://0030-M118-fix-Only-default-arm_use_neon-to-true-if-its-va.patch \
+    file://0031-M118-fix-Add-a-way-to-set-different-lib-paths-host-a.patch \
+    file://0032-M118-fix-zlib-Fix-arm-build.patch \
+    file://0033-M118-fix-Fix-skia-linker-issues-for-arm-neon.patch \
     \
-    git://bitbucket.org/chromiumembedded/cef.git;branch=${BRANCH_chromium108};protocol=https;rev=${SRCREV_cef};name=cef;destsuffix=git/chromium/src/cef \
+    git://bitbucket.org/chromiumembedded/cef.git;branch=${BRANCH};protocol=https;rev=${SRCREV};name=cef;destsuffix=chromium-${CHROMIUM_VERSION}/cef \
     file://0001-Add-an-option-to-use-an-output-directory-outside-src.patch;patchdir=cef \
     file://0002-Add-an-option-to-override-the-default-distrib-direct.patch;patchdir=cef \
     file://0003-Add-an-option-to-use-an-alternative-base-output-dire.patch;patchdir=cef \
     file://0004-Add-an-option-to-bypass-sysroot-checking-and-force.patch;patchdir=cef \
-    file://0005-Linux-Fix-build-without-X11-fixes-issue-3431.patch;patchdir=cef \
-    file://0006-Add-AGL-wayland-window-related-calls.patch;patchdir=cef \
-    file://0007-Add-a-method-to-check-if-the-agl-window-is-configure.patch;patchdir=cef \
-    file://0008-Add-the-SetActivateRegion-method.patch;patchdir=cef \
-    file://0009-Allow-passing-the-app_id-on-widget-creation.patch;patchdir=cef \
-    file://0010-Update-generated-api-wrapper-files.patch;patchdir=cef \
+    file://0005-Add-AGL-wayland-window-related-calls.patch;patchdir=cef \
+    file://0006-Add-a-method-to-check-if-the-agl-window-is-configure.patch;patchdir=cef \
+    file://0007-Add-the-SetActivateRegion-method.patch;patchdir=cef \
+    file://0008-Allow-passing-the-app_id-on-widget-creation.patch;patchdir=cef \
+    file://0009-Update-generated-api.patch;patchdir=cef \
+    file://0010-Make-patcher-work-outside-a-git-checkout.patch;patchdir=cef \ 
+    file://0011-Avoid-the-RuntimeError-dictionary-changed-size-durin.patch;patchdir=cef \
 "
 
-BASE_DIR = "${WORKDIR}/git/chromium"
-CHROMIUM_DIR = "${BASE_DIR}/src"
+SRC_URI[sha256sum] = "741c5528a151bc364999969077a13d7a283cfd0eaf34adf47de667a34e5e58ff"
+
+CHROMIUM_DIR = "${WORKDIR}/chromium-${CHROMIUM_VERSION}"
 CEF_DIR = "${CHROMIUM_DIR}/cef"
 DEPOT_TOOLS_DIR="${STAGING_DIR_NATIVE}${datadir}/depot_tools"
-S = "${BASE_DIR}/src"
+S = "${CHROMIUM_DIR}"
 B = "${WORKDIR}/build"
 
 OUT_PATH = "${B}/out/Release_GN_${GN_TARGET_CPU}"
 DIST_PATH = "${OUT_PATH}/dist/cef-minimal_${GN_TARGET_CPU}"
 CEF_DATA_PATH = "${datadir}/cef"
 
-DEPENDS:append = " curl clang-native gperf-native dbus libcxx compiler-rt libxkbcommon nss nss-native atk at-spi2-atk libdrm pango cairo virtual/egl qemu-native pciutils glib-2.0 pkgconfig-native pulseaudio xz-native"
+DEPENDS:append = " curl clang clang-native gperf-native gn-native dbus libcxx libcxx-native libpng libxslt jpeg compiler-rt libxkbcommon nss nss-native atk at-spi2-atk libdrm pango cairo virtual/egl qemu-native pciutils glib-2.0 pkgconfig-native pulseaudio xz-native compiler-rt compiler-rt-native"
 
 do_sync[depends] += "depot-tools-wam-native:do_populate_sysroot"
 do_configure[depends] += "depot-tools-wam-native:do_populate_sysroot"
 do_compile[depends] += "depot-tools-wam-native:do_populate_sysroot"
 
-DOWNLOAD_PGO_PROFILES="False"
-
-# Adapted from CEF's tools/gclient_hooks.py
-python do_gclient_config() {
-  import os
-  # Create gclient configuration file.
-  gclient_file = os.path.join(d.expand('${BASE_DIR}'), '.gclient')
-  # Exclude unnecessary directories. Intentionally written without newlines.
-  gclient_spec = \
-      "solutions = [{"+\
-        "'managed': False,"+\
-        "'name': 'src', "+\
-        "'url': '" + d.expand('https://${CHROMIUM_URL}') + "', "+\
-        "'custom_vars': {"+\
-          d.expand("'checkout_pgo_profiles': '${DOWNLOAD_PGO_PROFILES}'") +\
-        "}, "+\
-        "'custom_deps': {"+\
-          "'build': None, "+\
-          "'build/scripts/command_wrapper/bin': None, "+\
-          "'build/scripts/gsd_generate_index': None, "+\
-          "'build/scripts/private/data/reliability': None, "+\
-          "'build/scripts/tools/deps2git': None, "+\
-          "'build/third_party/lighttpd': None, "+\
-          "'commit-queue': None, "+\
-          "'depot_tools': None, "+\
-          "'src/chrome_frame/tools/test/reference_build/chrome': None, "+\
-          "'src/chrome/tools/test/reference_build/chrome_linux': None, "+\
-          "'src/chrome/tools/test/reference_build/chrome_mac': None, "+\
-          "'src/chrome/tools/test/reference_build/chrome_win': None, "+\
-        "}, "+\
-        "'deps_file': 'DEPS', "+\
-        "'safesync_url': ''"+\
-      "}]"
-
-  with open(gclient_file, 'w+', encoding='utf-8') as fp:
-    fp.write(gclient_spec)
-}
-addtask do_gclient_config after do_unpack before do_configure
-
-# Mostly adapted from CEF's tools/automate/automate-git.py
-do_sync[network] = "1"
-python do_sync() {
-  import os
-  def cef_run(command_line, working_dir):
-    import subprocess
-    env = os.environ
-    env['PATH'] = d.expand("${DEPOT_TOOLS_DIR}") + os.pathsep + env['PATH']
-    env['DEPOT_TOOLS_UPDATE'] = "0"
-    env['GCLIENT_PY3'] = "1"
-
-    subprocess.check_output(command_line.split(),
-                            cwd=working_dir,
-                            env=env,
-                            shell=False,
-                            stderr=subprocess.STDOUT)
-
-  def cef_apply_patch(name, patches_path=os.path.join(d.expand("${CEF_DIR}"), 'patch', 'patches')):
-    patch_file = os.path.join(patches_path, name)
-    if not os.path.exists(patch_file + ".patch"):
-      # Attempt to apply the patch file.
-      patch_tool = os.path.join(d.expand("${CEF_DIR}"), 'tools', 'patcher.py')
-      cef_run('%s %s --patch-file "%s" --patch-dir "%s"' %
-              ("python3", patch_tool, patch_file, d.expand("${CHROMIUM_DIR}")),
-              d.expand("${CHROMIUM_DIR}"))
-
-  def cef_apply_deps_patch():
-    """ Patch the Chromium DEPS file before `gclient sync` if necessary. """
-    deps_path = os.path.join(d.expand("${CHROMIUM_DIR}"), 'DEPS')
-    if os.path.isfile(deps_path):
-      cef_apply_patch('DEPS')
-    else:
-      raise Exception("Path does not exist: DEPS")
-
-  def cef_apply_runhooks_patch():
-    """ Patch the Chromium runhooks files before `gclient runhooks` if necessary. """
-    cef_apply_patch('runhooks')
-
-  # CEF automation script usually applies
-  # applies patches before running sync and
-  # runhooks. This is taken directly from the
-  # automation script
-  def cef_do_sync():
-    cef_apply_deps_patch()
-    cef_run("gclient sync --reset --nohooks --jobs 16", d.expand("${CHROMIUM_DIR}"))
-    cef_apply_runhooks_patch()
-    cef_run("gclient runhooks --jobs 16", d.expand("${CHROMIUM_DIR}"))
-
-  cef_do_sync()
-}
-addtask do_sync after do_gclient_config before do_configure
+GN_UNBUNDLE_LIBS = " libjpeg libpng libxslt"
 
 # gn defaults from CEF wiki, except for use_sysroot
 GN_DEFINES = "use_sysroot=false \
@@ -177,6 +119,7 @@ GN_DEFINES:append = " \
               use_wayland_gbm=true \
               use_gnome_keyring=false \
               enable_remoting=false \
+              enable_js_type_check=false \
 "
 
 # ozone options
@@ -189,12 +132,13 @@ GN_DEFINES:append = " \
               use_system_minigbm=true \
               use_system_libdrm=true \
               use_system_libwayland=false \
+              use_system_libffi=true \
 "
 
 GN_DEFINES:append = " \
               dcheck_always_on=false \
               is_debug=false \
-              is_official_build=false \
+              is_official_build=true \
 "
 
 GN_DEFINES:append = " \
@@ -203,12 +147,14 @@ GN_DEFINES:append = " \
               use_dri=false \
 "
 
-# Disable PGO optimizations
-GN_DEFINES:append = " chrome_pgo_phase=0 "
-
 RUNTIME = "llvm"
 TOOLCHAIN = "clang"
 TOOLCHAIN:class-native = "clang"
+LIBCPLUSPLUS = "-stdlib=libc++"
+
+BUILD_CPPFLAGS:append:runtime-llvm = " -isysroot=${STAGING_DIR_NATIVE} -stdlib=libc++"
+BUILD_LDFLAGS:append:runtime-llvm = " -rtlib=libgcc -unwindlib=libgcc -stdlib=libc++ -lc++abi -rpath ${STAGING_LIBDIR_NATIVE}"
+CXXFLAGS:append:runtime-llvm = " -isysroot=${STAGING_DIR_NATIVE} -stdlib=libc++"
 
 BUILD_AR:toolchain-clang = "llvm-ar"
 BUILD_CC:toolchain-clang = "clang"
@@ -223,15 +169,76 @@ COMPATIBLE_MACHINE:armv7ve = "(.*)"
 COMPATIBLE_MACHINE:x86 = "(.*)"
 COMPATIBLE_MACHINE:x86-64 = "(.*)"
 
+# ARM builds need special additional flags (see ${S}/build/config/arm.gni).
+# If we do not pass |arm_arch| and friends to GN, it will deduce a value that
+# will then conflict with TUNE_CCARGS and CC.
+# Note that as of M61 in some corner cases parts of the build system disable
+# the "compiler_arm_fpu" GN config, whereas -mfpu is always passed via ${CC}.
+# We might want to rework that if there are issues in the future.
+def get_compiler_flag(params, param_name, d):
+    """Given a sequence of compiler arguments in |params|, returns the value of
+    an option |param_name| or an empty string if the option is not present."""
+    for param in params:
+      if param.startswith(param_name):
+        return param.split('=')[1]
+    return ''
+
+ARM_FLOAT_ABI = "${@bb.utils.contains('TUNE_FEATURES', 'callconvention-hard', 'hard', 'softfp', d)}"
+ARM_FPU = "${@get_compiler_flag(d.getVar('TUNE_CCARGS').split(), '-mfpu', d)}"
+ARM_TUNE = "${@get_compiler_flag(d.getVar('TUNE_CCARGS').split(), '-mcpu', d)}"
+ARM_VERSION:aarch64 = "8"
+ARM_VERSION:armv7a = "7"
+ARM_VERSION:armv7ve = "7"
+ARM_VERSION:armv6 = "6"
+
+# GN computes and defaults to it automatically where needed
+# forcing it from cmdline breaks build on places where it ends up
+# overriding what GN wants
+TUNE_CCARGS:remove = "-mthumb"
+
+GN_DEFINES:append:arm = " \
+        arm_float_abi=\"${ARM_FLOAT_ABI}\" \
+        arm_fpu=\"${ARM_FPU}\" \
+        arm_tune=\"${ARM_TUNE}\" \
+        arm_version=${ARM_VERSION} \
+"
+# tcmalloc's atomicops-internals-arm-v6plus.h uses the "dmb" instruction that
+# is not available on (some?) ARMv6 models, which causes the build to fail.
+GN_DEFINES:append:armv6 = ' use_allocator="none"'
+# The WebRTC code fails to build on ARMv6 when NEON is enabled.
+# https://bugs.chromium.org/p/webrtc/issues/detail?id=6574
+
+# Disable unknown attribute warnings that are generating tons of logs
+# TODO(rzanoni): check if https://chromium-review.googlesource.com/c/chromium/src/+/4322480
+# needs to be reverted
+BUILD_CXXFLAGS:remove = '-Wunknown-attributes'
+BUILD_CXXFLAGS:append = ' -Wno-unknown-attributes'
+BUILD_CPPFLAGS:remove = '-Wunknown-attributes'
+BUILD_CPPFLAGS:append = ' -Wno-unknown-attributes'
+CXXFLAGS:remove = '-Wunknown-attributes'
+CXXFLAGS:append = ' -Wno-unknown-attributes'
+CPPFLAGS:remove = '-Wunknown-attributes'
+CPPFLAGS:append = ' -Wno-unknown-attributes'
+
 GN_DEFINES:append = ' \
+              arm_use_neon=false \
               use_lld=true \
               use_gold=false \
+              use_custom_libcxx_for_host=false \
+              use_custom_libcxx=false \
+              chrome_pgo_phase=0 \
               gold_path="" \
               is_clang=true \
+              current_os="linux" \
               clang_use_chrome_plugins=false \
-              clang_base_path="${STAGING_BINDIR_NATIVE}" \
-              host_toolchain=\"//build/toolchain/cros:host\" \
-              use_custom_libcxx_for_host=false \
+              clang_base_path="${STAGING_DIR_NATIVE}/usr" \
+              clang_base_path_target="${STAGING_DIR_TARGET}/usr" \
+              clang_version="14.0.6" \
+              custom_toolchain="//build/toolchain/cros:target" \
+              host_toolchain="//build/toolchain/cros:host" \
+              v8_snapshot_toolchain="//build/toolchain/cros:v8_snapshot" \
+              target_cpu="${GN_TARGET_CPU}" \
+              use_v8_context_snapshot=false \
               cros_host_ar=\"${BUILD_AR}\" \
               cros_host_cc=\"${BUILD_CC}\" \
               cros_host_cxx=\"${BUILD_CXX}\" \
@@ -239,9 +246,6 @@ GN_DEFINES:append = ' \
               cros_host_extra_cppflags=\"${BUILD_CPPFLAGS}\" \
               cros_host_extra_cxxflags=\"${BUILD_CXXFLAGS}\" \
               cros_host_extra_ldflags=\"${BUILD_LDFLAGS}\" \
-              custom_toolchain=\"//build/toolchain/cros:target\" \
-              use_custom_libcxx=false \
-              target_cpu=\"${GN_TARGET_CPU}\" \
               cros_target_ar=\"${AR}\" \
               cros_target_cc=\"${CC}\" \
               cros_target_cxx=\"${CXX}\" \
@@ -249,14 +253,13 @@ GN_DEFINES:append = ' \
               cros_target_extra_cppflags=\"${CPPFLAGS}\" \
               cros_target_extra_cxxflags=\"${CXXFLAGS}\" \
               cros_target_extra_ldflags=\"${LDFLAGS}\" \
-              v8_snapshot_toolchain=\"//build/toolchain/cros:v8_snapshot\" \
               cros_v8_snapshot_ar=\"${BUILD_AR}\" \
               cros_v8_snapshot_cc=\"${BUILD_CC}\" \
               cros_v8_snapshot_cxx=\"${BUILD_CXX}\" \
-              cros_v8_snapshot_cppflags=\"${CPPFLAGS}\" \
-              cros_v8_snapshot_cxxflags=\"${CXXFLAGS}\" \
-              cros_v8_snapshot_ldflags=\"${LDFLAGS}\" \
-              use_v8_context_snapshot=false \
+              cros_v8_snapshot_ld=\"${BUILD_CXX}\" \
+              cros_v8_snapshot_cppflags=\"${BUILD_CXXFLAGS}\" \
+              cros_v8_snapshot_cxxflags=\"${BUILD_CXXFLAGS}\" \
+              cros_v8_snapshot_ldflags=\"${BUILD_LDFLAGS}\" \
 '
 
 PACKAGECONFIG ??= "upower use-egl"
@@ -275,6 +278,15 @@ do_configure () {
     export GCLIENT_PY3=1
     export PATH="${DEPOT_TOOLS_DIR}:$PATH"
     export GN_DEFINES="${GN_DEFINES}"
+
+    cd ${S}
+    python3 ./build/linux/unbundle/replace_gn_files.py --system-libraries ${GN_UNBUNDLE_LIBS}
+
+    # Download a few dependencies.  Check the current chromium DEPS file when
+    # upgrading to a new milestone.
+    python3 third_party/depot_tools/download_from_google_storage.py --no_resume --extract --no_auth --bucket chromium-fonts -s third_party/test_fonts/test_fonts.tar.gz.sha1
+    python3 third_party/depot_tools/download_from_google_storage.py --no_resume --extract --no_auth --bucket chromium-nodejs/16.13.0 -s third_party/node/linux/node-linux-x64.tar.gz.sha1
+    python3 tools/rust/update_rust.py
 
     cd ${S}/cef
     python3 tools/gclient_hook.py --base-out-path ${B} --bypass-sysroot-check

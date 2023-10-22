@@ -1,7 +1,7 @@
-From 4b16bef4a219af372d022f0ec4f15befb1449808 Mon Sep 17 00:00:00 2001
+From 26d02223b99765f4c6d5ce5807947d4e0c925a0b Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Tue, 16 May 2023 16:11:15 +0200
-Subject: [PATCH 04/10] Add an option to bypass sysroot checking and force
+Subject: [PATCH 4/9] Add an option to bypass sysroot checking and force
 
 ---
  tools/gclient_hook.py |  8 +++++++-
@@ -9,7 +9,7 @@ Subject: [PATCH 04/10] Add an option to bypass sysroot checking and force
  2 files changed, 21 insertions(+), 15 deletions(-)
 
 diff --git a/tools/gclient_hook.py b/tools/gclient_hook.py
-index 4e5f9f687..6a7bc0d46 100644
+index 3d4375ec0..c971b9399 100644
 --- a/tools/gclient_hook.py
 +++ b/tools/gclient_hook.py
 @@ -20,6 +20,12 @@ parser.add_option(
@@ -25,9 +25,9 @@ index 4e5f9f687..6a7bc0d46 100644
  
  (options, args) = parser.parse_args()
  
-@@ -141,7 +147,7 @@ if platform == 'windows':
-     gn_args['visual_studio_runtime_dirs'] = os.environ['VS_CRT_ROOT']
+@@ -144,7 +150,7 @@ if platform == 'windows':
      gn_args['windows_sdk_path'] = os.environ['SDK_ROOT']
+     gn_args['windows_sdk_version'] = os.environ['SDK_VERSION']
  
 -configs = GetAllPlatformConfigs(gn_args)
 +configs = GetAllPlatformConfigs(gn_args, bypass_sysroot_check=options.bypasssysrootcheck)
@@ -35,10 +35,10 @@ index 4e5f9f687..6a7bc0d46 100644
    # Create out directories and write the args.gn file.
    base_out_dir = src_dir
 diff --git a/tools/gn_args.py b/tools/gn_args.py
-index 563a6b9cc..f782bd765 100644
+index c1acac17b..80545da49 100644
 --- a/tools/gn_args.py
 +++ b/tools/gn_args.py
-@@ -323,7 +323,7 @@ def GetMergedArgs(build_args):
+@@ -327,7 +327,7 @@ def GetMergedArgs(build_args):
    return MergeDicts(dict, required)
  
  
@@ -47,7 +47,7 @@ index 563a6b9cc..f782bd765 100644
    """
    Validate GN arg combinations that we know about. Also provide suggestions
    where appropriate.
-@@ -360,11 +360,11 @@ def ValidateArgs(args):
+@@ -365,11 +365,11 @@ def ValidateArgs(args):
  
    if platform == 'linux':
      if target_cpu == 'x86':
@@ -62,7 +62,7 @@ index 563a6b9cc..f782bd765 100644
  
    # ASAN requires Release builds.
    if is_asan:
-@@ -452,7 +452,7 @@ def ValidateArgs(args):
+@@ -460,7 +460,7 @@ def ValidateArgs(args):
            "visual_studio_path requires INCLUDE, LIB and PATH env variables"
  
  
@@ -71,7 +71,7 @@ index 563a6b9cc..f782bd765 100644
    """
    Return merged GN args for the configuration and validate.
    """
-@@ -478,11 +478,11 @@ def GetConfigArgs(args, is_debug, cpu):
+@@ -490,11 +490,11 @@ def GetConfigArgs(args, is_debug, cpu):
        if key.startswith('arm_'):
          del result[key]
  
@@ -85,7 +85,7 @@ index 563a6b9cc..f782bd765 100644
    """
    Return merged GN args for the cef_sandbox configuration and validate.
    """
-@@ -548,7 +548,7 @@ def LinuxSysrootExists(cpu):
+@@ -566,7 +566,7 @@ def LinuxSysrootExists(cpu):
    return os.path.isdir(os.path.join(sysroot_root, sysroot_name))
  
  
@@ -94,7 +94,7 @@ index 563a6b9cc..f782bd765 100644
    """
    Return a map of directory name to GN args for the current platform.
    """
-@@ -568,10 +568,10 @@ def GetAllPlatformConfigs(build_args):
+@@ -586,10 +586,10 @@ def GetAllPlatformConfigs(build_args):
  
    if platform == 'linux':
      use_sysroot = GetArgValue(args, 'use_sysroot')
@@ -107,7 +107,7 @@ index 563a6b9cc..f782bd765 100644
            supported_cpus.append(cpu)
          else:
            msg('Not generating %s configuration due to missing sysroot directory'
-@@ -593,17 +593,17 @@ def GetAllPlatformConfigs(build_args):
+@@ -611,17 +611,17 @@ def GetAllPlatformConfigs(build_args):
  
    for cpu in supported_cpus:
      if create_debug:
@@ -130,5 +130,5 @@ index 563a6b9cc..f782bd765 100644
    return result
  
 -- 
-2.39.2
+2.42.0
 

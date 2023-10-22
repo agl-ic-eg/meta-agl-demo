@@ -1,0 +1,118 @@
+From 713ccd00a541ded20b20c84c7d985f87d3a88d00 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Wed, 18 Oct 2023 15:59:13 -0300
+Subject: [PATCH 10/11] Make patcher work outside a git checkout
+
+---
+ tools/make_distrib.py | 21 +++++++++++----------
+ tools/patch_util.py   | 40 ++++++++++++++++++++++++++++++++++++++++
+ tools/patcher.py      |  3 +++
+ 3 files changed, 54 insertions(+), 10 deletions(-)
+ create mode 100644 tools/patch_util.py
+
+diff --git a/tools/make_distrib.py b/tools/make_distrib.py
+index 6ed748fe7..a8db7947e 100644
+--- a/tools/make_distrib.py
++++ b/tools/make_distrib.py
+@@ -621,20 +621,21 @@ cef_url = git.get_url(cef_dir)
+ cef_rev = git.get_hash(cef_dir)
+ cef_commit_number = git.get_commit_number(cef_dir)
+ 
+-if not git.is_checkout(src_dir):
+-  raise Exception('Not a valid checkout: %s' % (src_dir))
+-
+-# retrieve information for Chromium
+-chromium_url = git.get_url(src_dir)
+-chromium_rev = git.get_hash(src_dir)
+-
+-date = get_date()
+-
+-# format version strings
+ formatter = VersionFormatter()
++# format version strings
+ cef_ver = formatter.get_version_string()
+ chromium_ver = formatter.get_chromium_version_string()
+ 
++if not git.is_checkout(src_dir):
++  chromium_url = git.get_url(src_dir)
++  chromium_rev = git.get_hash(src_dir)
++else:
++  # retrieve information for Chromium
++  chromium_rev = chromium_ver
++  chromium_url = 'https://commondatastorage.googleapis.com/chromium-browser-official/chromium-%s.tar.xz' % chromium_ver
++
++date = get_date()
++
+ # list of output directories to be archived
+ archive_dirs = []
+ 
+diff --git a/tools/patch_util.py b/tools/patch_util.py
+new file mode 100644
+index 000000000..2025e97e0
+--- /dev/null
++++ b/tools/patch_util.py
+@@ -0,0 +1,40 @@
++from __future__ import absolute_import
++from exec_util import exec_cmd
++import os
++import sys
++
++def patch_apply_patch_file(patch_path, patch_dir):
++  """ Apply |patch_path| to files in |patch_dir|. """
++  patch_name = os.path.basename(patch_path)
++  sys.stdout.write('\nApply %s in %s\n' % (patch_name, patch_dir))
++
++  if not os.path.isfile(patch_path):
++    sys.stdout.write('... patch file does not exist.\n')
++    return 'fail'
++
++  # Apply the patch file. This should always succeed because the previous
++  # command succeeded.
++
++  cmd = 'patch -p0 -N --dry-run --ignore-whitespace --input=%s' % patch_path
++  result = exec_cmd(cmd, patch_dir)
++  if result['ret'] != 0:
++    return 'skip'
++
++  cmd = 'patch --ignore-whitespace -p0 --input=%s --verbose' % patch_path
++  result = exec_cmd(cmd, patch_dir)
++
++  sys.stdout.write('Err: \t%s\n' % result['err'])
++  sys.stdout.write('Out: \t%s\n' % result['out'])
++
++  if result['err'].find('FAILED') >= 0:
++    sys.stdout.write('... error applying patch.\n')
++    write_indented_output(result['err'].replace('<stdin>', patch_name))
++    return 'fail'
++
++  if result['err'] == '':
++    sys.stdout.write('... successfully applied.\n')
++  else:
++    sys.stdout.write('... successfully applied (with warnings):\n')
++    sys.stdout.write('\t%s\n' % result['err'])
++  return 'apply'
++
+diff --git a/tools/patcher.py b/tools/patcher.py
+index 023e91d4b..fa6eb1946 100644
+--- a/tools/patcher.py
++++ b/tools/patcher.py
+@@ -9,6 +9,7 @@ import os
+ import sys
+ from file_util import *
+ from git_util import git_apply_patch_file
++from patch_util import patch_apply_patch_file
+ 
+ # Cannot be loaded as a module.
+ if __name__ != "__main__":
+@@ -46,6 +47,8 @@ def apply_patch_file(patch_file, patch_dir):
+       return 'skip'
+ 
+   result = git_apply_patch_file(patch_path, patch_dir)
++  if result == 'fail':
++    result = patch_apply_patch_file(patch_path, patch_dir)
+   if result == 'fail':
+     write_note('ERROR',
+                'This patch failed to apply. Your build will not be correct.')
+-- 
+2.42.1
+

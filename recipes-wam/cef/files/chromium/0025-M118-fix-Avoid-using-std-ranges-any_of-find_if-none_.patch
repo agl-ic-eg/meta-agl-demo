@@ -1,0 +1,92 @@
+From ded11a971e690a00075c4f337fa09469b69b69a5 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Mon, 30 Oct 2023 15:03:04 -0300
+Subject: [PATCH 25/33] [M118-fix] Avoid using
+ std::ranges::any_of/find_if/none_of/all_of
+
+Those functions are available only in newer c++ standards(C++20).
+Chromium defines those functions in base::ranges.
+
+Upstream-Status: Inappropriate
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ chrome/browser/ui/webauthn/sheet_models.cc                   | 2 +-
+ .../browser/webauthn/authenticator_request_dialog_model.cc   | 2 +-
+ .../webauthn/chrome_authenticator_request_delegate.cc        | 4 ++--
+ device/fido/get_assertion_request_handler.cc                 | 5 +++--
+ 4 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/chrome/browser/ui/webauthn/sheet_models.cc b/chrome/browser/ui/webauthn/sheet_models.cc
+index e72087c22dc84..1d1999fdc49c3 100644
+--- a/chrome/browser/ui/webauthn/sheet_models.cc
++++ b/chrome/browser/ui/webauthn/sheet_models.cc
+@@ -1499,7 +1499,7 @@ AuthenticatorMultiSourcePickerSheetModel::
+   using ICloudKeychainMech =
+       AuthenticatorRequestDialogModel::Mechanism::ICloudKeychain;
+   bool has_local_passkeys =
+-      std::ranges::any_of(dialog_model->mechanisms(), [](const auto& mech) {
++      base::ranges::any_of(dialog_model->mechanisms(), [](const auto& mech) {
+         return absl::holds_alternative<CredentialMech>(mech.type) &&
+                absl::get<CredentialMech>(mech.type).value().source !=
+                    device::AuthenticatorType::kPhone;
+diff --git a/chrome/browser/webauthn/authenticator_request_dialog_model.cc b/chrome/browser/webauthn/authenticator_request_dialog_model.cc
+index 7695aa00f44a8..fa983ddf1a166 100644
+--- a/chrome/browser/webauthn/authenticator_request_dialog_model.cc
++++ b/chrome/browser/webauthn/authenticator_request_dialog_model.cc
+@@ -495,7 +495,7 @@ void AuthenticatorRequestDialogModel::
+     // extra step. Jump to Windows instead.
+     if (base::FeatureList::IsEnabled(device::kWebAuthnNewPasskeyUI) &&
+         transport_availability_.has_win_native_api_authenticator &&
+-        std::ranges::all_of(mechanisms_, [](const auto& mech) {
++        base::ranges::all_of(mechanisms_, [](const auto& mech) {
+           return absl::holds_alternative<Mechanism::WindowsAPI>(mech.type) ||
+                  (absl::holds_alternative<Mechanism::Credential>(mech.type) &&
+                   absl::get<Mechanism::Credential>(mech.type).value().source ==
+diff --git a/chrome/browser/webauthn/chrome_authenticator_request_delegate.cc b/chrome/browser/webauthn/chrome_authenticator_request_delegate.cc
+index 15773fad86902..6ddd5cba1d6f3 100644
+--- a/chrome/browser/webauthn/chrome_authenticator_request_delegate.cc
++++ b/chrome/browser/webauthn/chrome_authenticator_request_delegate.cc
+@@ -886,8 +886,8 @@ void ChromeAuthenticatorRequestDelegate::OnTransportAvailabilityEnumerated(
+     if (data.has_platform_authenticator_credential ==
+             device::FidoRequestHandlerBase::RecognizedCredential::
+                 kHasRecognizedCredential &&
+-        std::ranges::none_of(data.recognized_credentials,
+-                             IsCredentialFromPlatformAuthenticator)) {
++        base::ranges::none_of(data.recognized_credentials,
++                              IsCredentialFromPlatformAuthenticator)) {
+       data.has_platform_authenticator_credential = device::
+           FidoRequestHandlerBase::RecognizedCredential::kNoRecognizedCredential;
+     }
+diff --git a/device/fido/get_assertion_request_handler.cc b/device/fido/get_assertion_request_handler.cc
+index 507cc2b46ddb6..80b6da1799c33 100644
+--- a/device/fido/get_assertion_request_handler.cc
++++ b/device/fido/get_assertion_request_handler.cc
+@@ -15,6 +15,7 @@
+ #include "base/functional/bind.h"
+ #include "base/json/json_writer.h"
+ #include "base/metrics/histogram_functions.h"
++#include "base/ranges/algorithm.h"
+ #include "base/stl_util.h"
+ #include "base/strings/string_number_conversions.h"
+ #include "base/timer/elapsed_timer.h"
+@@ -370,7 +371,7 @@ bool AllowListOnlyHybridOrInternal(const CtapGetAssertionRequest& request) {
+ 
+ bool AllowListIncludedTransport(const CtapGetAssertionRequest& request,
+                                 FidoTransportProtocol transport) {
+-  return std::ranges::any_of(
++  return base::ranges::any_of(
+       request.allow_list,
+       [transport](const PublicKeyCredentialDescriptor& cred) {
+         return cred.transports.empty() ||
+@@ -441,7 +442,7 @@ void GetAssertionRequestHandler::PreselectAccount(
+     PublicKeyCredentialDescriptor credential) {
+   DCHECK(!preselected_credential_);
+   DCHECK(request_.allow_list.empty() ||
+-         std::ranges::any_of(
++         base::ranges::any_of(
+              request_.allow_list,
+              [&credential](const PublicKeyCredentialDescriptor& desc) {
+                return desc.id == credential.id;
+-- 
+2.42.1
+

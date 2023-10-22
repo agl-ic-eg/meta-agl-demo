@@ -1,8 +1,8 @@
-From 22de50ac2371aed1e04e4cb248beabb7f8ad3ebe Mon Sep 17 00:00:00 2001
+From 89705cfc3a4e677dd97db36c3dc9b0aa97515760 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Thu, 27 Apr 2023 16:16:28 +0200
-Subject: [PATCH 3/9] Remove the GN settings done for clang that conflict with
- OE
+Subject: [PATCH 07/33] [meta-browser] Remove the GN settings done for clang
+ that conflict with OE
 
 clang cross compiler that is build with meta-clang has lot of these
 settings built-in and specifying them here confuses the compiler
@@ -18,14 +18,14 @@ Rebased-by: Maksim Sisov <msisov@igalia.com>
 Rebased-by: Randy MacLeod <randy.macleod@windriver.com>
 Rebased-by: Roger Zanoni <rzanoni@igalia.com>
 ---
- build/config/compiler/BUILD.gn | 37 ----------------------------------
- 1 file changed, 37 deletions(-)
+ build/config/compiler/BUILD.gn | 38 ----------------------------------
+ 1 file changed, 38 deletions(-)
 
 diff --git a/build/config/compiler/BUILD.gn b/build/config/compiler/BUILD.gn
-index 531b326c498d0..244a6757613d5 100644
+index 06812fb9c2188..db763b998c4fb 100644
 --- a/build/config/compiler/BUILD.gn
 +++ b/build/config/compiler/BUILD.gn
-@@ -924,11 +924,6 @@ config("compiler_cpu_abi") {
+@@ -1112,11 +1112,6 @@ config("compiler_cpu_abi") {
          ]
        }
      } else if (current_cpu == "arm") {
@@ -37,19 +37,20 @@ index 531b326c498d0..244a6757613d5 100644
        if (!is_nacl) {
          cflags += [
            "-march=$arm_arch",
-@@ -939,11 +934,6 @@ config("compiler_cpu_abi") {
+@@ -1126,12 +1121,6 @@ config("compiler_cpu_abi") {
+       if (arm_tune != "") {
          cflags += [ "-mtune=$arm_tune" ]
        }
-     } else if (current_cpu == "arm64") {
+-    } else if (current_cpu == "arm64") {
 -      if (is_clang && !is_android && !is_nacl && !is_fuchsia &&
 -          !(is_chromeos_lacros && is_chromeos_device)) {
 -        cflags += [ "--target=aarch64-linux-gnu" ]
 -        ldflags += [ "--target=aarch64-linux-gnu" ]
 -      }
-       if (is_android) {
-         # Outline atomics crash on Exynos 9810. http://crbug.com/1272795
-         cflags += [ "-mno-outline-atomics" ]
-@@ -955,9 +945,6 @@ config("compiler_cpu_abi") {
+     } else if (current_cpu == "mipsel" && !is_nacl) {
+       ldflags += [ "-Wl,--hash-style=sysv" ]
+       if (custom_toolchain == "") {
+@@ -1139,9 +1128,6 @@ config("compiler_cpu_abi") {
            if (is_android) {
              cflags += [ "--target=mipsel-linux-android" ]
              ldflags += [ "--target=mipsel-linux-android" ]
@@ -59,7 +60,7 @@ index 531b326c498d0..244a6757613d5 100644
            }
          } else {
            cflags += [ "-EL" ]
-@@ -1037,8 +1024,6 @@ config("compiler_cpu_abi") {
+@@ -1221,8 +1207,6 @@ config("compiler_cpu_abi") {
        ldflags += [ "-Wl,--hash-style=sysv" ]
        if (custom_toolchain == "") {
          if (is_clang) {
@@ -68,7 +69,7 @@ index 531b326c498d0..244a6757613d5 100644
          } else {
            cflags += [ "-EB" ]
            ldflags += [ "-EB" ]
-@@ -1086,9 +1071,6 @@ config("compiler_cpu_abi") {
+@@ -1270,9 +1254,6 @@ config("compiler_cpu_abi") {
            if (is_android) {
              cflags += [ "--target=mips64el-linux-android" ]
              ldflags += [ "--target=mips64el-linux-android" ]
@@ -78,7 +79,7 @@ index 531b326c498d0..244a6757613d5 100644
            }
          } else {
            cflags += [
-@@ -1146,8 +1128,6 @@ config("compiler_cpu_abi") {
+@@ -1330,8 +1311,6 @@ config("compiler_cpu_abi") {
        ldflags += [ "-Wl,--hash-style=sysv" ]
        if (custom_toolchain == "") {
          if (is_clang) {
@@ -87,7 +88,7 @@ index 531b326c498d0..244a6757613d5 100644
          } else {
            cflags += [
              "-EB",
-@@ -1309,23 +1289,6 @@ config("compiler_deterministic") {
+@@ -1494,23 +1473,6 @@ config("compiler_deterministic") {
        }
      }
    }
@@ -112,5 +113,5 @@ index 531b326c498d0..244a6757613d5 100644
  
  config("clang_revision") {
 -- 
-2.39.2
+2.42.1
 

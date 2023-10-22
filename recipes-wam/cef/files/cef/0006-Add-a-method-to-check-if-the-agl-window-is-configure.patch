@@ -1,7 +1,7 @@
-From b22b5302f20678bca5f03fe1738ce06fc799263b Mon Sep 17 00:00:00 2001
+From 7eefab1c1a8938145f9fb3a5d7a8fa58ca7ad695 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Fri, 30 Jun 2023 10:27:03 +0200
-Subject: [PATCH 07/10] Add a method to check if the agl window is configured
+Subject: [PATCH 6/9] Add a method to check if the agl window is configured
 
 ---
  include/views/cef_window.h             |  6 ++++++
@@ -12,10 +12,10 @@ Subject: [PATCH 07/10] Add a method to check if the agl window is configured
  5 files changed, 27 insertions(+), 5 deletions(-)
 
 diff --git a/include/views/cef_window.h b/include/views/cef_window.h
-index dfa7821bc..063529964 100644
+index 22fe2e2a1..c34963302 100644
 --- a/include/views/cef_window.h
 +++ b/include/views/cef_window.h
-@@ -381,6 +381,12 @@ class CefWindow : public CefPanel {
+@@ -399,6 +399,12 @@ class CefWindow : public CefPanel {
    /*--cef()--*/
    virtual void AglSetPanelApp(uint32_t edge) = 0;
  
@@ -29,10 +29,10 @@ index dfa7821bc..063529964 100644
  };
  
 diff --git a/libcef/browser/views/view_util.h b/libcef/browser/views/view_util.h
-index 505c66d94..20b97038b 100644
+index bc12a9ddc..bf657fd39 100644
 --- a/libcef/browser/views/view_util.h
 +++ b/libcef/browser/views/view_util.h
-@@ -148,6 +148,7 @@ void AglSetAppId(views::Widget* widget, const std::string& app_id);
+@@ -172,6 +172,7 @@ void AglSetAppId(views::Widget* widget, const std::string& app_id);
  void AglSetAppReady(views::Widget* widget);
  void AglSetBackGroundApp(views::Widget* widget);
  void AglSetPanelApp(views::Widget* widget, uint32_t edge);
@@ -41,10 +41,10 @@ index 505c66d94..20b97038b 100644
  // -----------------
  
 diff --git a/libcef/browser/views/view_util_aura.cc b/libcef/browser/views/view_util_aura.cc
-index 2ad2f3dc7..b5b4f414b 100644
+index 2dabf5eae..2946a2d81 100644
 --- a/libcef/browser/views/view_util_aura.cc
 +++ b/libcef/browser/views/view_util_aura.cc
-@@ -47,7 +47,7 @@ void AglActivateApp(views::Widget* widget, const std::string& app) {
+@@ -66,7 +66,7 @@ void AglActivateApp(views::Widget* widget, const std::string& app) {
    }
    aura::Window* window = widget->GetNativeWindow();
    if (window && window->GetRootWindow()) {
@@ -53,7 +53,7 @@ index 2ad2f3dc7..b5b4f414b 100644
    }
  }
  
-@@ -57,7 +57,7 @@ void AglSetAppId(views::Widget* widget, const std::string& app_id) {
+@@ -76,7 +76,7 @@ void AglSetAppId(views::Widget* widget, const std::string& app_id) {
    }
    aura::Window* window = widget->GetNativeWindow();
    if (window && window->GetRootWindow()) {
@@ -62,7 +62,7 @@ index 2ad2f3dc7..b5b4f414b 100644
    }
  }
  
-@@ -67,7 +67,7 @@ void AglSetAppReady(views::Widget* widget) {
+@@ -86,7 +86,7 @@ void AglSetAppReady(views::Widget* widget) {
    }
    aura::Window* window = widget->GetNativeWindow();
    if (window && window->GetRootWindow()) {
@@ -71,7 +71,7 @@ index 2ad2f3dc7..b5b4f414b 100644
    }
  }
  
-@@ -77,7 +77,7 @@ void AglSetBackGroundApp(views::Widget* widget) {
+@@ -96,7 +96,7 @@ void AglSetBackGroundApp(views::Widget* widget) {
    }
    aura::Window* window = widget->GetNativeWindow();
    if (window && window->GetRootWindow()) {
@@ -80,7 +80,7 @@ index 2ad2f3dc7..b5b4f414b 100644
    }
  }
  
-@@ -87,7 +87,17 @@ void AglSetPanelApp(views::Widget* widget, uint32_t edge) {
+@@ -106,7 +106,17 @@ void AglSetPanelApp(views::Widget* widget, uint32_t edge) {
    }
    aura::Window* window = widget->GetNativeWindow();
    if (window && window->GetRootWindow()) {
@@ -100,10 +100,10 @@ index 2ad2f3dc7..b5b4f414b 100644
  }
  
 diff --git a/libcef/browser/views/window_impl.cc b/libcef/browser/views/window_impl.cc
-index 22a4d39f6..1b5d196ab 100644
+index 8b347bf4a..8edac98b5 100644
 --- a/libcef/browser/views/window_impl.cc
 +++ b/libcef/browser/views/window_impl.cc
-@@ -544,6 +544,10 @@ void CefWindowImpl::AglSetPanelApp(uint32_t edge) {
+@@ -791,4 +791,8 @@ void CefWindowImpl::AglSetPanelApp(uint32_t edge) {
    view_util::AglSetPanelApp(widget_, edge);
  }
  
@@ -112,13 +112,11 @@ index 22a4d39f6..1b5d196ab 100644
 +}
 +
  // -----------------
- 
- void CefWindowImpl::SendKeyPress(int key_code, uint32 event_flags) {
 diff --git a/libcef/browser/views/window_impl.h b/libcef/browser/views/window_impl.h
-index ad02904f9..4ab77dbe6 100644
+index 20514fc32..7f7b47e1a 100644
 --- a/libcef/browser/views/window_impl.h
 +++ b/libcef/browser/views/window_impl.h
-@@ -139,6 +139,7 @@ class CefWindowImpl
+@@ -141,6 +141,7 @@ class CefWindowImpl
    void AglSetAppReady() override;
    void AglSetBackGroundApp() override;
    void AglSetPanelApp(uint32_t edge) override;
@@ -127,5 +125,5 @@ index ad02904f9..4ab77dbe6 100644
    // -----------------
  
 -- 
-2.39.2
+2.42.0
 

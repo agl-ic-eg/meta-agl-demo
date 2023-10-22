@@ -1,18 +1,23 @@
-From dd5ce9e0d0dbf55184a9c57c4c81eeaf9a7dd3a9 Mon Sep 17 00:00:00 2001
+From 814421a53454a9d35cd9d0799f68eaae8b7cf440 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Fri, 7 Apr 2023 16:28:51 +0200
-Subject: [PATCH 2/9] Don't look for depot_tools in chrommium's third_party
- folder
+Subject: [PATCH 20/33] [M118-fix] Don't look for depot_tools in chrommium's
+ third_party folder
 
+This caused an issue at the configure step before we starte using
+tarballs, we need to check if it still needed.
+
+Upstream-Status: Inappropriate
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
 ---
  build/find_depot_tools.py | 8 --------
  1 file changed, 8 deletions(-)
 
 diff --git a/build/find_depot_tools.py b/build/find_depot_tools.py
-index 94985fe7b3495..6d2adcfa63531 100755
+index f891a414837a5..592bba699c00d 100755
 --- a/build/find_depot_tools.py
 +++ b/build/find_depot_tools.py
-@@ -28,14 +28,6 @@ def IsRealDepotTools(path):
+@@ -27,14 +27,6 @@ def IsRealDepotTools(path):
  
  def add_depot_tools_to_path():
    """Search for depot_tools and add it to sys.path."""
@@ -28,5 +33,5 @@ index 94985fe7b3495..6d2adcfa63531 100755
    for i in sys.path:
      if i.rstrip(os.sep).endswith('depot_tools') and IsRealDepotTools(i):
 -- 
-2.39.2
+2.42.1
 

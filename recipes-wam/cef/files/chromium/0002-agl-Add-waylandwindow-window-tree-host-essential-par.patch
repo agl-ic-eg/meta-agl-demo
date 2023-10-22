@@ -1,9 +1,13 @@
-From a99977eb329ca0e114ad13ce31acc6ed38bb6a7b Mon Sep 17 00:00:00 2001
+From d50bcc010ca2856979f58b2ffbd0015514c4231f Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Wed, 17 May 2023 21:25:53 +0200
-Subject: [PATCH 6/9] Add webos/agl waylandwindow/window tree host essential
+Subject: [PATCH 02/33] [agl] Add waylandwindow/window tree host essential
  parts
 
+This is a backport of the work we did on top of chromium webosose to be
+able to communicate with the agl compositor.
+
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
 ---
  ui/aura/BUILD.gn                              |  7 ++
  ui/aura/agl/window_tree_host_agl.h            | 42 +++++++++
@@ -19,11 +23,11 @@ Subject: [PATCH 6/9] Add webos/agl waylandwindow/window tree host essential
  .../agl/host/wayland_extensions_agl_impl.h    |  9 ++
  .../extensions/agl/host/wayland_window_agl.cc | 86 +++++++++++++++++++
  .../extensions/agl/host/wayland_window_agl.h  | 49 +++++++++++
- .../wayland/gpu/gl_surface_wayland.cc         | 10 ++-
+ .../wayland/gpu/gl_surface_wayland.cc         |  9 +-
  .../host/gtk_primary_selection_device.cc      |  2 +-
  .../gtk_primary_selection_device_manager.cc   |  4 +-
  .../wayland/host/proxy/wayland_proxy_impl.cc  |  2 +-
- .../wayland/host/wayland_connection.cc        | 23 ++++-
+ .../wayland/host/wayland_connection.cc        | 19 +++-
  .../wayland/host/wayland_connection.h         |  9 +-
  .../platform/wayland/host/wayland_cursor.cc   |  4 +-
  .../wayland/host/wayland_data_device.cc       | 10 +--
@@ -33,24 +37,25 @@ Subject: [PATCH 6/9] Add webos/agl waylandwindow/window tree host essential
  ui/ozone/platform/wayland/host/wayland_drm.cc |  6 +-
  .../wayland/host/wayland_extensions.h         |  6 ++
  .../platform/wayland/host/wayland_keyboard.cc |  4 +-
- .../platform/wayland/host/wayland_popup.cc    |  4 +-
+ .../platform/wayland/host/wayland_popup.cc    |  8 +-
+ .../platform/wayland/host/wayland_seat.cc     |  2 +-
  ui/ozone/platform/wayland/host/wayland_shm.cc |  2 +-
  .../platform/wayland/host/wayland_surface.cc  |  2 +-
- .../wayland/host/wayland_toplevel_window.cc   | 14 +--
- .../platform/wayland/host/wayland_window.cc   | 14 +--
+ .../wayland/host/wayland_toplevel_window.cc   | 18 ++--
+ .../platform/wayland/host/wayland_window.cc   |  6 +-
  .../platform/wayland/host/wayland_window.h    |  2 +
  .../host/wayland_window_drag_controller.cc    |  2 +-
- .../wayland/host/wayland_window_factory.cc    | 15 ++++
+ .../wayland/host/wayland_window_factory.cc    | 14 +++
  .../wayland/host/wayland_zwp_linux_dmabuf.cc  |  4 +-
  .../wayland/host/xdg_foreign_wrapper.cc       |  4 +-
  .../wayland/host/xdg_popup_wrapper_impl.cc    |  2 +-
  .../wayland/host/xdg_surface_wrapper_impl.cc  |  2 +-
+ .../wayland/host/xdg_toplevel_wrapper_impl.cc |  2 +-
  .../host/zwp_primary_selection_device.cc      |  2 +-
  .../zwp_primary_selection_device_manager.cc   |  4 +-
- .../host/zxdg_surface_v6_wrapper_impl.cc      |  2 +-
  ui/platform_window/agl/platform_window_agl.h  | 36 ++++++++
  ui/platform_window/platform_window.h          |  4 +-
- 45 files changed, 471 insertions(+), 65 deletions(-)
+ 46 files changed, 469 insertions(+), 63 deletions(-)
  create mode 100644 ui/aura/agl/window_tree_host_agl.h
  create mode 100644 ui/aura/agl/window_tree_host_platform_agl.cc
  create mode 100644 ui/aura/agl/window_tree_host_platform_agl.h
@@ -59,7 +64,7 @@ Subject: [PATCH 6/9] Add webos/agl waylandwindow/window tree host essential
  create mode 100644 ui/platform_window/agl/platform_window_agl.h
 
 diff --git a/ui/aura/BUILD.gn b/ui/aura/BUILD.gn
-index 1beb9003b2fad..f3d3e359a9704 100644
+index 50ca856b9da18..8fa04492f69f7 100644
 --- a/ui/aura/BUILD.gn
 +++ b/ui/aura/BUILD.gn
 @@ -99,6 +99,13 @@ component("aura") {
@@ -238,7 +243,7 @@ index 0000000000000..181eefae346f7
 +
 +#endif  // UI_AURA_AGL_WINDOW_TREE_HOST_PLATFORM_AGL_H_
 diff --git a/ui/aura/window_tree_host.h b/ui/aura/window_tree_host.h
-index 0bdb86be66ba3..b7696e6373284 100644
+index b4b6e7022ea34..afb37a3a3ed13 100644
 --- a/ui/aura/window_tree_host.h
 +++ b/ui/aura/window_tree_host.h
 @@ -30,6 +30,8 @@
@@ -261,10 +266,10 @@ index 0bdb86be66ba3..b7696e6373284 100644
    // VideoCaptureLock ensures state necessary for capturing video remains in
    // effect. For example, this may force keeping the compositor visible when
 diff --git a/ui/aura/window_tree_host_platform.cc b/ui/aura/window_tree_host_platform.cc
-index 4c31e785d7692..cecd1f4fc03fd 100644
+index fd4a560f6cdd1..33b9e892c0212 100644
 --- a/ui/aura/window_tree_host_platform.cc
 +++ b/ui/aura/window_tree_host_platform.cc
-@@ -51,7 +51,7 @@ std::unique_ptr<WindowTreeHost> WindowTreeHost::Create(
+@@ -52,7 +52,7 @@ std::unique_ptr<WindowTreeHost> WindowTreeHost::Create(
  WindowTreeHostPlatform::WindowTreeHostPlatform(
      ui::PlatformWindowInitProperties properties,
      std::unique_ptr<Window> window)
@@ -273,7 +278,7 @@ index 4c31e785d7692..cecd1f4fc03fd 100644
    size_in_pixels_ = properties.bounds.size();
    CreateCompositor(false, false, properties.enable_compositing_based_throttling,
                     properties.compositor_memory_limit_mb);
-@@ -59,7 +59,7 @@ WindowTreeHostPlatform::WindowTreeHostPlatform(
+@@ -60,7 +60,7 @@ WindowTreeHostPlatform::WindowTreeHostPlatform(
  }
  
  WindowTreeHostPlatform::WindowTreeHostPlatform(std::unique_ptr<Window> window)
@@ -283,7 +288,7 @@ index 4c31e785d7692..cecd1f4fc03fd 100644
        current_cursor_(ui::mojom::CursorType::kNull) {}
  
 diff --git a/ui/aura/window_tree_host_platform.h b/ui/aura/window_tree_host_platform.h
-index 3a9232743bda3..6c1e3a424afd4 100644
+index 92ae0f0229e70..9c3f742c30ad3 100644
 --- a/ui/aura/window_tree_host_platform.h
 +++ b/ui/aura/window_tree_host_platform.h
 @@ -15,6 +15,8 @@
@@ -305,10 +310,10 @@ index 3a9232743bda3..6c1e3a424afd4 100644
   public:
    explicit WindowTreeHostPlatform(ui::PlatformWindowInitProperties properties,
 diff --git a/ui/ozone/platform/wayland/BUILD.gn b/ui/ozone/platform/wayland/BUILD.gn
-index 1a2f889dc8947..86ff8269af9e0 100644
+index 8a436de0fafe3..754cb123043a9 100644
 --- a/ui/ozone/platform/wayland/BUILD.gn
 +++ b/ui/ozone/platform/wayland/BUILD.gn
-@@ -409,7 +409,6 @@ source_set("wayland") {
+@@ -400,7 +400,6 @@ source_set("wayland") {
  
    sources += [
     "host/wayland_extensions.h",
@@ -577,17 +582,16 @@ index 0000000000000..b2a922604c001
 +
 +#endif  // UI_OZONE_PLATFORM_WAYLAND_EXTENSIONS_AGL_HOST_WAYLAND_WINDOW_AGL_H_
 diff --git a/ui/ozone/platform/wayland/gpu/gl_surface_wayland.cc b/ui/ozone/platform/wayland/gpu/gl_surface_wayland.cc
-index 1cef91bb39912..26ad374718005 100644
+index 1cda8aa671ddb..220f759ff30a1 100644
 --- a/ui/ozone/platform/wayland/gpu/gl_surface_wayland.cc
 +++ b/ui/ozone/platform/wayland/gpu/gl_surface_wayland.cc
-@@ -89,8 +89,14 @@ gfx::SwapResult GLSurfaceWayland::SwapBuffers(PresentationCallback callback,
+@@ -90,7 +90,14 @@ gfx::SwapResult GLSurfaceWayland::SwapBuffers(PresentationCallback callback,
      return scoped_swap_buffers.result();
    }
    window_->root_surface()->set_surface_buffer_scale(scale_factor_);
--  return gl::NativeViewGLSurfaceEGL::SwapBuffers(std::move(callback),
--                                                 std::move(data));
-+  gfx::SwapResult result = gl::NativeViewGLSurfaceEGL::SwapBuffers(std::move(callback),
-+                                                                   std::move(data));
+-  return gl::NativeViewGLSurfaceEGL::SwapBuffers(std::move(callback), data);
++
++  gfx::SwapResult result = gl::NativeViewGLSurfaceEGL::SwapBuffers(std::move(callback), data);
 +
 +  if (window_) {
 +    window_->OnSurfaceContentChanged();
@@ -598,10 +602,10 @@ index 1cef91bb39912..26ad374718005 100644
  
  gfx::SwapResult GLSurfaceWayland::PostSubBuffer(int x,
 diff --git a/ui/ozone/platform/wayland/host/gtk_primary_selection_device.cc b/ui/ozone/platform/wayland/host/gtk_primary_selection_device.cc
-index 43445ea2442b4..94f0739599142 100644
+index c62dd62be4fbf..2959593cfeb5b 100644
 --- a/ui/ozone/platform/wayland/host/gtk_primary_selection_device.cc
 +++ b/ui/ozone/platform/wayland/host/gtk_primary_selection_device.cc
-@@ -31,7 +31,7 @@ void GtkPrimarySelectionDevice::SetSelectionSource(
+@@ -32,7 +32,7 @@ void GtkPrimarySelectionDevice::SetSelectionSource(
    auto* data_source = source ? source->data_source() : nullptr;
    gtk_primary_selection_device_set_selection(data_device_.get(), data_source,
                                               serial);
@@ -633,10 +637,10 @@ index 2c39409808128..1e07ae6009776 100644
                                                       delegate);
  }
 diff --git a/ui/ozone/platform/wayland/host/proxy/wayland_proxy_impl.cc b/ui/ozone/platform/wayland/host/proxy/wayland_proxy_impl.cc
-index dee90b1aaaf72..caad70e0ab1cb 100644
+index f2407d1c306ec..7a7868ded8a52 100644
 --- a/ui/ozone/platform/wayland/host/proxy/wayland_proxy_impl.cc
 +++ b/ui/ozone/platform/wayland/host/proxy/wayland_proxy_impl.cc
-@@ -75,7 +75,7 @@ void WaylandProxyImpl::DestroyShmForWlBuffer(wl_buffer* buffer) {
+@@ -69,7 +69,7 @@ void WaylandProxyImpl::DestroyShmForWlBuffer(wl_buffer* buffer) {
  }
  
  void WaylandProxyImpl::FlushForTesting() {
@@ -646,10 +650,10 @@ index dee90b1aaaf72..caad70e0ab1cb 100644
  
  ui::PlatformWindowType WaylandProxyImpl::GetWindowType(
 diff --git a/ui/ozone/platform/wayland/host/wayland_connection.cc b/ui/ozone/platform/wayland/host/wayland_connection.cc
-index 93427c52e1284..e2d45a6f5dc67 100644
+index 7a47d4a636998..8d9e8eea6fd79 100644
 --- a/ui/ozone/platform/wayland/host/wayland_connection.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_connection.cc
-@@ -285,6 +285,20 @@ bool WaylandConnection::Initialize() {
+@@ -264,6 +264,20 @@ bool WaylandConnection::Initialize(bool use_threaded_polling) {
    return true;
  }
  
@@ -660,7 +664,7 @@ index 93427c52e1284..e2d45a6f5dc67 100644
 +  if (!base::CurrentUIThread::IsSet()) {
 +    Flush();
 +  } else if (!scheduled_flush_) {
-+    base::ThreadTaskRunnerHandle::Get()->PostTask(
++    base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
 +        FROM_HERE,
 +        base::BindOnce(&WaylandConnection::Flush, base::Unretained(this)));
 +    scheduled_flush_ = true;
@@ -670,7 +674,7 @@ index 93427c52e1284..e2d45a6f5dc67 100644
  void WaylandConnection::RoundTripQueue() {
    if (roundtrip_closure_for_testing_) {
      roundtrip_closure_for_testing_.Run();
-@@ -354,6 +368,7 @@ void WaylandConnection::RegisterGlobalObjectFactory(
+@@ -333,6 +347,7 @@ void WaylandConnection::RegisterGlobalObjectFactory(
  
  void WaylandConnection::Flush() {
    wl_display_flush(display_.get());
@@ -678,48 +682,31 @@ index 93427c52e1284..e2d45a6f5dc67 100644
  }
  
  void WaylandConnection::UpdateInputDevices() {
-@@ -441,7 +456,7 @@ void WaylandConnection::Global(void* data,
- 
-   auto factory_it = connection->global_object_factories_.find(interface);
-   if (connection->extensions_->Bind(registry, name, interface, version)) {
--    DVLOG(1) << "Successfully bound to " << interface;
-+    LOG(INFO) << "Successfully bound to " << interface;
-   } else if (factory_it != connection->global_object_factories_.end()) {
-     (*factory_it->second)(connection, registry, name, interface, version);
-   } else if (!connection->compositor_ &&
-@@ -609,7 +624,7 @@ void WaylandConnection::Global(void* data,
- 
-   connection->available_globals_.emplace_back(interface, version);
- 
--  connection->Flush();
-+  connection->ScheduleFlush();
- }
- 
- base::TimeTicks WaylandConnection::ConvertPresentationTime(uint32_t tv_sec_hi,
-@@ -674,14 +689,14 @@ void WaylandConnection::PingV6(void* data,
+@@ -526,7 +541,7 @@ void WaylandConnection::OnPing(void* data,
                                 uint32_t serial) {
-   WaylandConnection* connection = static_cast<WaylandConnection*>(data);
-   zxdg_shell_v6_pong(shell_v6, serial);
--  connection->Flush();
-+  connection->ScheduleFlush();
- }
- 
- // static
- void WaylandConnection::Ping(void* data, xdg_wm_base* shell, uint32_t serial) {
-   WaylandConnection* connection = static_cast<WaylandConnection*>(data);
+   auto* connection = static_cast<WaylandConnection*>(data);
    xdg_wm_base_pong(shell, serial);
 -  connection->Flush();
 +  connection->ScheduleFlush();
  }
  
  // static
+@@ -707,7 +722,7 @@ void WaylandConnection::HandleGlobal(wl_registry* registry,
+   }
+ 
+   available_globals_.emplace_back(interface, version);
+-  Flush();
++  ScheduleFlush();
+ }
+ 
+ }  // namespace ui
 diff --git a/ui/ozone/platform/wayland/host/wayland_connection.h b/ui/ozone/platform/wayland/host/wayland_connection.h
-index dfd1d060c73f2..d2d7a866d3af8 100644
+index ba293e5bcd088..641f36f13db35 100644
 --- a/ui/ozone/platform/wayland/host/wayland_connection.h
 +++ b/ui/ozone/platform/wayland/host/wayland_connection.h
-@@ -94,8 +94,8 @@ class WaylandConnection {
+@@ -100,8 +100,8 @@ class WaylandConnection {
  
-   bool Initialize();
+   bool Initialize(bool use_threaded_polling = false);
  
 -  // Immediately flushes the Wayland display.
 -  void Flush();
@@ -728,7 +715,7 @@ index dfd1d060c73f2..d2d7a866d3af8 100644
  
    // Calls wl_display_roundtrip_queue. Might be required during initialization
    // of some objects that should block until they are initialized.
-@@ -340,6 +340,9 @@ class WaylandConnection {
+@@ -388,6 +388,9 @@ class WaylandConnection {
    friend class ZwpIdleInhibitManager;
    friend class ZwpPrimarySelectionDeviceManager;
  
@@ -738,9 +725,9 @@ index dfd1d060c73f2..d2d7a866d3af8 100644
    void RegisterGlobalObjectFactory(const char* interface_name,
                                     wl::GlobalObjectFactory factory);
  
-@@ -467,6 +470,8 @@ class WaylandConnection {
-   // sizes.
-   bool surface_submission_in_pixel_coordinates_ = false;
+@@ -535,6 +538,8 @@ class WaylandConnection {
+   // This is set if delegated composition should not be used.
+   bool overlay_delegation_disabled_ = false;
  
 +  bool scheduled_flush_ = false;
 +
@@ -748,10 +735,10 @@ index dfd1d060c73f2..d2d7a866d3af8 100644
  
    // Global Wayland interfaces available in the current session, with their
 diff --git a/ui/ozone/platform/wayland/host/wayland_cursor.cc b/ui/ozone/platform/wayland/host/wayland_cursor.cc
-index 891ca2e5e1f3c..48ac8b8925ddd 100644
+index 1b7d303291cff..a384212c84134 100644
 --- a/ui/ozone/platform/wayland/host/wayland_cursor.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_cursor.cc
-@@ -109,7 +109,7 @@ void WaylandCursor::HideCursor() {
+@@ -107,7 +107,7 @@ void WaylandCursor::HideCursor() {
    wl_surface_attach(pointer_surface_.get(), nullptr, 0, 0);
    wl_surface_commit(pointer_surface_.get());
  
@@ -760,9 +747,9 @@ index 891ca2e5e1f3c..48ac8b8925ddd 100644
  
    if (listener_)
      listener_->OnCursorBufferAttached(nullptr);
-@@ -160,7 +160,7 @@ void WaylandCursor::AttachAndCommit(wl_buffer* buffer,
-   wl_surface_attach(pointer_surface_.get(), buffer, 0, 0);
-   wl_surface_commit(pointer_surface_.get());
+@@ -166,7 +166,7 @@ void WaylandCursor::AttachAndCommit(wl_buffer* buffer,
+   wl_pointer_set_cursor(pointer_->wl_object(), pointer_enter_serial->value,
+                         pointer_surface_.get(), hotspot_x_dip, hotspot_y_dip);
  
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
@@ -770,10 +757,10 @@ index 891ca2e5e1f3c..48ac8b8925ddd 100644
  
  }  // namespace ui
 diff --git a/ui/ozone/platform/wayland/host/wayland_data_device.cc b/ui/ozone/platform/wayland/host/wayland_data_device.cc
-index a1d691b6315ac..ccc7bfb0305a8 100644
+index a7adfd313188b..fe16d8577fd35 100644
 --- a/ui/ozone/platform/wayland/host/wayland_data_device.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_data_device.cc
-@@ -46,7 +46,7 @@ void WaylandDataDevice::StartDrag(const WaylandDataSource& data_source,
+@@ -51,7 +51,7 @@ void WaylandDataDevice::StartDrag(const WaylandDataSource& data_source,
                              origin_window.root_surface()->surface(),
                              icon_surface, serial);
    drag_delegate_->DrawIcon();
@@ -782,7 +769,7 @@ index a1d691b6315ac..ccc7bfb0305a8 100644
  }
  
  void WaylandDataDevice::ResetDragDelegate() {
-@@ -78,7 +78,7 @@ void WaylandDataDevice::SetSelectionSource(WaylandDataSource* source,
+@@ -92,7 +92,7 @@ void WaylandDataDevice::SetSelectionSource(WaylandDataSource* source,
                                             uint32_t serial) {
    auto* data_source = source ? source->data_source() : nullptr;
    wl_data_device_set_selection(data_device_.get(), data_source, serial);
@@ -791,7 +778,7 @@ index a1d691b6315ac..ccc7bfb0305a8 100644
  }
  
  void WaylandDataDevice::ReadDragDataFromFD(base::ScopedFD fd,
-@@ -140,7 +140,7 @@ void WaylandDataDevice::OnEnter(void* data,
+@@ -146,7 +146,7 @@ void WaylandDataDevice::OnEnter(void* data,
        gfx::PointF(wl_fixed_to_double(x), wl_fixed_to_double(y)), window);
    self->drag_delegate_->OnDragEnter(window, point, serial);
  
@@ -800,7 +787,7 @@ index a1d691b6315ac..ccc7bfb0305a8 100644
  }
  
  void WaylandDataDevice::OnMotion(void* data,
-@@ -161,7 +161,7 @@ void WaylandDataDevice::OnDrop(void* data, wl_data_device* data_device) {
+@@ -167,7 +167,7 @@ void WaylandDataDevice::OnDrop(void* data, wl_data_device* data_device) {
    auto* self = static_cast<WaylandDataDevice*>(data);
    if (self->drag_delegate_) {
      self->drag_delegate_->OnDragDrop();
@@ -809,33 +796,33 @@ index a1d691b6315ac..ccc7bfb0305a8 100644
    }
  
    // There are buggy Exo versions, which send 'drop' event (even for
-@@ -178,7 +178,7 @@ void WaylandDataDevice::OnLeave(void* data, wl_data_device* data_device) {
+@@ -184,7 +184,7 @@ void WaylandDataDevice::OnLeave(void* data, wl_data_device* data_device) {
    auto* self = static_cast<WaylandDataDevice*>(data);
    if (self->drag_delegate_) {
      self->drag_delegate_->OnDragLeave();
 -    self->connection()->Flush();
 +    self->connection()->ScheduleFlush();
    }
-   self->ResetDragDelegateIfNeeded();
+   self->ResetDragDelegateIfNotDragSource();
  }
 diff --git a/ui/ozone/platform/wayland/host/wayland_data_device_base.cc b/ui/ozone/platform/wayland/host/wayland_data_device_base.cc
-index 4287f72617708..d0c077c2e69ea 100644
+index 203e907f92bfa..a0c72971ac567 100644
 --- a/ui/ozone/platform/wayland/host/wayland_data_device_base.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_data_device_base.cc
-@@ -72,7 +72,7 @@ void WaylandDataDeviceBase::RegisterDeferredReadCallback() {
- 
-   wl_callback_add_listener(deferred_read_callback_.get(), &kListener, this);
- 
+@@ -64,7 +64,7 @@ void WaylandDataDeviceBase::RegisterDeferredReadCallback() {
+   static constexpr wl_callback_listener kSyncCallbackListener = {
+       .done = &OnSyncDone};
+   wl_callback_add_listener(sync_callback_.get(), &kSyncCallbackListener, this);
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
  }
  
  void WaylandDataDeviceBase::RegisterDeferredReadClosure(
 diff --git a/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc b/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc
-index f2123ec8bac3f..11750a3f55da2 100644
+index 705bdec41a1b7..dfa5789e8d149 100644
 --- a/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc
-@@ -217,7 +217,7 @@ void WaylandDataDragController::OnDragSurfaceFrame(void* data,
+@@ -256,7 +256,7 @@ void WaylandDataDragController::OnDragSurfaceFrame(void* data,
    DCHECK(self);
    self->DrawIconInternal();
    self->icon_frame_callback_.reset();
@@ -843,12 +830,12 @@ index f2123ec8bac3f..11750a3f55da2 100644
 +  self->connection_->ScheduleFlush();
  }
  
- void WaylandDataDragController::DrawIconInternal() {
+ SkBitmap WaylandDataDragController::GetIconBitmap() {
 diff --git a/ui/ozone/platform/wayland/host/wayland_data_source.cc b/ui/ozone/platform/wayland/host/wayland_data_source.cc
-index de1e110f73b11..e24f31b1a8f52 100644
+index c0e95c8a22e48..c294ffb8836aa 100644
 --- a/ui/ozone/platform/wayland/host/wayland_data_source.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_data_source.cc
-@@ -119,7 +119,7 @@ void DataSource<wl_data_source>::Offer(
+@@ -130,7 +130,7 @@ void DataSource<wl_data_source>::Offer(
      const std::vector<std::string>& mime_types) {
    for (auto& mime_type : mime_types)
      wl_data_source_offer(data_source_.get(), mime_type.c_str());
@@ -857,7 +844,7 @@ index de1e110f73b11..e24f31b1a8f52 100644
  }
  
  template <typename T>
-@@ -154,7 +154,7 @@ void DataSource<gtk_primary_selection_source>::Offer(
+@@ -165,7 +165,7 @@ void DataSource<gtk_primary_selection_source>::Offer(
      const std::vector<std::string>& mime_types) {
    for (const auto& mime_type : mime_types)
      gtk_primary_selection_source_offer(data_source_.get(), mime_type.c_str());
@@ -866,7 +853,7 @@ index de1e110f73b11..e24f31b1a8f52 100644
  }
  
  template <>
-@@ -173,7 +173,7 @@ void DataSource<zwp_primary_selection_source_v1>::Offer(
+@@ -185,7 +185,7 @@ void DataSource<zwp_primary_selection_source_v1>::Offer(
    for (const auto& mime_type : mime_types)
      zwp_primary_selection_source_v1_offer(data_source_.get(),
                                            mime_type.c_str());
@@ -876,11 +863,11 @@ index de1e110f73b11..e24f31b1a8f52 100644
  
  template class DataSource<gtk_primary_selection_source>;
 diff --git a/ui/ozone/platform/wayland/host/wayland_drm.cc b/ui/ozone/platform/wayland/host/wayland_drm.cc
-index 7edc0da798b9b..280350d9286c0 100644
+index 68570a9aacb2c..2b3b16e8859cb 100644
 --- a/ui/ozone/platform/wayland/host/wayland_drm.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_drm.cc
-@@ -57,7 +57,7 @@ WaylandDrm::WaylandDrm(wl_drm* drm, WaylandConnection* connection)
-       &Capabilities,
+@@ -58,7 +58,7 @@ WaylandDrm::WaylandDrm(wl_drm* drm, WaylandConnection* connection)
+       .capabilities = &OnCapabilities,
    };
    wl_drm_add_listener(wl_drm_.get(), &kDrmListener, this);
 -  connection_->Flush();
@@ -888,7 +875,7 @@ index 7edc0da798b9b..280350d9286c0 100644
  
    // A roundtrip after binding guarantees that the client has received all
    // supported formats and capabilities of the device.
-@@ -91,7 +91,7 @@ void WaylandDrm::CreateBuffer(const base::ScopedFD& fd,
+@@ -92,7 +92,7 @@ void WaylandDrm::CreateBuffer(const base::ScopedFD& fd,
    wl::Object<wl_buffer> buffer(wl_drm_create_prime_buffer(
        wl_drm_.get(), fd.get(), size.width(), size.height(), format, offset[0],
        stride[0], offset[1], stride[1], offset[2], stride[2]));
@@ -897,7 +884,7 @@ index 7edc0da798b9b..280350d9286c0 100644
  
    std::move(callback).Run(std::move(buffer));
  }
-@@ -145,7 +145,7 @@ void WaylandDrm::Authenticate(const char* drm_device_path) {
+@@ -146,7 +146,7 @@ void WaylandDrm::Authenticate(const char* drm_device_path) {
    }
  
    wl_drm_authenticate(wl_drm_.get(), magic);
@@ -932,10 +919,10 @@ index 3bd2fd7a211ae..f6ed47507d217 100644
  
  // Creates Wayland extensions.
 diff --git a/ui/ozone/platform/wayland/host/wayland_keyboard.cc b/ui/ozone/platform/wayland/host/wayland_keyboard.cc
-index c6e64f1e55da3..473a702bf8987 100644
+index 2b7fc05d426e1..f24d6993b26ac 100644
 --- a/ui/ozone/platform/wayland/host/wayland_keyboard.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_keyboard.cc
-@@ -54,7 +54,7 @@ class WaylandKeyboard::ZCRExtendedKeyboard {
+@@ -114,7 +114,7 @@ class WaylandKeyboard::ZCRExtendedKeyboard {
  
    void AckKey(uint32_t serial, bool handled) {
      zcr_extended_keyboard_v1_ack_key(obj_.get(), serial, handled);
@@ -944,20 +931,20 @@ index c6e64f1e55da3..473a702bf8987 100644
    }
  
    // Returns true if connected object will send zcr_extended_keyboard::peek_key.
-@@ -247,7 +247,7 @@ void WaylandKeyboard::FlushInput(base::OnceClosure closure) {
-   // get spurious repeats.
-   sync_callback_.reset(wl_display_sync(connection_->display_wrapper()));
-   wl_callback_add_listener(sync_callback_.get(), &callback_listener_, this);
+@@ -373,7 +373,7 @@ void WaylandKeyboard::FlushInput(base::OnceClosure closure) {
+       .done = &OnSyncDone,
+   };
+   wl_callback_add_listener(sync_callback_.get(), &kSyncCallbackListener, this);
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
  }
  
  void WaylandKeyboard::DispatchKey(unsigned int key,
 diff --git a/ui/ozone/platform/wayland/host/wayland_popup.cc b/ui/ozone/platform/wayland/host/wayland_popup.cc
-index 84e429457462e..cb13557093dc2 100644
+index f1e886f8675fb..28903c031e6ce 100644
 --- a/ui/ozone/platform/wayland/host/wayland_popup.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_popup.cc
-@@ -124,7 +124,7 @@ void WaylandPopup::Show(bool inactive) {
+@@ -132,7 +132,7 @@ void WaylandPopup::Show(bool inactive) {
      return;
    }
  
@@ -966,7 +953,7 @@ index 84e429457462e..cb13557093dc2 100644
    WaylandWindow::Show(inactive);
  }
  
-@@ -147,7 +147,7 @@ void WaylandPopup::Hide() {
+@@ -158,7 +158,7 @@ void WaylandPopup::Hide() {
      decorated_via_aura_popup_ = false;
    }
  
@@ -975,8 +962,38 @@ index 84e429457462e..cb13557093dc2 100644
  }
  
  bool WaylandPopup::IsVisible() const {
+@@ -256,14 +256,14 @@ void WaylandPopup::ShowTooltip(const std::u16string& text,
+   if (zaura_surface &&
+       zaura_surface->ShowTooltip(text, position, zaura_shell_trigger,
+                                  show_delay, hide_delay)) {
+-    connection()->Flush();
++    connection()->ScheduleFlush();
+   }
+ }
+ 
+ void WaylandPopup::HideTooltip() {
+   auto* zaura_surface = GetZAuraSurface();
+   if (zaura_surface && zaura_surface->HideTooltip()) {
+-    connection()->Flush();
++    connection()->ScheduleFlush();
+   }
+ }
+ 
+diff --git a/ui/ozone/platform/wayland/host/wayland_seat.cc b/ui/ozone/platform/wayland/host/wayland_seat.cc
+index 3b05da49eb6b8..5f70725a9a9dd 100644
+--- a/ui/ozone/platform/wayland/host/wayland_seat.cc
++++ b/ui/ozone/platform/wayland/host/wayland_seat.cc
+@@ -128,7 +128,7 @@ void WaylandSeat::HandleCapabilities(void* data,
+ 
+   connection_->UpdateInputDevices();
+   connection_->UpdateCursor();
+-  connection_->Flush();
++  connection_->ScheduleFlush();
+ }
+ 
+ }  // namespace ui
 diff --git a/ui/ozone/platform/wayland/host/wayland_shm.cc b/ui/ozone/platform/wayland/host/wayland_shm.cc
-index 80d27227b9ab3..2b6c4f31ca0d8 100644
+index b264ad88962bb..95c19d9962085 100644
 --- a/ui/ozone/platform/wayland/host/wayland_shm.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_shm.cc
 @@ -62,7 +62,7 @@ wl::Object<wl_buffer> WaylandShm::CreateBuffer(const base::ScopedFD& fd,
@@ -989,10 +1006,10 @@ index 80d27227b9ab3..2b6c4f31ca0d8 100644
  }
  
 diff --git a/ui/ozone/platform/wayland/host/wayland_surface.cc b/ui/ozone/platform/wayland/host/wayland_surface.cc
-index cd178f9aaee00..ffe5062402b33 100644
+index 47dc846390898..2a04d28b05484 100644
 --- a/ui/ozone/platform/wayland/host/wayland_surface.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_surface.cc
-@@ -267,7 +267,7 @@ void WaylandSurface::UpdateBufferDamageRegion(const gfx::Rect& damage_px) {
+@@ -305,7 +305,7 @@ void WaylandSurface::UpdateBufferDamageRegion(const gfx::Rect& damage_px) {
  void WaylandSurface::Commit(bool flush) {
    wl_surface_commit(surface_.get());
    if (flush)
@@ -1002,28 +1019,28 @@ index cd178f9aaee00..ffe5062402b33 100644
  
  void WaylandSurface::set_surface_buffer_scale(float scale) {
 diff --git a/ui/ozone/platform/wayland/host/wayland_toplevel_window.cc b/ui/ozone/platform/wayland/host/wayland_toplevel_window.cc
-index e39daa898c9a5..68aebd357fdc2 100644
+index 898113178a783..1b489b327fa29 100644
 --- a/ui/ozone/platform/wayland/host/wayland_toplevel_window.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_toplevel_window.cc
-@@ -131,7 +131,7 @@ void WaylandToplevelWindow::DispatchHostWindowDragMovement(
+@@ -127,7 +127,7 @@ void WaylandToplevelWindow::DispatchHostWindowDragMovement(
    else
      shell_toplevel_->SurfaceResize(connection(), hittest);
  
 -  connection()->Flush();
 +  connection()->ScheduleFlush();
- }
+ #if !BUILDFLAG(IS_CHROMEOS_LACROS)
+   // TODO(crbug.com/1454893): Revisit to resolve the correct impl.
+   connection()->event_source()->ResetPointerFlags();
+@@ -176,7 +176,7 @@ void WaylandToplevelWindow::Hide() {
+     gtk_surface1_.reset();
  
- void WaylandToplevelWindow::Show(bool inactive) {
-@@ -166,7 +166,7 @@ void WaylandToplevelWindow::Hide() {
-     aura_surface_.reset();
-   }
    shell_toplevel_.reset();
 -  connection()->Flush();
 +  connection()->ScheduleFlush();
  }
  
  bool WaylandToplevelWindow::IsVisible() const {
-@@ -183,7 +183,7 @@ void WaylandToplevelWindow::SetTitle(const std::u16string& title) {
+@@ -193,7 +193,7 @@ void WaylandToplevelWindow::SetTitle(const std::u16string& title) {
  
    if (shell_toplevel_) {
      shell_toplevel_->SetTitle(title);
@@ -1032,7 +1049,7 @@ index e39daa898c9a5..68aebd357fdc2 100644
    }
  }
  
-@@ -262,13 +262,13 @@ void WaylandToplevelWindow::Activate() {
+@@ -288,13 +288,13 @@ void WaylandToplevelWindow::Activate() {
    // but nothing more happens (until the user moves the mouse over a Lacros
    // window in which case events will start and the activation will come
    // through).
@@ -1048,18 +1065,35 @@ index e39daa898c9a5..68aebd357fdc2 100644
    }
  }
  
-@@ -877,7 +877,7 @@ void WaylandToplevelWindow::TriggerStateChanges() {
+@@ -722,14 +722,14 @@ void WaylandToplevelWindow::ShowTooltip(
+   if (zaura_surface &&
+       zaura_surface->ShowTooltip(text, position, zaura_shell_trigger,
+                                  show_delay, hide_delay)) {
+-    connection()->Flush();
++    connection()->ScheduleFlush();
+   }
+ }
+ 
+ void WaylandToplevelWindow::HideTooltip() {
+   auto* zaura_surface = GetZAuraSurface();
+   if (zaura_surface && zaura_surface->HideTooltip()) {
+-    connection()->Flush();
++    connection()->ScheduleFlush();
+   }
+ }
+ 
+@@ -1001,7 +1001,7 @@ void WaylandToplevelWindow::TriggerStateChanges() {
+   }
  
    delegate()->OnWindowStateChanged(previous_state_, state_);
- 
 -  connection()->Flush();
 +  connection()->ScheduleFlush();
  }
  
  void WaylandToplevelWindow::SetWindowState(PlatformWindowState state) {
-@@ -908,7 +908,7 @@ void WaylandToplevelWindow::SetSizeConstraints() {
-   if (max_size_dip.has_value())
-     shell_toplevel_->SetMaxSize(max_size_dip->width(), max_size_dip->height());
+@@ -1035,7 +1035,7 @@ void WaylandToplevelWindow::SetSizeConstraints() {
+   shell_toplevel_->SetCanMaximize(delegate()->CanMaximize());
+   shell_toplevel_->SetCanFullscreen(delegate()->CanFullscreen());
  
 -  connection()->Flush();
 +  connection()->ScheduleFlush();
@@ -1067,20 +1101,11 @@ index e39daa898c9a5..68aebd357fdc2 100644
  
  void WaylandToplevelWindow::SetOrResetRestoredBounds() {
 diff --git a/ui/ozone/platform/wayland/host/wayland_window.cc b/ui/ozone/platform/wayland/host/wayland_window.cc
-index f8b8c36a745e5..e415efde8ccd8 100644
+index ad4366edfe4db..9a18c567bcbcc 100644
 --- a/ui/ozone/platform/wayland/host/wayland_window.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_window.cc
-@@ -430,7 +430,7 @@ void WaylandWindow::SetDecorationInsets(const gfx::Insets* insets_px) {
-   else
-     frame_insets_px_ = absl::nullopt;
-   UpdateDecorations();
--  connection_->Flush();
-+  connection_->ScheduleFlush();
- }
- 
- void WaylandWindow::SetWindowIcons(const gfx::ImageSkia& window_icon,
-@@ -522,6 +522,10 @@ void WaylandWindow::HandleSurfaceConfigure(uint32_t serial) {
-       << "Only shell surfaces must receive HandleSurfaceConfigure calls.";
+@@ -686,6 +686,10 @@ std::string WaylandWindow::WindowStates::ToString() const {
+   return states;
  }
  
 +void WaylandWindow::OnSurfaceContentChanged() {
@@ -1090,47 +1115,20 @@ index f8b8c36a745e5..e415efde8ccd8 100644
  void WaylandWindow::HandleToplevelConfigure(int32_t widht,
                                              int32_t height,
                                              const WindowStates& window_states) {
-@@ -551,7 +555,7 @@ void WaylandWindow::UpdateVisualSize(const gfx::Size& size_px) {
- 
-   if (apply_pending_state_on_update_visual_size_for_testing_) {
-     root_surface_->ApplyPendingState();
--    connection_->Flush();
-+    connection_->ScheduleFlush();
-   }
- }
- 
-@@ -661,7 +665,7 @@ bool WaylandWindow::Initialize(PlatformWindowInitProperties properties) {
-   std::vector<gfx::Rect> region{gfx::Rect{size_px_}};
-   root_surface_->set_opaque_region(&region);
+@@ -832,7 +836,7 @@ bool WaylandWindow::Initialize(PlatformWindowInitProperties properties) {
+   root_surface_->EnableTrustedDamageIfPossible();
    root_surface_->ApplyPendingState();
+ 
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
  
    return true;
  }
-@@ -957,7 +961,7 @@ void WaylandWindow::ProcessPendingBoundsDip(uint32_t serial) {
-     // window has been applied.
-     SetWindowGeometry(pending_bounds_dip_);
-     AckConfigure(serial);
--    connection()->Flush();
-+    connection()->ScheduleFlush();
-   } else if (!pending_configures_.empty() &&
-              pending_bounds_dip_.size() ==
-                  pending_configures_.back().bounds_dip.size()) {
-@@ -1051,7 +1055,7 @@ bool WaylandWindow::ProcessVisualSizeUpdate(const gfx::Size& size_px) {
-     auto serial = result->serial;
-     SetWindowGeometry(result->bounds_dip);
-     AckConfigure(serial);
--    connection()->Flush();
-+    connection()->ScheduleFlush();
-     pending_configures_.erase(pending_configures_.begin(), ++result);
-     return true;
-   }
 diff --git a/ui/ozone/platform/wayland/host/wayland_window.h b/ui/ozone/platform/wayland/host/wayland_window.h
-index f0f75d4481cd2..dae1ddcd2933f 100644
+index d68d4d818f28f..2c5afbb3de99c 100644
 --- a/ui/ozone/platform/wayland/host/wayland_window.h
 +++ b/ui/ozone/platform/wayland/host/wayland_window.h
-@@ -218,6 +218,8 @@ class WaylandWindow : public PlatformWindow,
+@@ -230,6 +230,8 @@ class WaylandWindow : public PlatformWindow,
    // currently bound to.
    virtual void HandleSurfaceConfigure(uint32_t serial);
  
@@ -1140,23 +1138,23 @@ index f0f75d4481cd2..dae1ddcd2933f 100644
      bool is_maximized = false;
      bool is_fullscreen = false;
 diff --git a/ui/ozone/platform/wayland/host/wayland_window_drag_controller.cc b/ui/ozone/platform/wayland/host/wayland_window_drag_controller.cc
-index 6f45f47a71c25..a269ec9b368a4 100644
+index e38565635a583..ff201c038efb7 100644
 --- a/ui/ozone/platform/wayland/host/wayland_window_drag_controller.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_window_drag_controller.cc
-@@ -84,7 +84,7 @@ class WaylandWindowDragController::ExtendedDragSource {
+@@ -91,7 +91,7 @@ class WaylandWindowDragController::ExtendedDragSource {
      auto* surface = window ? window->root_surface()->surface() : nullptr;
      zcr_extended_drag_source_v1_drag(source_.get(), surface, offset.x(),
                                       offset.y());
--    connection_.Flush();
-+    connection_.ScheduleFlush();
+-    connection_->Flush();
++    connection_->ScheduleFlush();
    }
  
   private:
 diff --git a/ui/ozone/platform/wayland/host/wayland_window_factory.cc b/ui/ozone/platform/wayland/host/wayland_window_factory.cc
-index 4857125bb5f34..b2f73218681b9 100644
+index 6f66c6654819c..e2bc045e4b3fb 100644
 --- a/ui/ozone/platform/wayland/host/wayland_window_factory.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_window_factory.cc
-@@ -13,6 +13,8 @@
+@@ -12,6 +12,8 @@
  #include "ui/ozone/platform/wayland/host/wayland_window.h"
  #include "ui/platform_window/platform_window_init_properties.h"
  
@@ -1164,12 +1162,11 @@ index 4857125bb5f34..b2f73218681b9 100644
 +
  namespace ui {
  
- namespace {
-@@ -41,6 +43,13 @@ std::unique_ptr<WaylandWindow> WaylandWindow::Create(
+ // static
+@@ -29,6 +31,12 @@ std::unique_ptr<WaylandWindow> WaylandWindow::Create(
        // toplevel window instead.
-       if (auto* parent =
-               GetParentWindow(connection, properties.parent_widget)) {
-+
+       if (auto* parent = connection->window_manager()->GetWindow(
+               properties.parent_widget)) {
 +        if (connection->extensions()) {
 +          window = connection->extensions()->CreateWaylandWindow(delegate,
 +                                                                 connection);
@@ -1178,11 +1175,11 @@ index 4857125bb5f34..b2f73218681b9 100644
 +        }
          window = std::make_unique<WaylandPopup>(delegate, connection, parent);
        } else {
-         DLOG(WARNING) << "Failed to determine for menu/popup window.";
-@@ -52,6 +61,12 @@ std::unique_ptr<WaylandWindow> WaylandWindow::Create(
+         DLOG(WARNING) << "Failed to determine parent for menu/popup window.";
+@@ -40,6 +48,12 @@ std::unique_ptr<WaylandWindow> WaylandWindow::Create(
      case PlatformWindowType::kDrag:
-       // TODO(msisov): Figure out what kind of surface we need to create for
-       // bubble and drag windows.
+       // TODO(crbug.com/1399419): Figure out what kind of surface we need to
+       // create for kBubble and kDrag windows.
 +      if (connection->extensions()) {
 +        window =
 +            connection->extensions()->CreateWaylandWindow(delegate, connection);
@@ -1193,7 +1190,7 @@ index 4857125bb5f34..b2f73218681b9 100644
        break;
      default:
 diff --git a/ui/ozone/platform/wayland/host/wayland_zwp_linux_dmabuf.cc b/ui/ozone/platform/wayland/host/wayland_zwp_linux_dmabuf.cc
-index 3db8cb5e5dba9..5d6293e016842 100644
+index 33935db68eadd..15f600ed7a126 100644
 --- a/ui/ozone/platform/wayland/host/wayland_zwp_linux_dmabuf.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_zwp_linux_dmabuf.cc
 @@ -104,7 +104,7 @@ void WaylandZwpLinuxDmabuf::CreateBuffer(const base::ScopedFD& fd,
@@ -1205,31 +1202,31 @@ index 3db8cb5e5dba9..5d6293e016842 100644
  }
  
  bool WaylandZwpLinuxDmabuf::CanCreateBufferImmed() const {
-@@ -150,7 +150,7 @@ void WaylandZwpLinuxDmabuf::NotifyRequestCreateBufferDone(
- 
+@@ -147,7 +147,7 @@ void WaylandZwpLinuxDmabuf::NotifyRequestCreateBufferDone(
+   DCHECK(it != pending_params_.end());
+   std::move(it->second).Run(wl::Object<wl_buffer>(new_buffer));
    pending_params_.erase(it);
- 
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
  }
  
  // static
 diff --git a/ui/ozone/platform/wayland/host/xdg_foreign_wrapper.cc b/ui/ozone/platform/wayland/host/xdg_foreign_wrapper.cc
-index 8b8591fabe015..9b3c6e5136d5d 100644
+index 293c09a7e35f2..d36db127ec057 100644
 --- a/ui/ozone/platform/wayland/host/xdg_foreign_wrapper.cc
 +++ b/ui/ozone/platform/wayland/host/xdg_foreign_wrapper.cc
-@@ -162,7 +162,7 @@ void XdgForeignWrapperImpl<zxdg_exporter_v1, zxdg_exported_v1>::
-   zxdg_exported_v1_add_listener(exported_surface.exported.get(),
-                                 &kExportedListener, this);
+@@ -158,7 +158,7 @@ void XdgForeignWrapperImpl<zxdg_exporter_v1, zxdg_exported_v1>::
+                                 &kXdgExportedListener, this);
+ 
    exported_surfaces_.emplace_back(std::move(exported_surface));
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
  }
  
  template <>
-@@ -176,7 +176,7 @@ void XdgForeignWrapperImpl<zxdg_exporter_v2, zxdg_exported_v2>::
-   zxdg_exported_v2_add_listener(exported_surface.exported.get(),
-                                 &kExportedListener, this);
+@@ -174,7 +174,7 @@ void XdgForeignWrapperImpl<zxdg_exporter_v2, zxdg_exported_v2>::
+                                 &kXdgExportedListener, this);
+ 
    exported_surfaces_.emplace_back(std::move(exported_surface));
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
@@ -1237,10 +1234,10 @@ index 8b8591fabe015..9b3c6e5136d5d 100644
  
  // static
 diff --git a/ui/ozone/platform/wayland/host/xdg_popup_wrapper_impl.cc b/ui/ozone/platform/wayland/host/xdg_popup_wrapper_impl.cc
-index 23b7ad8fbf3cc..2e1f8fc129bf7 100644
+index 64c8f2663ae60..b0d8f27aebbf9 100644
 --- a/ui/ozone/platform/wayland/host/xdg_popup_wrapper_impl.cc
 +++ b/ui/ozone/platform/wayland/host/xdg_popup_wrapper_impl.cc
-@@ -230,7 +230,7 @@ bool XDGPopupWrapperImpl::SetBounds(const gfx::Rect& new_bounds) {
+@@ -239,7 +239,7 @@ bool XDGPopupWrapperImpl::SetBounds(const gfx::Rect& new_bounds) {
    xdg_popup_reposition(xdg_popup_.get(), positioner.get(),
                         ++next_reposition_token_);
  
@@ -1250,23 +1247,36 @@ index 23b7ad8fbf3cc..2e1f8fc129bf7 100644
  }
  
 diff --git a/ui/ozone/platform/wayland/host/xdg_surface_wrapper_impl.cc b/ui/ozone/platform/wayland/host/xdg_surface_wrapper_impl.cc
-index 048071b4b7b76..692f562e203f0 100644
+index c4dd8c8e78ce4..67702ecc8fa4f 100644
 --- a/ui/ozone/platform/wayland/host/xdg_surface_wrapper_impl.cc
 +++ b/ui/ozone/platform/wayland/host/xdg_surface_wrapper_impl.cc
-@@ -40,7 +40,7 @@ bool XDGSurfaceWrapperImpl::Initialize() {
-   }
+@@ -39,7 +39,7 @@ bool XDGSurfaceWrapperImpl::Initialize() {
+   };
+   xdg_surface_add_listener(xdg_surface_.get(), &kXdgSurfaceListener, this);
  
-   xdg_surface_add_listener(xdg_surface_.get(), &xdg_surface_listener, this);
 -  connection_->Flush();
 +  connection_->ScheduleFlush();
    return true;
  }
  
+diff --git a/ui/ozone/platform/wayland/host/xdg_toplevel_wrapper_impl.cc b/ui/ozone/platform/wayland/host/xdg_toplevel_wrapper_impl.cc
+index 0673c59185348..b9462c60a2eee 100644
+--- a/ui/ozone/platform/wayland/host/xdg_toplevel_wrapper_impl.cc
++++ b/ui/ozone/platform/wayland/host/xdg_toplevel_wrapper_impl.cc
+@@ -720,7 +720,7 @@ void XDGToplevelWrapperImpl::ShowSnapPreview(
+ 
+ void XDGToplevelWrapperImpl::AckRotateFocus(uint32_t serial, uint32_t handled) {
+   zaura_toplevel_ack_rotate_focus(aura_toplevel_.get(), serial, handled);
+-  connection_->Flush();
++  connection_->ScheduleFlush();
+ }
+ 
+ XDGToplevelWrapperImpl* XDGToplevelWrapperImpl::AsXDGToplevelWrapper() {
 diff --git a/ui/ozone/platform/wayland/host/zwp_primary_selection_device.cc b/ui/ozone/platform/wayland/host/zwp_primary_selection_device.cc
-index d02c76db80aa2..9e7e0a916d66d 100644
+index 9057d1bea0116..97c1624e200ac 100644
 --- a/ui/ozone/platform/wayland/host/zwp_primary_selection_device.cc
 +++ b/ui/ozone/platform/wayland/host/zwp_primary_selection_device.cc
-@@ -31,7 +31,7 @@ void ZwpPrimarySelectionDevice::SetSelectionSource(
+@@ -32,7 +32,7 @@ void ZwpPrimarySelectionDevice::SetSelectionSource(
    auto* data_source = source ? source->data_source() : nullptr;
    zwp_primary_selection_device_v1_set_selection(data_device_.get(), data_source,
                                                  serial);
@@ -1297,19 +1307,6 @@ index 9d5d79635b66d..2ca82ce6031ba 100644
    return std::make_unique<ZwpPrimarySelectionSource>(data_source, connection_,
                                                       delegate);
  }
-diff --git a/ui/ozone/platform/wayland/host/zxdg_surface_v6_wrapper_impl.cc b/ui/ozone/platform/wayland/host/zxdg_surface_v6_wrapper_impl.cc
-index e900f9d37e8ad..5c4c538800f65 100644
---- a/ui/ozone/platform/wayland/host/zxdg_surface_v6_wrapper_impl.cc
-+++ b/ui/ozone/platform/wayland/host/zxdg_surface_v6_wrapper_impl.cc
-@@ -43,7 +43,7 @@ bool ZXDGSurfaceV6WrapperImpl::Initialize() {
- 
-   zxdg_surface_v6_add_listener(zxdg_surface_v6_.get(),
-                                &zxdg_surface_v6_listener, this);
--  connection_->Flush();
-+  connection_->ScheduleFlush();
-   return true;
- }
- 
 diff --git a/ui/platform_window/agl/platform_window_agl.h b/ui/platform_window/agl/platform_window_agl.h
 new file mode 100644
 index 0000000000000..4bc915d663e72
@@ -1353,7 +1350,7 @@ index 0000000000000..4bc915d663e72
 +
 +#endif  // UI_PLATFORM_WINDOW_AGL_PLATFORM_WINDOW_AGL_H_
 diff --git a/ui/platform_window/platform_window.h b/ui/platform_window/platform_window.h
-index a7bd3ef17a728..80f67671b88cf 100644
+index 845da9467d6a4..a9b28388ec649 100644
 --- a/ui/platform_window/platform_window.h
 +++ b/ui/platform_window/platform_window.h
 @@ -9,6 +9,7 @@
@@ -1375,5 +1372,5 @@ index a7bd3ef17a728..80f67671b88cf 100644
    PlatformWindow();
    ~PlatformWindow() override;
 -- 
-2.39.2
+2.42.1
 

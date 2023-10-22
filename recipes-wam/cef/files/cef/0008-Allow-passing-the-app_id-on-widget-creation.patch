@@ -1,7 +1,7 @@
-From 6bd43a70c23d407ca6c4d4a68f0e95eb3301290a Mon Sep 17 00:00:00 2001
+From 5a8d9996ee7b3ce77f7b3fd3c7839806a034ea16 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Tue, 4 Jul 2023 12:10:41 +0200
-Subject: [PATCH 09/10] Allow passing the app_id on widget creation
+Subject: [PATCH 08/10] Allow passing the app_id on widget creation
 
 ---
  include/views/cef_window.h          |  6 ++++++
@@ -12,10 +12,10 @@ Subject: [PATCH 09/10] Allow passing the app_id on widget creation
  5 files changed, 22 insertions(+), 8 deletions(-)
 
 diff --git a/include/views/cef_window.h b/include/views/cef_window.h
-index 52ccb7dc5..fd3e1c1b5 100644
+index 9f196a1e7..16c854b09 100644
 --- a/include/views/cef_window.h
 +++ b/include/views/cef_window.h
-@@ -63,6 +63,12 @@ class CefWindow : public CefPanel {
+@@ -65,6 +65,12 @@ class CefWindow : public CefPanel {
        CefRefPtr<CefWindowDelegate> delegate);
  
    ///
@@ -29,10 +29,10 @@ index 52ccb7dc5..fd3e1c1b5 100644
    ///
    /*--cef()--*/
 diff --git a/libcef/browser/views/window_impl.cc b/libcef/browser/views/window_impl.cc
-index 485943ec6..35df22c51 100644
+index 12858364e..f0fe9dfb2 100644
 --- a/libcef/browser/views/window_impl.cc
 +++ b/libcef/browser/views/window_impl.cc
-@@ -115,14 +115,19 @@ CefRefPtr<CefWindow> CefWindow::CreateTopLevelWindow(
+@@ -110,14 +110,19 @@ CefRefPtr<CefWindow> CefWindow::CreateTopLevelWindow(
    return CefWindowImpl::Create(delegate, gfx::kNullAcceleratedWidget);
  }
  
@@ -51,10 +51,10 @@ index 485943ec6..35df22c51 100644
    window->Initialize();
 -  window->CreateWidget(parent_widget);
 +  window->CreateWidget(parent_widget, app_id);
-   if (delegate)
-     delegate->OnWindowCreated(window.get());
    return window;
-@@ -678,10 +683,10 @@ void CefWindowImpl::InitializeRootView() {
+ }
+ 
+@@ -745,10 +750,10 @@ void CefWindowImpl::InitializeRootView() {
    static_cast<CefWindowView*>(root_view())->Initialize();
  }
  
@@ -68,7 +68,7 @@ index 485943ec6..35df22c51 100644
    DCHECK(widget_);
  
 diff --git a/libcef/browser/views/window_impl.h b/libcef/browser/views/window_impl.h
-index 89c136873..d3330dfd8 100644
+index aaca3c281..1c5be736f 100644
 --- a/libcef/browser/views/window_impl.h
 +++ b/libcef/browser/views/window_impl.h
 @@ -36,7 +36,8 @@ class CefWindowImpl
@@ -81,7 +81,7 @@ index 89c136873..d3330dfd8 100644
  
    // CefWindow methods:
    void Show() override;
-@@ -155,7 +156,8 @@ class CefWindowImpl
+@@ -157,7 +158,8 @@ class CefWindowImpl
    void InitializeRootView() override;
  
    // Initialize the Widget.
@@ -89,13 +89,13 @@ index 89c136873..d3330dfd8 100644
 +  void CreateWidget(gfx::AcceleratedWidget parent_widget,
 +                    const CefString& app_id = "");
  
-   views::Widget* widget_;
+   views::Widget* widget_ = nullptr;
  
 diff --git a/libcef/browser/views/window_view.cc b/libcef/browser/views/window_view.cc
-index 1e8d58a32..f4bf79ce3 100644
+index 2331caaea..5e4cb6b53 100644
 --- a/libcef/browser/views/window_view.cc
 +++ b/libcef/browser/views/window_view.cc
-@@ -255,7 +255,7 @@ CefWindowView::CefWindowView(CefWindowDelegate* cef_delegate,
+@@ -371,7 +371,7 @@ CefWindowView::CefWindowView(CefWindowDelegate* cef_delegate,
    DCHECK(window_delegate_);
  }
  
@@ -104,19 +104,19 @@ index 1e8d58a32..f4bf79ce3 100644
    DCHECK(!GetWidget());
  
    // |widget| is owned by the NativeWidget and will be destroyed in response to
-@@ -265,6 +265,7 @@ void CefWindowView::CreateWidget(gfx::AcceleratedWidget parent_widget) {
+@@ -381,6 +381,7 @@ void CefWindowView::CreateWidget(gfx::AcceleratedWidget parent_widget) {
  
    views::Widget::InitParams params;
    params.delegate = this;
 +  params.wayland_app_id = app_id;
  
-   bool can_activate = true;
-   bool can_resize = true;
+   views::Widget* host_widget = nullptr;
+ 
 diff --git a/libcef/browser/views/window_view.h b/libcef/browser/views/window_view.h
-index 6789636b8..ca593c60a 100644
+index b065f3700..c15e75d65 100644
 --- a/libcef/browser/views/window_view.h
 +++ b/libcef/browser/views/window_view.h
-@@ -51,7 +51,7 @@ class CefWindowView
+@@ -52,7 +52,7 @@ class CefWindowView
    CefWindowView& operator=(const CefWindowView&) = delete;
  
    // Create the Widget.
@@ -126,5 +126,5 @@ index 6789636b8..ca593c60a 100644
    // Returns the CefWindow associated with this view. See comments on
    // CefViewView::GetCefView.
 -- 
-2.39.2
+2.42.1
 

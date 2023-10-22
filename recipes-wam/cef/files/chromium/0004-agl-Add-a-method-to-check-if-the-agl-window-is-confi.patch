@@ -1,8 +1,13 @@
-From d76f1575fd5abd31d488f7456700af0ead9712f0 Mon Sep 17 00:00:00 2001
+From 76cb42f0773ecff97710d7d5ea20cd16b8781d51 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Fri, 30 Jun 2023 10:25:10 +0200
-Subject: [PATCH 8/9] Add a method to check if the agl window is configured
+Subject: [PATCH 04/33] [agl] Add a method to check if the agl window is
+ configured
 
+This will be used on cef side to know the time when the window can be
+displayed.
+
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
 ---
  ui/aura/agl/window_tree_host_agl.h           | 1 +
  ui/aura/agl/window_tree_host_platform_agl.cc | 4 ++++
@@ -60,5 +65,5 @@ index 4bc915d663e72..cab1f42272772 100644
  
  }  // namespace ui
 -- 
-2.39.2
+2.42.1
 

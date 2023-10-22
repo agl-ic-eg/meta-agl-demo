@@ -1,0 +1,56 @@
+From 0c37732e8443882518b79ce50b9389d1218484ef Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Mon, 13 Nov 2023 22:10:25 -0300
+Subject: [PATCH 33/33] [M118-fix] Fix skia linker issues for arm neon
+
+Fixes the following linker issue:
+
+error: undefined symbol: skia::ConvolveHorizontally_Neon(...)
+
+Upstream-Status: Inappropriate
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ build/config/arm.gni  | 5 +++++
+ skia/ext/convolver.cc | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/build/config/arm.gni b/build/config/arm.gni
+index 575871c287c80..ebf56196c2605 100644
+--- a/build/config/arm.gni
++++ b/build/config/arm.gni
+@@ -122,10 +122,14 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
+       }
+     }
+   }
++  if (arm_use_neon) {
++    defines += [ "USE_NEON" ]
++  }
+ } else if (arm_use_neon == "" && (current_cpu == "arm64" || v8_current_cpu == "arm64")) {
+   # arm64 supports only "hard".
+   arm_float_abi = "hard"
+   arm_use_neon = true
++  defines += [ "USE_NEON" ]
+   declare_args() {
+     # Enables the new Armv8 branch protection features. Valid strings are:
+     # - "pac": Enables Pointer Authentication Code (PAC, featured in Armv8.3)
+@@ -146,3 +150,4 @@ if (current_cpu == "arm" || v8_current_cpu == "arm") {
+              arm_control_flow_integrity == "pac",
+          "Invalid branch protection option")
+ }
++
+diff --git a/skia/ext/convolver.cc b/skia/ext/convolver.cc
+index 8b3bd070d168a..a7d99de48d398 100644
+--- a/skia/ext/convolver.cc
++++ b/skia/ext/convolver.cc
+@@ -371,7 +371,7 @@ void SetupSIMD(ConvolveProcs *procs) {
+   procs->extra_horizontal_reads = 3;
+   procs->convolve_vertically = &ConvolveVertically_mips_dspr2;
+   procs->convolve_horizontally = &ConvolveHorizontally_mips_dspr2;
+-#elif defined SIMD_NEON
++#elif defined USE_NEON && defined SIMD_NEON
+   procs->extra_horizontal_reads = 3;
+   procs->convolve_vertically = &ConvolveVertically_Neon;
+   procs->convolve_4rows_horizontally = &Convolve4RowsHorizontally_Neon;
+-- 
+2.42.1
+

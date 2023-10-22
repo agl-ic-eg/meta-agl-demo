@@ -1,0 +1,72 @@
+From e7b779035f0d7ff1ba5bf59ea2f314f364493928 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Thu, 4 May 2023 10:42:06 +0200
+Subject: [PATCH 06/33] [agl] Don't use DRI for renesas
+
+This adds the use_dri flag that defauls to true and
+can be disabled if we are building CEF using ozone + wayland
+
+Upstream-Status: Inappropriate, specific to the renesas boards supported
+by AGL.
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ content/gpu/BUILD.gn       | 4 ++--
+ media/gpu/sandbox/BUILD.gn | 5 +++--
+ media/media_options.gni    | 3 +++
+ 3 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/content/gpu/BUILD.gn b/content/gpu/BUILD.gn
+index 93559f6092c7a..cef8415be7ab1 100644
+--- a/content/gpu/BUILD.gn
++++ b/content/gpu/BUILD.gn
+@@ -139,8 +139,8 @@ target(link_target_type, "gpu_sources") {
+   }
+ 
+   # Use DRI on desktop Linux builds.
+-  if (current_cpu != "s390x" && current_cpu != "ppc64" && is_linux &&
+-      !is_castos) {
++  if (use_dri && current_cpu != "s390x" && current_cpu != "ppc64" &&
++      is_linux && !is_castos) {
+     configs += [ "//build/config/linux/dri" ]
+   }
+ }
+diff --git a/media/gpu/sandbox/BUILD.gn b/media/gpu/sandbox/BUILD.gn
+index cfcb7fa80ef89..6ba37d06b29c8 100644
+--- a/media/gpu/sandbox/BUILD.gn
++++ b/media/gpu/sandbox/BUILD.gn
+@@ -4,6 +4,7 @@
+ 
+ import("//build/config/chromeos/ui_mode.gni")
+ import("//media/gpu/args.gni")
++import("//media/media_options.gni")
+ 
+ source_set("sandbox") {
+   sources = []
+@@ -30,8 +31,8 @@ source_set("sandbox") {
+   if (use_v4l2_codec) {
+     deps += [ "//media/gpu/v4l2" ]
+   }
+-  if (current_cpu != "s390x" && current_cpu != "ppc64" && is_linux &&
+-      !is_castos) {
++  if (use_dri && (current_cpu != "s390x" && current_cpu != "ppc64" && is_linux &&
++      !is_castos)) {
+     # For DRI_DRIVER_DIR.
+     configs += [ "//build/config/linux/dri" ]
+   }
+diff --git a/media/media_options.gni b/media/media_options.gni
+index 61d5046d0cb0e..4898c9034d448 100644
+--- a/media/media_options.gni
++++ b/media/media_options.gni
+@@ -117,6 +117,9 @@ declare_args() {
+   # Enable inclusion of VVC/H.266 parser/demuxer, and also enable VVC/H.266 decoding
+   # with hardware acceleration provided by platform. Disabled by default for all builds.
+   enable_platform_vvc = false
++
++  # used to disable dri on renesas boards
++  use_dri = true
+ }
+ 
+ # Use another declare_args() to allow dependence on args defined above.
+-- 
+2.42.1
+

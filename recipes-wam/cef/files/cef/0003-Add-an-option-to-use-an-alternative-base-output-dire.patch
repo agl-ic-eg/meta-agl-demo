@@ -1,15 +1,14 @@
-From 33aa8b58d5c5d189dcd51d465f1d9d39c740146e Mon Sep 17 00:00:00 2001
+From e54832c051aa34708025f350e81d08bafd3025f7 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Thu, 30 Mar 2023 15:22:32 +0200
-Subject: [PATCH 03/10] Add an option to use an alternative base output
- directory
+Subject: [PATCH 3/9] Add an option to use an alternative base output directory
 
 ---
  tools/gclient_hook.py | 19 +++++++++++++++++--
  1 file changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/tools/gclient_hook.py b/tools/gclient_hook.py
-index 290487433..4e5f9f687 100644
+index c525984e3..3d4375ec0 100644
 --- a/tools/gclient_hook.py
 +++ b/tools/gclient_hook.py
 @@ -6,12 +6,23 @@
@@ -36,7 +35,7 @@ index 290487433..4e5f9f687 100644
  # The CEF directory is the parent directory of _this_ script.
  cef_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
  # The src directory is the parent directory of the CEF directory.
-@@ -133,14 +144,18 @@ if platform == 'windows':
+@@ -136,14 +147,18 @@ if platform == 'windows':
  configs = GetAllPlatformConfigs(gn_args)
  for dir, config in configs.items():
    # Create out directories and write the args.gn file.
@@ -58,5 +57,5 @@ index 290487433..4e5f9f687 100644
      cmd.extend(os.environ['GN_ARGUMENTS'].split(' '))
    RunAction(src_dir, cmd)
 -- 
-2.39.2
+2.42.0
 

@@ -1,0 +1,753 @@
+From c10306e9da62f9c36513b98affc4589ea5016677 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Mon, 6 Nov 2023 16:00:35 -0300
+Subject: [PATCH 09/10] Update generated api
+
+Command used:
+
+./translator.sh --classes CefWindow CefWindowDelegate CefView CefViewDeleate --root-dir
+---
+ include/capi/cef_cookie_capi.h           |   6 +-
+ include/capi/cef_media_router_capi.h     |   6 +-
+ include/capi/cef_scheme_capi.h           |  10 +-
+ include/capi/views/cef_window_capi.h     |  52 +++++++-
+ include/cef_api_hash.h                   |   8 +-
+ libcef_dll/cpptoc/views/window_cpptoc.cc | 153 ++++++++++++++++++++++-
+ libcef_dll/ctocpp/views/window_ctocpp.cc | 148 +++++++++++++++++++++-
+ libcef_dll/ctocpp/views/window_ctocpp.h  |  12 +-
+ libcef_dll/wrapper/libcef_dll_dylib.cc   |  72 +++++++----
+ 9 files changed, 422 insertions(+), 45 deletions(-)
+
+diff --git a/include/capi/cef_cookie_capi.h b/include/capi/cef_cookie_capi.h
+index 1be978bfd..f6f19ede2 100644
+--- a/include/capi/cef_cookie_capi.h
++++ b/include/capi/cef_cookie_capi.h
+@@ -33,7 +33,7 @@
+ // by hand. See the translator.README.txt file in the tools directory for
+ // more information.
+ //
+-// $hash=598c6f530b2e2553197d8c6a72ad9e2bf72b5443$
++// $hash=8093e45bcbd09f41f21c0cb7c8719166cc481529$
+ //
+ 
+ #ifndef CEF_INCLUDE_CAPI_CEF_COOKIE_CAPI_H_
+@@ -126,8 +126,8 @@ typedef struct _cef_cookie_manager_t {
+ /// cef_settings_t.cache_path if specified or in memory otherwise. If |callback|
+ /// is non-NULL it will be executed asnychronously on the UI thread after the
+ /// manager's storage has been initialized. Using this function is equivalent to
+-/// calling cef_request_context_t::cef_request_context_get_global_context()->Get
+-/// DefaultCookieManager().
++/// calling cef_request_context_t::cef_request_context_get_global_context()-
++/// >GetDefaultCookieManager().
+ ///
+ CEF_EXPORT cef_cookie_manager_t* cef_cookie_manager_get_global_manager(
+     struct _cef_completion_callback_t* callback);
+diff --git a/include/capi/cef_media_router_capi.h b/include/capi/cef_media_router_capi.h
+index 27f9d0e15..9df759013 100644
+--- a/include/capi/cef_media_router_capi.h
++++ b/include/capi/cef_media_router_capi.h
+@@ -33,7 +33,7 @@
+ // by hand. See the translator.README.txt file in the tools directory for
+ // more information.
+ //
+-// $hash=de4a9b856c6951231f446991a9b1efb89096ad3b$
++// $hash=d3f29de333c90768caac6aee2b7eb2db5f593515$
+ //
+ 
+ #ifndef CEF_INCLUDE_CAPI_CEF_MEDIA_ROUTER_CAPI_H_
+@@ -114,8 +114,8 @@ typedef struct _cef_media_router_t {
+ /// Returns the MediaRouter object associated with the global request context.
+ /// If |callback| is non-NULL it will be executed asnychronously on the UI
+ /// thread after the manager's storage has been initialized. Equivalent to
+-/// calling cef_request_context_t::cef_request_context_get_global_context()->get
+-/// _media_router().
++/// calling cef_request_context_t::cef_request_context_get_global_context()-
++/// >get_media_router().
+ ///
+ CEF_EXPORT cef_media_router_t* cef_media_router_get_global(
+     struct _cef_completion_callback_t* callback);
+diff --git a/include/capi/cef_scheme_capi.h b/include/capi/cef_scheme_capi.h
+index 5f8796287..bdcd6cc3b 100644
+--- a/include/capi/cef_scheme_capi.h
++++ b/include/capi/cef_scheme_capi.h
+@@ -33,7 +33,7 @@
+ // by hand. See the translator.README.txt file in the tools directory for
+ // more information.
+ //
+-// $hash=6b6a7f754abc9ee5d6f775ba9eee802d3244faf5$
++// $hash=794d4c01f06c656c425779b0189a3b52820498ed$
+ //
+ 
+ #ifndef CEF_INCLUDE_CAPI_CEF_SCHEME_CAPI_H_
+@@ -116,8 +116,8 @@ typedef struct _cef_scheme_handler_factory_t {
+ /// matches the specified |scheme_name| and optional |domain_name|. Returns
+ /// false (0) if an error occurs. This function may be called on any thread in
+ /// the browser process. Using this function is equivalent to calling cef_reques
+-/// t_context_t::cef_request_context_get_global_context()->register_scheme_handl
+-/// er_factory().
++/// t_context_t::cef_request_context_get_global_context()-
++/// >register_scheme_handler_factory().
+ ///
+ CEF_EXPORT int cef_register_scheme_handler_factory(
+     const cef_string_t* scheme_name,
+@@ -128,8 +128,8 @@ CEF_EXPORT int cef_register_scheme_handler_factory(
+ /// Clear all scheme handler factories registered with the global request
+ /// context. Returns false (0) on error. This function may be called on any
+ /// thread in the browser process. Using this function is equivalent to calling
+-/// cef_request_context_t::cef_request_context_get_global_context()->clear_schem
+-/// e_handler_factories().
++/// cef_request_context_t::cef_request_context_get_global_context()-
++/// >clear_scheme_handler_factories().
+ ///
+ CEF_EXPORT int cef_clear_scheme_handler_factories(void);
+ 
+diff --git a/include/capi/views/cef_window_capi.h b/include/capi/views/cef_window_capi.h
+index e5e04e83e..b0be32ad2 100644
+--- a/include/capi/views/cef_window_capi.h
++++ b/include/capi/views/cef_window_capi.h
+@@ -33,7 +33,7 @@
+ // by hand. See the translator.README.txt file in the tools directory for
+ // more information.
+ //
+-// $hash=4b43fe0b493d860e8b28d7a6d892db49d1135b34$
++// $hash=53e1bba9189f03819c0646670cab8f9caabc74d6$
+ //
+ 
+ #ifndef CEF_INCLUDE_CAPI_VIEWS_CEF_WINDOW_CAPI_H_
+@@ -353,6 +353,49 @@ typedef struct _cef_window_t {
+   /// Remove all keyboard accelerators.
+   ///
+   void(CEF_CALLBACK* remove_all_accelerators)(struct _cef_window_t* self);
++
++  ///
++  /// Tells the agl compositor to activate the app
++  ///
++  void(CEF_CALLBACK* agl_activate_app)(struct _cef_window_t* self,
++                                       const cef_string_t* app);
++
++  ///
++  /// Tells the agl compositor the application id
++  ///
++  void(CEF_CALLBACK* agl_set_app_id)(struct _cef_window_t* self,
++                                     const cef_string_t* app_id);
++
++  ///
++  /// Tells the agl compositor that everything is set-up and good to go
++  ///
++  void(CEF_CALLBACK* agl_set_app_ready)(struct _cef_window_t* self);
++
++  ///
++  /// Tells the agl compositor that the app is the background application
++  ///
++  void(CEF_CALLBACK* agl_set_back_ground_app)(struct _cef_window_t* self);
++
++  ///
++  /// Tells the agl compositor that the app is a panel
++  ///
++  void(CEF_CALLBACK* agl_set_panel_app)(struct _cef_window_t* self,
++                                        uint32_t edge);
++
++  ///
++  /// Tells if the window wayland surface is configured
++  ///
++  int(CEF_CALLBACK* is_surface_configured)(struct _cef_window_t* self);
++
++  ///
++  /// A hint for the compositor to use a custom area, rather than inferring the
++  /// activation area.
++  ///
++  void(CEF_CALLBACK* setup_activation_area)(struct _cef_window_t* self,
++                                            uint32_t x,
++                                            uint32_t y,
++                                            uint32_t width,
++                                            uint32_t height);
+ } cef_window_t;
+ 
+ ///
+@@ -361,6 +404,13 @@ typedef struct _cef_window_t {
+ CEF_EXPORT cef_window_t* cef_window_create_top_level(
+     struct _cef_window_delegate_t* delegate);
+ 
++///
++/// Create a new Window with the provided ID
++///
++CEF_EXPORT cef_window_t* cef_window_create_top_level_with_id(
++    struct _cef_window_delegate_t* delegate,
++    const cef_string_t* app_id);
++
+ #ifdef __cplusplus
+ }
+ #endif
+diff --git a/include/cef_api_hash.h b/include/cef_api_hash.h
+index 90142ccb0..6af07332a 100644
+--- a/include/cef_api_hash.h
++++ b/include/cef_api_hash.h
+@@ -42,13 +42,13 @@
+ // way that may cause binary incompatibility with other builds. The universal
+ // hash value will change if any platform is affected whereas the platform hash
+ // values will change only if that particular platform is affected.
+-#define CEF_API_HASH_UNIVERSAL "4acea2e5c7a3e281d9652802ae1d24b25eef299b"
++#define CEF_API_HASH_UNIVERSAL "7d1351328f7aeb7db3ae74b6d687b115ceec7695"
+ #if defined(OS_WIN)
+-#define CEF_API_HASH_PLATFORM "3a181fdfaa42d2214c77cd83f76886b0657b0b53"
++#define CEF_API_HASH_PLATFORM "70c2a3fee7a3f4a4f6d44d4a3b3699ad23cf6f67"
+ #elif defined(OS_MAC)
+-#define CEF_API_HASH_PLATFORM "06bfe874ee215bde0a415bac7ac37ecf4969d4ca"
++#define CEF_API_HASH_PLATFORM "9d9d39318398a7efaf43406ae25967a33c9d9787"
+ #elif defined(OS_LINUX)
+-#define CEF_API_HASH_PLATFORM "1615f7e7079d89e2e81f683d4a8480455b5f2a60"
++#define CEF_API_HASH_PLATFORM "f828859cd19052fd3dab4b9f50f530d7011642b6"
+ #endif
+ 
+ #ifdef __cplusplus
+diff --git a/libcef_dll/cpptoc/views/window_cpptoc.cc b/libcef_dll/cpptoc/views/window_cpptoc.cc
+index 93ee5341f..cbb4bb1a4 100644
+--- a/libcef_dll/cpptoc/views/window_cpptoc.cc
++++ b/libcef_dll/cpptoc/views/window_cpptoc.cc
+@@ -9,7 +9,7 @@
+ // implementations. See the translator.README.txt file in the tools directory
+ // for more information.
+ //
+-// $hash=23777aea864e9abf38c2e2c5d79a40d6bd22876d$
++// $hash=53b37fbf82615184d8b259a2e476431a3e699eea$
+ //
+ 
+ #include "libcef_dll/cpptoc/views/window_cpptoc.h"
+@@ -48,6 +48,32 @@ CEF_EXPORT cef_window_t* cef_window_create_top_level(
+   return CefWindowCppToC::Wrap(_retval);
+ }
+ 
++CEF_EXPORT cef_window_t* cef_window_create_top_level_with_id(
++    struct _cef_window_delegate_t* delegate,
++    const cef_string_t* app_id) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Verify param: delegate; type: refptr_diff
++  DCHECK(delegate);
++  if (!delegate) {
++    return NULL;
++  }
++  // Verify param: app_id; type: string_byref_const
++  DCHECK(app_id);
++  if (!app_id) {
++    return NULL;
++  }
++
++  // Execute
++  CefRefPtr<CefWindow> _retval = CefWindow::CreateTopLevelWindowWithId(
++      CefWindowDelegateCToCpp::Wrap(delegate), CefString(app_id));
++
++  // Return type: refptr_same
++  return CefWindowCppToC::Wrap(_retval);
++}
++
+ namespace {
+ 
+ // MEMBER FUNCTIONS - Body may be edited by hand.
+@@ -717,6 +743,124 @@ void CEF_CALLBACK window_remove_all_accelerators(struct _cef_window_t* self) {
+   CefWindowCppToC::Get(self)->RemoveAllAccelerators();
+ }
+ 
++void CEF_CALLBACK window_agl_activate_app(struct _cef_window_t* self,
++                                          const cef_string_t* app) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self) {
++    return;
++  }
++  // Verify param: app; type: string_byref_const
++  DCHECK(app);
++  if (!app) {
++    return;
++  }
++
++  // Execute
++  CefWindowCppToC::Get(self)->AglActivateApp(CefString(app));
++}
++
++void CEF_CALLBACK window_agl_set_app_id(struct _cef_window_t* self,
++                                        const cef_string_t* app_id) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self) {
++    return;
++  }
++  // Verify param: app_id; type: string_byref_const
++  DCHECK(app_id);
++  if (!app_id) {
++    return;
++  }
++
++  // Execute
++  CefWindowCppToC::Get(self)->AglSetAppId(CefString(app_id));
++}
++
++void CEF_CALLBACK window_agl_set_app_ready(struct _cef_window_t* self) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self) {
++    return;
++  }
++
++  // Execute
++  CefWindowCppToC::Get(self)->AglSetAppReady();
++}
++
++void CEF_CALLBACK window_agl_set_back_ground_app(struct _cef_window_t* self) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self) {
++    return;
++  }
++
++  // Execute
++  CefWindowCppToC::Get(self)->AglSetBackGroundApp();
++}
++
++void CEF_CALLBACK window_agl_set_panel_app(struct _cef_window_t* self,
++                                           uint32_t edge) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self) {
++    return;
++  }
++
++  // Execute
++  CefWindowCppToC::Get(self)->AglSetPanelApp(edge);
++}
++
++int CEF_CALLBACK window_is_surface_configured(struct _cef_window_t* self) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self) {
++    return 0;
++  }
++
++  // Execute
++  bool _retval = CefWindowCppToC::Get(self)->IsSurfaceConfigured();
++
++  // Return type: bool
++  return _retval;
++}
++
++void CEF_CALLBACK window_setup_activation_area(struct _cef_window_t* self,
++                                               uint32_t x,
++                                               uint32_t y,
++                                               uint32_t width,
++                                               uint32_t height) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self) {
++    return;
++  }
++
++  // Execute
++  CefWindowCppToC::Get(self)->SetupActivationArea(x, y, width, height);
++}
++
+ struct _cef_window_t* CEF_CALLBACK window_as_window(struct _cef_panel_t* self) {
+   shutdown_checker::AssertNotShutdown();
+ 
+@@ -2031,6 +2175,13 @@ CefWindowCppToC::CefWindowCppToC() {
+   GetStruct()->set_accelerator = window_set_accelerator;
+   GetStruct()->remove_accelerator = window_remove_accelerator;
+   GetStruct()->remove_all_accelerators = window_remove_all_accelerators;
++  GetStruct()->agl_activate_app = window_agl_activate_app;
++  GetStruct()->agl_set_app_id = window_agl_set_app_id;
++  GetStruct()->agl_set_app_ready = window_agl_set_app_ready;
++  GetStruct()->agl_set_back_ground_app = window_agl_set_back_ground_app;
++  GetStruct()->agl_set_panel_app = window_agl_set_panel_app;
++  GetStruct()->is_surface_configured = window_is_surface_configured;
++  GetStruct()->setup_activation_area = window_setup_activation_area;
+   GetStruct()->base.as_window = window_as_window;
+   GetStruct()->base.set_to_fill_layout = window_set_to_fill_layout;
+   GetStruct()->base.set_to_box_layout = window_set_to_box_layout;
+diff --git a/libcef_dll/ctocpp/views/window_ctocpp.cc b/libcef_dll/ctocpp/views/window_ctocpp.cc
+index 3a0423d28..aee3d62f1 100644
+--- a/libcef_dll/ctocpp/views/window_ctocpp.cc
++++ b/libcef_dll/ctocpp/views/window_ctocpp.cc
+@@ -9,7 +9,7 @@
+ // implementations. See the translator.README.txt file in the tools directory
+ // for more information.
+ //
+-// $hash=b6b0a2a563b475163aa71b20af6ec2ac8c1f0cae$
++// $hash=61eb77c4622382d6dda0136187c6acbd093f2e83$
+ //
+ 
+ #include "libcef_dll/ctocpp/views/window_ctocpp.h"
+@@ -49,6 +49,33 @@ CefRefPtr<CefWindow> CefWindow::CreateTopLevelWindow(
+   return CefWindowCToCpp::Wrap(_retval);
+ }
+ 
++NO_SANITIZE("cfi-icall")
++CefRefPtr<CefWindow> CefWindow::CreateTopLevelWindowWithId(
++    CefRefPtr<CefWindowDelegate> delegate,
++    const CefString& app_id) {
++  shutdown_checker::AssertNotShutdown();
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Verify param: delegate; type: refptr_diff
++  DCHECK(delegate.get());
++  if (!delegate.get()) {
++    return nullptr;
++  }
++  // Verify param: app_id; type: string_byref_const
++  DCHECK(!app_id.empty());
++  if (app_id.empty()) {
++    return nullptr;
++  }
++
++  // Execute
++  cef_window_t* _retval = cef_window_create_top_level_with_id(
++      CefWindowDelegateCppToC::Wrap(delegate), app_id.GetStruct());
++
++  // Return type: refptr_same
++  return CefWindowCToCpp::Wrap(_retval);
++}
++
+ // VIRTUAL METHODS - Body may be edited by hand.
+ 
+ NO_SANITIZE("cfi-icall") void CefWindowCToCpp::Show() {
+@@ -707,6 +734,125 @@ NO_SANITIZE("cfi-icall") void CefWindowCToCpp::RemoveAllAccelerators() {
+   _struct->remove_all_accelerators(_struct);
+ }
+ 
++NO_SANITIZE("cfi-icall")
++void CefWindowCToCpp::AglActivateApp(const CefString& app) {
++  shutdown_checker::AssertNotShutdown();
++
++  cef_window_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, agl_activate_app)) {
++    return;
++  }
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Verify param: app; type: string_byref_const
++  DCHECK(!app.empty());
++  if (app.empty()) {
++    return;
++  }
++
++  // Execute
++  _struct->agl_activate_app(_struct, app.GetStruct());
++}
++
++NO_SANITIZE("cfi-icall")
++void CefWindowCToCpp::AglSetAppId(const CefString& app_id) {
++  shutdown_checker::AssertNotShutdown();
++
++  cef_window_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, agl_set_app_id)) {
++    return;
++  }
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Verify param: app_id; type: string_byref_const
++  DCHECK(!app_id.empty());
++  if (app_id.empty()) {
++    return;
++  }
++
++  // Execute
++  _struct->agl_set_app_id(_struct, app_id.GetStruct());
++}
++
++NO_SANITIZE("cfi-icall") void CefWindowCToCpp::AglSetAppReady() {
++  shutdown_checker::AssertNotShutdown();
++
++  cef_window_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, agl_set_app_ready)) {
++    return;
++  }
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Execute
++  _struct->agl_set_app_ready(_struct);
++}
++
++NO_SANITIZE("cfi-icall") void CefWindowCToCpp::AglSetBackGroundApp() {
++  shutdown_checker::AssertNotShutdown();
++
++  cef_window_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, agl_set_back_ground_app)) {
++    return;
++  }
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Execute
++  _struct->agl_set_back_ground_app(_struct);
++}
++
++NO_SANITIZE("cfi-icall") void CefWindowCToCpp::AglSetPanelApp(uint32_t edge) {
++  shutdown_checker::AssertNotShutdown();
++
++  cef_window_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, agl_set_panel_app)) {
++    return;
++  }
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Execute
++  _struct->agl_set_panel_app(_struct, edge);
++}
++
++NO_SANITIZE("cfi-icall") bool CefWindowCToCpp::IsSurfaceConfigured() {
++  shutdown_checker::AssertNotShutdown();
++
++  cef_window_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, is_surface_configured)) {
++    return false;
++  }
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Execute
++  int _retval = _struct->is_surface_configured(_struct);
++
++  // Return type: bool
++  return _retval ? true : false;
++}
++
++NO_SANITIZE("cfi-icall")
++void CefWindowCToCpp::SetupActivationArea(uint32_t x,
++                                          uint32_t y,
++                                          uint32_t width,
++                                          uint32_t height) {
++  shutdown_checker::AssertNotShutdown();
++
++  cef_window_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, setup_activation_area)) {
++    return;
++  }
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Execute
++  _struct->setup_activation_area(_struct, x, y, width, height);
++}
++
+ NO_SANITIZE("cfi-icall") CefRefPtr<CefWindow> CefWindowCToCpp::AsWindow() {
+   shutdown_checker::AssertNotShutdown();
+ 
+diff --git a/libcef_dll/ctocpp/views/window_ctocpp.h b/libcef_dll/ctocpp/views/window_ctocpp.h
+index bc797350c..9931a7a3e 100644
+--- a/libcef_dll/ctocpp/views/window_ctocpp.h
++++ b/libcef_dll/ctocpp/views/window_ctocpp.h
+@@ -9,7 +9,7 @@
+ // implementations. See the translator.README.txt file in the tools directory
+ // for more information.
+ //
+-// $hash=2a7aaed7d4296e29dca74345cf2b2d4db221a738$
++// $hash=10cca846f56124ef20cd769e018ccfdf0aba26f5$
+ //
+ 
+ #ifndef CEF_LIBCEF_DLL_CTOCPP_VIEWS_WINDOW_CTOCPP_H_
+@@ -86,6 +86,16 @@ class CefWindowCToCpp
+                       bool alt_pressed) override;
+   void RemoveAccelerator(int command_id) override;
+   void RemoveAllAccelerators() override;
++  void AglActivateApp(const CefString& app) override;
++  void AglSetAppId(const CefString& app_id) override;
++  void AglSetAppReady() override;
++  void AglSetBackGroundApp() override;
++  void AglSetPanelApp(uint32_t edge) override;
++  bool IsSurfaceConfigured() override;
++  void SetupActivationArea(uint32_t x,
++                           uint32_t y,
++                           uint32_t width,
++                           uint32_t height) override;
+ 
+   // CefPanel methods.
+   CefRefPtr<CefWindow> AsWindow() override;
+diff --git a/libcef_dll/wrapper/libcef_dll_dylib.cc b/libcef_dll/wrapper/libcef_dll_dylib.cc
+index 21065db3b..b61ea0d4b 100644
+--- a/libcef_dll/wrapper/libcef_dll_dylib.cc
++++ b/libcef_dll/wrapper/libcef_dll_dylib.cc
+@@ -9,7 +9,7 @@
+ // implementations. See the translator.README.txt file in the tools directory
+ // for more information.
+ //
+-// $hash=bcad216e5fef8b9c10a895524f8b1201608138f9$
++// $hash=51d1746394ff61e17d4fbb3d1415a3b646004563$
+ //
+ 
+ #include <dlfcn.h>
+@@ -249,6 +249,8 @@ struct libcef_pointers {
+   decltype(&cef_scroll_view_create) cef_scroll_view_create;
+   decltype(&cef_textfield_create) cef_textfield_create;
+   decltype(&cef_window_create_top_level) cef_window_create_top_level;
++  decltype(&cef_window_create_top_level_with_id)
++      cef_window_create_top_level_with_id;
+   decltype(&cef_api_hash) cef_api_hash;
+   decltype(&cef_version_info) cef_version_info;
+   decltype(&cef_get_min_log_level) cef_get_min_log_level;
+@@ -463,6 +465,7 @@ int libcef_init_pointers(const char* path) {
+   INIT_ENTRY(cef_scroll_view_create);
+   INIT_ENTRY(cef_textfield_create);
+   INIT_ENTRY(cef_window_create_top_level);
++  INIT_ENTRY(cef_window_create_top_level_with_id);
+   INIT_ENTRY(cef_api_hash);
+   INIT_ENTRY(cef_version_info);
+   INIT_ENTRY(cef_get_min_log_level);
+@@ -705,8 +708,8 @@ int cef_create_url(const struct _cef_urlparts_t* parts, cef_string_t* url) {
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-cef_string_userfree_t cef_format_url_for_security_display(
+-    const cef_string_t* origin_url) {
++cef_string_userfree_t
++    cef_format_url_for_security_display(const cef_string_t* origin_url) {
+   return g_libcef_pointers.cef_format_url_for_security_display(origin_url);
+ }
+ 
+@@ -978,9 +981,10 @@ void cef_server_create(const cef_string_t* address,
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-struct _cef_shared_process_message_builder_t*
+-cef_shared_process_message_builder_create(const cef_string_t* name,
+-                                          size_t byte_size) {
++struct
++    _cef_shared_process_message_builder_t* cef_shared_process_message_builder_create(
++        const cef_string_t* name,
++        size_t byte_size) {
+   return g_libcef_pointers.cef_shared_process_message_builder_create(name,
+                                                                      byte_size);
+ }
+@@ -1192,46 +1196,54 @@ struct _cef_translator_test_t* cef_translator_test_create() {
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-struct _cef_translator_test_ref_ptr_library_t*
+-cef_translator_test_ref_ptr_library_create(int value) {
++struct
++    _cef_translator_test_ref_ptr_library_t* cef_translator_test_ref_ptr_library_create(
++        int value) {
+   return g_libcef_pointers.cef_translator_test_ref_ptr_library_create(value);
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-struct _cef_translator_test_ref_ptr_library_child_t*
+-cef_translator_test_ref_ptr_library_child_create(int value, int other_value) {
++struct
++    _cef_translator_test_ref_ptr_library_child_t* cef_translator_test_ref_ptr_library_child_create(
++        int value,
++        int other_value) {
+   return g_libcef_pointers.cef_translator_test_ref_ptr_library_child_create(
+       value, other_value);
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-struct _cef_translator_test_ref_ptr_library_child_child_t*
+-cef_translator_test_ref_ptr_library_child_child_create(int value,
+-                                                       int other_value,
+-                                                       int other_other_value) {
++struct
++    _cef_translator_test_ref_ptr_library_child_child_t* cef_translator_test_ref_ptr_library_child_child_create(
++        int value,
++        int other_value,
++        int other_other_value) {
+   return g_libcef_pointers
+       .cef_translator_test_ref_ptr_library_child_child_create(
+           value, other_value, other_other_value);
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-struct _cef_translator_test_scoped_library_t*
+-cef_translator_test_scoped_library_create(int value) {
++struct
++    _cef_translator_test_scoped_library_t* cef_translator_test_scoped_library_create(
++        int value) {
+   return g_libcef_pointers.cef_translator_test_scoped_library_create(value);
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-struct _cef_translator_test_scoped_library_child_t*
+-cef_translator_test_scoped_library_child_create(int value, int other_value) {
++struct
++    _cef_translator_test_scoped_library_child_t* cef_translator_test_scoped_library_child_create(
++        int value,
++        int other_value) {
+   return g_libcef_pointers.cef_translator_test_scoped_library_child_create(
+       value, other_value);
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-struct _cef_translator_test_scoped_library_child_child_t*
+-cef_translator_test_scoped_library_child_child_create(int value,
+-                                                      int other_value,
+-                                                      int other_other_value) {
++struct
++    _cef_translator_test_scoped_library_child_child_t* cef_translator_test_scoped_library_child_child_create(
++        int value,
++        int other_value,
++        int other_other_value) {
+   return g_libcef_pointers
+       .cef_translator_test_scoped_library_child_child_create(value, other_value,
+                                                              other_other_value);
+@@ -1284,14 +1296,14 @@ void cef_display_get_alls(size_t* displaysCount,
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-cef_point_t cef_display_convert_screen_point_to_pixels(
+-    const cef_point_t* point) {
++cef_point_t
++    cef_display_convert_screen_point_to_pixels(const cef_point_t* point) {
+   return g_libcef_pointers.cef_display_convert_screen_point_to_pixels(point);
+ }
+ 
+ NO_SANITIZE("cfi-icall")
+-cef_point_t cef_display_convert_screen_point_from_pixels(
+-    const cef_point_t* point) {
++cef_point_t
++    cef_display_convert_screen_point_from_pixels(const cef_point_t* point) {
+   return g_libcef_pointers.cef_display_convert_screen_point_from_pixels(point);
+ }
+ 
+@@ -1342,6 +1354,14 @@ struct _cef_window_t* cef_window_create_top_level(
+   return g_libcef_pointers.cef_window_create_top_level(delegate);
+ }
+ 
++NO_SANITIZE("cfi-icall")
++struct _cef_window_t* cef_window_create_top_level_with_id(
++    struct _cef_window_delegate_t* delegate,
++    const cef_string_t* app_id) {
++  return g_libcef_pointers.cef_window_create_top_level_with_id(delegate,
++                                                               app_id);
++}
++
+ NO_SANITIZE("cfi-icall") const char* cef_api_hash(int entry) {
+   return g_libcef_pointers.cef_api_hash(entry);
+ }
+-- 
+2.42.1
+

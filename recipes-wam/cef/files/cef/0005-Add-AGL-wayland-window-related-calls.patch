@@ -1,7 +1,7 @@
-From efba58d289ad381c6ca9fae9ded040c816946894 Mon Sep 17 00:00:00 2001
+From ee2c3e430fd0d1025e46c108a79a4e0b07608dff Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Thu, 18 May 2023 10:34:08 +0200
-Subject: [PATCH 06/10] Add AGL wayland window related calls
+Subject: [PATCH 5/9] Add AGL wayland window related calls
 
 ---
  include/views/cef_window.h             | 34 ++++++++++++++++
@@ -12,10 +12,10 @@ Subject: [PATCH 06/10] Add AGL wayland window related calls
  5 files changed, 132 insertions(+)
 
 diff --git a/include/views/cef_window.h b/include/views/cef_window.h
-index e34e446bd..dfa7821bc 100644
+index ec3843b25..22fe2e2a1 100644
 --- a/include/views/cef_window.h
 +++ b/include/views/cef_window.h
-@@ -348,6 +348,40 @@ class CefWindow : public CefPanel {
+@@ -366,6 +366,40 @@ class CefWindow : public CefPanel {
    ///
    /*--cef()--*/
    virtual void RemoveAllAccelerators() = 0;
@@ -57,12 +57,12 @@ index e34e446bd..dfa7821bc 100644
  
  #endif  // CEF_INCLUDE_VIEWS_CEF_WINDOW_H_
 diff --git a/libcef/browser/views/view_util.h b/libcef/browser/views/view_util.h
-index 302eee464..505c66d94 100644
+index a5fb6e522..bc12a9ddc 100644
 --- a/libcef/browser/views/view_util.h
 +++ b/libcef/browser/views/view_util.h
-@@ -141,6 +141,16 @@ CefWindowHandle GetWindowHandle(views::Widget* widget);
- // Returns the platform window handle for |window|. May return nullptr.
- CefWindowHandle GetWindowHandle(gfx::NativeWindow window);
+@@ -165,6 +165,16 @@ views::View* GetHostView(views::Widget* widget);
+ float GetNSWindowTitleBarHeight(views::Widget* widget);
+ #endif
  
 +// AGL-Related calls
 +
@@ -78,11 +78,11 @@ index 302eee464..505c66d94 100644
  
  #endif  // CEF_LIBCEF_BROWSER_VIEWS_VIEW_UTIL_H_
 diff --git a/libcef/browser/views/view_util_aura.cc b/libcef/browser/views/view_util_aura.cc
-index 8a144eb33..2ad2f3dc7 100644
+index 24be3311b..2dabf5eae 100644
 --- a/libcef/browser/views/view_util_aura.cc
 +++ b/libcef/browser/views/view_util_aura.cc
-@@ -39,4 +39,58 @@ CefWindowHandle GetWindowHandle(gfx::NativeWindow window) {
-   return kNullWindowHandle;
+@@ -58,4 +58,58 @@ views::View* GetHostView(views::Widget* widget) {
+   return widget->GetNativeView()->GetProperty(views::kHostViewKey);
  }
  
 +// AGL-Related calls
@@ -141,13 +141,14 @@ index 8a144eb33..2ad2f3dc7 100644
 +
  }  // namespace view_util
 diff --git a/libcef/browser/views/window_impl.cc b/libcef/browser/views/window_impl.cc
-index 64e5c443e..22a4d39f6 100644
+index 3da94b08a..8b347bf4a 100644
 --- a/libcef/browser/views/window_impl.cc
 +++ b/libcef/browser/views/window_impl.cc
-@@ -522,6 +522,30 @@ CefWindowHandle CefWindowImpl::GetWindowHandle() {
-   return view_util::GetWindowHandle(widget_);
+@@ -768,3 +768,27 @@ void CefWindowImpl::CreateWidget(gfx::AcceleratedWidget parent_widget) {
+     delegate()->OnWindowCreated(this);
+   }
  }
- 
++
 +// AGL-Related calls
 +
 +void CefWindowImpl::AglActivateApp(const CefString& app) {
@@ -171,17 +172,13 @@ index 64e5c443e..22a4d39f6 100644
 +}
 +
 +// -----------------
-+
- void CefWindowImpl::SendKeyPress(int key_code, uint32 event_flags) {
-   CEF_REQUIRE_VALID_RETURN_VOID();
-   InitializeUITesting();
 diff --git a/libcef/browser/views/window_impl.h b/libcef/browser/views/window_impl.h
-index f9557d415..ad02904f9 100644
+index fae0ae832..20514fc32 100644
 --- a/libcef/browser/views/window_impl.h
 +++ b/libcef/browser/views/window_impl.h
-@@ -132,6 +132,16 @@ class CefWindowImpl
- 
+@@ -134,6 +134,16 @@ class CefWindowImpl
    views::Widget* widget() const { return widget_; }
+   bool initialized() const { return initialized_; }
  
 +  // AGL-Related calls
 +
@@ -197,5 +194,5 @@ index f9557d415..ad02904f9 100644
    // Create a new implementation object.
    // Always call Initialize() after creation.
 -- 
-2.39.2
+2.42.0
 

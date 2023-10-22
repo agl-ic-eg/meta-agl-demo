@@ -1,0 +1,339 @@
+From 19a3339965f79f8ae8ab650850461cbd0a782bff Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Mon, 30 Oct 2023 15:28:20 -0300
+Subject: [PATCH 26/33] [M118-fix] Add deleted constructors/operators
+
+Apparently the rules for deleting the implicitly-defined move
+constructor/operators is different in clang 14 and this causes build
+issues where the constructors or operators are needed.
+
+So we explicitly declare all the needed constructors defined as deleted
+by the compiler.
+
+Upstream-Status: Inappropriate, only affects older versions of clang
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ .../profile_management_navigation_throttle.cc | 22 +++++++++++++
+ .../core/browser/profile_token_quality.cc     | 12 +++----
+ .../core/browser/profile_token_quality.h      | 15 +++++++++
+ .../public/common/download_save_item_data.h   |  5 +++
+ .../fenced_frame/fenced_frame_reporter.h      | 25 +++++++++++++++
+ .../header_direct_from_seller_signals.cc      |  4 ++-
+ .../webid/idp_network_request_manager.h       | 31 +++++++++++++++++++
+ .../renderer/platform/fonts/font_palette.h    |  1 +
+ .../gesture_detection/motion_event_generic.cc | 27 ++++++++++++++++
+ .../gesture_detection/motion_event_generic.h  |  6 ++--
+ 10 files changed, 139 insertions(+), 9 deletions(-)
+
+diff --git a/chrome/browser/enterprise/profile_management/profile_management_navigation_throttle.cc b/chrome/browser/enterprise/profile_management/profile_management_navigation_throttle.cc
+index aecaaf76762ee..3b02142d3e722 100644
+--- a/chrome/browser/enterprise/profile_management/profile_management_navigation_throttle.cc
++++ b/chrome/browser/enterprise/profile_management/profile_management_navigation_throttle.cc
+@@ -5,6 +5,7 @@
+ #include "chrome/browser/enterprise/profile_management/profile_management_navigation_throttle.h"
+ 
+ #include <string>
++#include <utility>
+ 
+ #include "base/command_line.h"
+ #include "base/containers/contains.h"
+@@ -47,6 +48,27 @@ constexpr char kGoogleServiceLoginUrl[] =
+ // Utility struct used to store SAML attributes related to third-party profile
+ // management.
+ struct SAMLProfileAttributes {
++  SAMLProfileAttributes() {}
++  SAMLProfileAttributes(std::string n, std::string d, std::string t)
++    : name{n}, domain{d}, token{t} {}
++  SAMLProfileAttributes(const SAMLProfileAttributes& o)
++    : SAMLProfileAttributes(o.name,
++                            o.domain,
++                            o.token) {}
++  SAMLProfileAttributes(SAMLProfileAttributes&& o)
++    : name{std::move(o.name)}
++    , domain{std::move(o.domain)}
++    , token{std::move(o.token)} {}
++  SAMLProfileAttributes& operator=(const SAMLProfileAttributes& o) {
++    return *this = SAMLProfileAttributes(o);
++  }
++  SAMLProfileAttributes& operator=(SAMLProfileAttributes&& o) {
++    name = std::move(o.name);
++    domain = std::move(o.domain);
++    token = std::move(o.token);
++    return *this;
++  }
++
+   std::string name;
+   std::string domain;
+   std::string token;
+diff --git a/components/autofill/core/browser/profile_token_quality.cc b/components/autofill/core/browser/profile_token_quality.cc
+index ff5f175372f39..e1c18eccb84b3 100644
+--- a/components/autofill/core/browser/profile_token_quality.cc
++++ b/components/autofill/core/browser/profile_token_quality.cc
+@@ -241,10 +241,10 @@ bool ProfileTokenQuality::AddObservationsForFilledForm(
+     }
+     possible_observations.emplace_back(
+         stored_type,
+-        Observation{.type = base::to_underlying(GetObservationTypeFromField(
++        Observation(base::to_underlying(GetObservationTypeFromField(
+                         field, form_data.fields[i].value, other_profiles,
+                         pdm.app_locale())),
+-                    .form_hash = hash});
++                    hash));
+   }
+   return AddSubsetOfObservations(std::move(possible_observations)) > 0;
+ }
+@@ -387,10 +387,10 @@ void ProfileTokenQuality::LoadSerializedObservationsForStoredType(
+   for (size_t i = 0; i + 1 < serialized_data.size(); i += 2) {
+     AddObservation(
+         type,
+-        Observation{
+-            .type = std::min(serialized_data[i],
+-                             base::to_underlying(ObservationType::kMaxValue)),
+-            .form_hash = FormSignatureHash(serialized_data[i + 1])});
++        Observation(
++            std::min(serialized_data[i],
++                     base::to_underlying(ObservationType::kMaxValue)),
++            FormSignatureHash(serialized_data[i + 1])));
+   }
+ }
+ 
+diff --git a/components/autofill/core/browser/profile_token_quality.h b/components/autofill/core/browser/profile_token_quality.h
+index 9dc16a1f98a13..2f726f04ab8d3 100644
+--- a/components/autofill/core/browser/profile_token_quality.h
++++ b/components/autofill/core/browser/profile_token_quality.h
+@@ -211,6 +211,21 @@ class ProfileTokenQuality {
+     // For this reason, it is preferred to store the `ObservationType`s as their
+     // underlying type in the data model as well.
+     // Getters expose unknown values as `kUnknown`.
++    Observation(std::underlying_type_t<ObservationType> t,
++                FormSignatureHash h) : type{t}, form_hash{h} {}
++    Observation(const Observation &o)
++      : Observation(o.type, o.form_hash) {}
++    Observation(Observation &&o) : type{std::move(o.type)},
++                                   form_hash{std::move(o.form_hash)} {}
++    Observation& operator=(const Observation& o) {
++        return *this = Observation(o);
++    }
++    Observation& operator=(Observation&& o) noexcept {
++        type = std::move(o.type);
++        form_hash = std::move(o.form_hash);
++        return *this;
++    }
++
+     std::underlying_type_t<ObservationType> type;
+     FormSignatureHash form_hash = FormSignatureHash(0);
+   };
+diff --git a/components/download/public/common/download_save_item_data.h b/components/download/public/common/download_save_item_data.h
+index 754aec2f64f6d..d49c3cd545b06 100644
+--- a/components/download/public/common/download_save_item_data.h
++++ b/components/download/public/common/download_save_item_data.h
+@@ -20,6 +20,11 @@ class COMPONENTS_DOWNLOAD_EXPORT DownloadSaveItemData
+     : public base::SupportsUserData::Data {
+  public:
+   struct ItemInfo {
++    ItemInfo(base::FilePath f, GURL u, GURL r)
++      : file_path{f}
++      , url{u}
++      , referrer_url{r} {}
++
+     // The final path where this file of the package will be saved.
+     base::FilePath file_path;
+     // The url this file was downloaded from.
+diff --git a/content/browser/fenced_frame/fenced_frame_reporter.h b/content/browser/fenced_frame/fenced_frame_reporter.h
+index 19ebadf3e14f7..8d2ee62847ced 100644
+--- a/content/browser/fenced_frame/fenced_frame_reporter.h
++++ b/content/browser/fenced_frame/fenced_frame_reporter.h
+@@ -8,6 +8,7 @@
+ #include <map>
+ #include <set>
+ #include <string>
++#include <utility>
+ #include <vector>
+ 
+ #include "base/containers/flat_map.h"
+@@ -40,6 +41,21 @@ class RenderFrameHostImpl;
+ // `type` is the key for the `ReportingUrlMap`, and `data` is sent with the
+ // request as a POST.
+ struct DestinationEnumEvent {
++  DestinationEnumEvent(std::string t, std::string d)
++    : type{std::move(t)}
++    , data{std::move(d)} {}
++  DestinationEnumEvent(const DestinationEnumEvent& o)
++    : DestinationEnumEvent(o.type, o.data) {}
++  DestinationEnumEvent(DestinationEnumEvent&& o)
++    : type{std::move(o.type)}
++    , data{std::move(o.data)} {}
++  DestinationEnumEvent& operator=(const DestinationEnumEvent& o) {
++    return *this = DestinationEnumEvent(o);
++  }
++  DestinationEnumEvent& operator=(DestinationEnumEvent&& o) {
++    std::swap(type, o.type);
++    std::swap(data, o.data);
++  }
+   std::string type;
+   std::string data;
+ };
+@@ -48,6 +64,15 @@ struct DestinationEnumEvent {
+ // `url` is the custom destination url, and the request is sent as a GET.
+ // Macros are substituted using the `ReportingMacros`.
+ struct DestinationURLEvent {
++  DestinationURLEvent(const GURL& u) : url{u} {}
++  DestinationURLEvent(const DestinationURLEvent& u) : url{u.url} {}
++  DestinationURLEvent(DestinationURLEvent&& u) : url{std::move(u.url)} {}
++  DestinationURLEvent& operator=(const DestinationURLEvent& o) {
++    return *this =DestinationURLEvent(o);
++  }
++  DestinationURLEvent& operator=(DestinationURLEvent&& o) {
++    std::swap(url, o.url);
++  }
+   GURL url;
+ };
+ 
+diff --git a/content/browser/interest_group/header_direct_from_seller_signals.cc b/content/browser/interest_group/header_direct_from_seller_signals.cc
+index fe59d11edf449..facbec80a203a 100644
+--- a/content/browser/interest_group/header_direct_from_seller_signals.cc
++++ b/content/browser/interest_group/header_direct_from_seller_signals.cc
+@@ -16,6 +16,7 @@
+ #include "base/strings/stringprintf.h"
+ #include "base/values.h"
+ #include "services/data_decoder/public/cpp/data_decoder.h"
++#include "third_party/abseil-cpp/absl/types/optional.h"
+ #include "url/gurl.h"
+ #include "url/origin.h"
+ #include "url/url_constants.h"
+@@ -187,7 +188,8 @@ void OnJsonDecoded(std::unique_ptr<const std::set<std::string>> responses,
+ 
+ }  // namespace
+ 
+-HeaderDirectFromSellerSignals::HeaderDirectFromSellerSignals() = default;
++HeaderDirectFromSellerSignals::HeaderDirectFromSellerSignals() : seller_signals_{absl::nullopt}
++                                                               , auction_signals_{absl::nullopt} {}
+ 
+ HeaderDirectFromSellerSignals::~HeaderDirectFromSellerSignals() = default;
+ 
+diff --git a/content/browser/webid/idp_network_request_manager.h b/content/browser/webid/idp_network_request_manager.h
+index 6a652e0a22b44..307e0f4a68f48 100644
+--- a/content/browser/webid/idp_network_request_manager.h
++++ b/content/browser/webid/idp_network_request_manager.h
+@@ -75,6 +75,24 @@ class CONTENT_EXPORT IdpNetworkRequestManager {
+     kInvalidContentTypeError,
+   };
+   struct FetchStatus {
++    FetchStatus(ParseStatus p, int r)
++      : parse_status{p}
++      , response_code{r} {}
++    FetchStatus(const FetchStatus& o)
++      : FetchStatus(o.parse_status,
++                    o.response_code) {}
++    FetchStatus(FetchStatus&& o)
++      : parse_status{std::move(o.parse_status)}
++      , response_code{std::move(o.response_code)} {}
++    FetchStatus& operator=(const FetchStatus& o) {
++      return *this = FetchStatus(o);
++    }
++    FetchStatus& operator=(FetchStatus&& o) {
++      std::swap(parse_status, o.parse_status);
++      std::swap(response_code, o.response_code);
++      return *this;
++    }
++
+     ParseStatus parse_status;
+     // The HTTP response code, if one was received, otherwise the net error. It
+     // is possible to distinguish which it is since HTTP response codes are
+@@ -117,6 +135,19 @@ class CONTENT_EXPORT IdpNetworkRequestManager {
+   };
+ 
+   struct IdentityCredentialTokenError {
++    IdentityCredentialTokenError(int c, GURL u) : code{c}, url{u} {}
++    IdentityCredentialTokenError(const IdentityCredentialTokenError &o)
++      : IdentityCredentialTokenError(o.code, o.url) {}
++    IdentityCredentialTokenError(IdentityCredentialTokenError &&o)
++      : code{std::move(o.code)}, url{std::move(o.url)} {}
++    IdentityCredentialTokenError& operator=(const IdentityCredentialTokenError& o) {
++      return *this = IdentityCredentialTokenError(o);
++    }
++    IdentityCredentialTokenError& operator=(IdentityCredentialTokenError&& o) {
++      std::swap(code, o.code);
++      std::swap(url, o.url);
++      return *this;
++    }
+     int code;
+     GURL url;
+   };
+diff --git a/third_party/blink/renderer/platform/fonts/font_palette.h b/third_party/blink/renderer/platform/fonts/font_palette.h
+index 01dac9c908e9e..9a1a167acf213 100644
+--- a/third_party/blink/renderer/platform/fonts/font_palette.h
++++ b/third_party/blink/renderer/platform/fonts/font_palette.h
+@@ -60,6 +60,7 @@ class PLATFORM_EXPORT FontPalette : public RefCounted<FontPalette> {
+   };
+ 
+   struct NonNormalizedPercentages {
++    NonNormalizedPercentages(double s, double e) : start{s}, end{e} {}
+     double start;
+     double end;
+     bool operator==(const NonNormalizedPercentages& other) const {
+diff --git a/ui/events/gesture_detection/motion_event_generic.cc b/ui/events/gesture_detection/motion_event_generic.cc
+index 77c5edaa17ee4..a312c6d4de0cf 100644
+--- a/ui/events/gesture_detection/motion_event_generic.cc
++++ b/ui/events/gesture_detection/motion_event_generic.cc
+@@ -348,6 +348,33 @@ MotionEventGeneric& MotionEventGeneric::operator=(
+   return *this;
+ }
+ 
++MotionEventGeneric& MotionEventGeneric::operator=(
++    MotionEventGeneric&& other) {
++  action_ = std::move(other.action_);
++  event_time_ = std::move(other.event_time_);
++  unique_event_id_ = std::move(other.unique_event_id_);
++  action_index_ = std::move(other.action_index_);
++  button_state_ = std::move(other.button_state_);
++  flags_ = std::move(other.flags_);
++  pointers_ = std::move(other.pointers_);
++  const size_t history_size = std::move(other.GetHistorySize());
++  for (size_t h = 0; h < history_size; ++h)
++    PushHistoricalEvent(other.historical_events_[h]->Clone());
++}
++
++MotionEventGeneric::MotionEventGeneric(MotionEventGeneric&& other) {
++  action_ = std::move(other.action_);
++  event_time_ = std::move(other.event_time_);
++  unique_event_id_ = std::move(other.unique_event_id_);
++  action_index_ = std::move(other.action_index_);
++  button_state_ = std::move(other.button_state_);
++  flags_ = std::move(other.flags_);
++  pointers_ = std::move(other.pointers_);
++  const size_t history_size = std::move(other.GetHistorySize());
++  for (size_t h = 0; h < history_size; ++h)
++    PushHistoricalEvent(other.historical_events_[h]->Clone());
++}
++
+ void MotionEventGeneric::PopPointer() {
+   DCHECK_GT(pointers_.size(), 0U);
+   pointers_.pop_back();
+diff --git a/ui/events/gesture_detection/motion_event_generic.h b/ui/events/gesture_detection/motion_event_generic.h
+index e508335d47ae9..ed87c6254412c 100644
+--- a/ui/events/gesture_detection/motion_event_generic.h
++++ b/ui/events/gesture_detection/motion_event_generic.h
+@@ -55,6 +55,9 @@ class GESTURE_DETECTION_EXPORT MotionEventGeneric : public MotionEvent {
+                      base::TimeTicks event_time,
+                      const PointerProperties& pointer);
+   MotionEventGeneric(const MotionEventGeneric& other);
++  MotionEventGeneric(MotionEventGeneric&& other);
++  MotionEventGeneric& operator=(const MotionEventGeneric& other);
++  MotionEventGeneric& operator=(MotionEventGeneric&& other);
+ 
+   ~MotionEventGeneric() override;
+ 
+@@ -124,8 +127,7 @@ class GESTURE_DETECTION_EXPORT MotionEventGeneric : public MotionEvent {
+  protected:
+   MotionEventGeneric();
+   MotionEventGeneric(const MotionEvent& event, bool with_history);
+-  MotionEventGeneric& operator=(const MotionEventGeneric& other);
+-
++  
+   void PopPointer();
+ 
+  private:
+-- 
+2.42.1
+

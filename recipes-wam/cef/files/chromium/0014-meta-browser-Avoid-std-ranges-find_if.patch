@@ -1,0 +1,70 @@
+From a577e7a76e6002e50b5ab27514b7f49d4070499c Mon Sep 17 00:00:00 2001
+From: Max Ihlenfeldt <max@igalia.com>
+Date: Wed, 30 Aug 2023 16:06:19 +0000
+Subject: [PATCH 14/33] [meta-browser] Avoid std::ranges::find_if()
+
+std::ranges::find_if() was introduced in C++20, and older versions of
+clang don't support it. We can instead use Chromium's `base::ranges`
+library, which is supported.
+
+Upstream-Status: Inappropriate [specific to older versions of clang]
+Signed-off-by: Max Ihlenfeldt <max@igalia.com>
+---
+ .../password_manager/core/browser/ui/passwords_grouper.cc    | 3 ++-
+ components/webauthn/core/browser/passkey_sync_bridge.cc      | 5 +++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/components/password_manager/core/browser/ui/passwords_grouper.cc b/components/password_manager/core/browser/ui/passwords_grouper.cc
+index 1b016e0eb9561..d259c6accf246 100644
+--- a/components/password_manager/core/browser/ui/passwords_grouper.cc
++++ b/components/password_manager/core/browser/ui/passwords_grouper.cc
+@@ -8,6 +8,7 @@
+ #include "base/containers/flat_set.h"
+ #include "base/strings/escape.h"
+ #include "base/strings/string_util.h"
++#include "base/ranges/algorithm.h"
+ #include "components/password_manager/core/browser/affiliation/affiliation_service.h"
+ #include "components/password_manager/core/browser/affiliation/affiliation_utils.h"
+ #include "components/password_manager/core/browser/passkey_credential.h"
+@@ -277,7 +278,7 @@ absl::optional<PasskeyCredential> PasswordsGrouper::GetPasskeyFor(
+   const std::vector<PasskeyCredential>& passkeys =
+       map_group_id_to_credentials_[group_id_iterator->second].passkeys;
+   const auto passkey_it =
+-      std::ranges::find_if(passkeys, [&credential](const auto& passkey) {
++      base::ranges::find_if(passkeys, [&credential](const auto& passkey) {
+         return credential.passkey_credential_id == passkey.credential_id();
+       });
+   if (passkey_it == passkeys.end()) {
+diff --git a/components/webauthn/core/browser/passkey_sync_bridge.cc b/components/webauthn/core/browser/passkey_sync_bridge.cc
+index 93129fed756aa..794c696fcff04 100644
+--- a/components/webauthn/core/browser/passkey_sync_bridge.cc
++++ b/components/webauthn/core/browser/passkey_sync_bridge.cc
+@@ -16,6 +16,7 @@
+ #include "base/containers/span.h"
+ #include "base/feature_list.h"
+ #include "base/functional/callback_helpers.h"
++#include "base/ranges/algorithm.h"
+ #include "base/strings/string_number_conversions.h"
+ #include "base/trace_event/trace_event.h"
+ #include "components/sync/base/features.h"
+@@ -258,7 +259,7 @@ PasskeySyncBridge::GetPasskeysForRelyingPartyId(
+ bool PasskeySyncBridge::DeletePasskey(const std::string& credential_id) {
+   // Find the credential with the given |credential_id|.
+   const auto passkey_it =
+-      std::ranges::find_if(data_, [&credential_id](const auto& passkey) {
++      base::ranges::find_if(data_, [&credential_id](const auto& passkey) {
+         return passkey.second.credential_id() == credential_id;
+       });
+   if (passkey_it == data_.end()) {
+@@ -309,7 +310,7 @@ bool PasskeySyncBridge::UpdatePasskey(const std::string& credential_id,
+                                       PasskeyChange change) {
+   // Find the credential with the given |credential_id|.
+   const auto passkey_it =
+-      std::ranges::find_if(data_, [&credential_id](const auto& passkey) {
++      base::ranges::find_if(data_, [&credential_id](const auto& passkey) {
+         return passkey.second.credential_id() == credential_id;
+       });
+   if (passkey_it == data_.end()) {
+-- 
+2.42.1
+

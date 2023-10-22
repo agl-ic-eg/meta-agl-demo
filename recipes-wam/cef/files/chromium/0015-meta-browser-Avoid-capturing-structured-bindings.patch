@@ -1,0 +1,56 @@
+From a1c05a94dc5b999bf22f1beedf3e3a9468775775 Mon Sep 17 00:00:00 2001
+From: Max Ihlenfeldt <max@igalia.com>
+Date: Tue, 13 Jun 2023 15:48:12 +0000
+Subject: [PATCH 15/33] [meta-browser] Avoid capturing structured bindings
+
+Similar to https://crrev.com/c/4526976, this patch removes some uses of
+structured bindings that lead to compile errors when using older
+versions of clang (observed with clang 15).
+
+Upstream-Status: Inappropriate [specific to older versions of clang]
+Signed-off-by: Max Ihlenfeldt <max@igalia.com>
+---
+ .../service_worker/service_worker_context_wrapper.cc      | 3 ++-
+ media/base/cdm_promise_adapter.cc                         | 8 ++++----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/content/browser/service_worker/service_worker_context_wrapper.cc b/content/browser/service_worker/service_worker_context_wrapper.cc
+index 3267cdb340819..de88ef7e565cb 100644
+--- a/content/browser/service_worker/service_worker_context_wrapper.cc
++++ b/content/browser/service_worker/service_worker_context_wrapper.cc
+@@ -1412,9 +1412,10 @@ void ServiceWorkerContextWrapper::MaybeProcessPendingWarmUpRequest() {
+   auto [document_url, key, callback] = std::move(*request);
+ 
+   DCHECK(document_url.is_valid());
++  auto document_url_spec = document_url.spec();
+   TRACE_EVENT1("ServiceWorker",
+                "ServiceWorkerContextWrapper::MaybeProcessPendingWarmUpRequest",
+-               "document_url", document_url.spec());
++               "document_url", document_url_spec);
+ 
+   context_core_->registry()->FindRegistrationForClientUrl(
+       ServiceWorkerRegistry::Purpose::kNotForNavigation,
+diff --git a/media/base/cdm_promise_adapter.cc b/media/base/cdm_promise_adapter.cc
+index f013809a62e25..144809b9696c3 100644
+--- a/media/base/cdm_promise_adapter.cc
++++ b/media/base/cdm_promise_adapter.cc
+@@ -94,12 +94,12 @@ void CdmPromiseAdapter::RejectPromise(uint32_t promise_id,
+ void CdmPromiseAdapter::Clear(ClearReason reason) {
+   // Reject all outstanding promises.
+   DCHECK(thread_checker_.CalledOnValidThread());
+-  for (auto& [promise_id, promise] : promises_) {
++  for (auto& promise : promises_) {
+     TRACE_EVENT_NESTABLE_ASYNC_END1(
+-        "media", "CdmPromise", TRACE_ID_WITH_SCOPE("CdmPromise", promise_id),
++        "media", "CdmPromise", TRACE_ID_WITH_SCOPE("CdmPromise", promise.first),
+         "status", "cleared");
+-    promise->reject(CdmPromise::Exception::INVALID_STATE_ERROR,
+-                    ToSystemCode(reason), "Operation aborted.");
++    promise.second->reject(CdmPromise::Exception::INVALID_STATE_ERROR,
++                           ToSystemCode(reason), "Operation aborted.");
+   }
+   promises_.clear();
+ }
+-- 
+2.42.1
+

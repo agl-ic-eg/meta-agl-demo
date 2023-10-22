@@ -1,0 +1,31 @@
+From f4d754e203e4968f4c9f68f00321fa0f1c942139 Mon Sep 17 00:00:00 2001
+From: Maksim Sisov <msisov@igalia.com>
+Date: Thu, 19 Dec 2019 15:47:53 +0200
+Subject: [PATCH 08/33] [meta-browser] Pass no-static-libstdc++ to gen.py
+
+Upstream-Status: Inappropriate
+
+GN requires libstdc++.a to be installed on host systems by default,
+which is often not very common, for no particular reason.
+
+Signed-off-by: Raphael Kubo da Costa <raphael.kubo.da.costa@intel.com>
+Signed-off-by: Maksim Sisov <msisov@igalia.com>
+---
+ tools/gn/bootstrap/bootstrap.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/gn/bootstrap/bootstrap.py b/tools/gn/bootstrap/bootstrap.py
+index caf736b28946d..c5d7c428ed68a 100755
+--- a/tools/gn/bootstrap/bootstrap.py
++++ b/tools/gn/bootstrap/bootstrap.py
+@@ -113,6 +113,7 @@ def main(argv):
+   cmd = [
+       sys.executable,
+       os.path.join(GN_ROOT, 'build', 'gen.py'),
++      '--no-static-libstdc++',
+       '--no-last-commit-position',
+       '--out-path=' + gn_build_dir,
+   ]
+-- 
+2.42.1
+

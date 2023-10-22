@@ -1,0 +1,52 @@
+From c206c886eabc8f03289802276f826baedf0e4e54 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Mon, 30 Oct 2023 21:20:48 -0300
+Subject: [PATCH 27/33] [M118-fix] Initialize percentages member on
+ blink::FontPalette
+
+Fixes the build issue:
+
+error: constructor for 'blink::FontPalette' must explicitly
+initialize the member 'percentages_'
+
+Upstream-Status: Inappropriate
+Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
+---
+ .../blink/renderer/platform/fonts/font_palette.h      | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/third_party/blink/renderer/platform/fonts/font_palette.h b/third_party/blink/renderer/platform/fonts/font_palette.h
+index 9a1a167acf213..8c9a9c02439b5 100644
+--- a/third_party/blink/renderer/platform/fonts/font_palette.h
++++ b/third_party/blink/renderer/platform/fonts/font_palette.h
+@@ -202,11 +202,14 @@ class PLATFORM_EXPORT FontPalette : public RefCounted<FontPalette> {
+ 
+  private:
+   explicit FontPalette(KeywordPaletteName palette_name)
+-      : palette_keyword_(palette_name), base_palette_({kNoBasePalette, 0}) {}
++      : palette_keyword_(palette_name),
++        base_palette_({kNoBasePalette, 0}),
++        percentages_{0.0, 0.0} {}
+   explicit FontPalette(AtomicString palette_values_name)
+       : palette_keyword_(kCustomPalette),
+         palette_values_name_(palette_values_name),
+-        base_palette_({kNoBasePalette, 0}) {}
++        base_palette_({kNoBasePalette, 0}),
++        percentages_{0.0, 0.0} {}
+   FontPalette(
+       scoped_refptr<FontPalette> start,
+       scoped_refptr<FontPalette> end,
+@@ -224,7 +227,9 @@ class PLATFORM_EXPORT FontPalette : public RefCounted<FontPalette> {
+         color_interpolation_space_(color_interpoaltion_space),
+         hue_interpolation_method_(hue_interpolation_method) {}
+   FontPalette()
+-      : palette_keyword_(kNormalPalette), base_palette_({kNoBasePalette, 0}) {}
++      : palette_keyword_(kNormalPalette),
++        base_palette_({kNoBasePalette, 0}),
++        percentages_{0.0, 0.0} {}
+ 
+   KeywordPaletteName palette_keyword_;
+   AtomicString palette_values_name_;
+-- 
+2.42.1
+

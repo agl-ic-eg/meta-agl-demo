@@ -1,0 +1,45 @@
+From 41653aae0a0de782bcfb8396a01aa1d3c98d3149 Mon Sep 17 00:00:00 2001
+From: Chisoon Jeong <chisoon.jeong@lge.com>
+Date: Tue, 12 Sep 2023 08:35:43 +0000
+Subject: [PATCH 19/33] [upstream] Initialize ServerCvc with designated
+ initializers.
+
+Replace ServerCvc initialization using aggregates from a parenthesized
+list of values, which is not a c++20 feature allowed for Chromium at
+the moment, with designated initializers.
+
+Change-Id: Ifdeb78d0ebc804016c655683ad1369dd543d4204
+Reviewed-on: https://chromium-review.googlesource.com/c/chromium/src/+/4855865
+Reviewed-by: Florian Leimgruber <fleimgruber@google.com>
+Reviewed-by: Dominic Battre <battre@chromium.org>
+Commit-Queue: Dominic Battre <battre@chromium.org>
+Cr-Commit-Position: refs/heads/main@{#1195267}
+---
+ .../core/browser/webdata/autofill_sync_bridge_util.cc  | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/components/autofill/core/browser/webdata/autofill_sync_bridge_util.cc b/components/autofill/core/browser/webdata/autofill_sync_bridge_util.cc
+index 634443fb4fe22..f67b90114f762 100644
+--- a/components/autofill/core/browser/webdata/autofill_sync_bridge_util.cc
++++ b/components/autofill/core/browser/webdata/autofill_sync_bridge_util.cc
+@@ -553,11 +553,13 @@ ServerCvc AutofillWalletCvcStructDataFromWalletCredentialSpecifics(
+   base::StringToInt64(wallet_credential_specifics.instrument_id(),
+                       &instrument_id);
+ 
+-  return ServerCvc(
+-      instrument_id, base::UTF8ToUTF16(wallet_credential_specifics.cvc()),
+-      base::Time::UnixEpoch() +
++  return ServerCvc{
++      .instrument_id = instrument_id,
++      .cvc = base::UTF8ToUTF16(wallet_credential_specifics.cvc()),
++      .last_updated_timestamp =
++          base::Time::UnixEpoch() +
+           base::Milliseconds(wallet_credential_specifics
+-                                 .last_updated_time_unix_epoch_millis()));
++                                 .last_updated_time_unix_epoch_millis())};
+ }
+ 
+ VirtualCardUsageData VirtualCardUsageDataFromUsageSpecifics(
+-- 
+2.42.1
+

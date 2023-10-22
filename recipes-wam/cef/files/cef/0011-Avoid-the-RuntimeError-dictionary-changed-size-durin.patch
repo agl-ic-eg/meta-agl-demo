@@ -1,0 +1,26 @@
+From db006bee47fd4cd5f9138a0b916b81dff9bab3d0 Mon Sep 17 00:00:00 2001
+From: Roger Zanoni <rzanoni@igalia.com>
+Date: Wed, 8 Nov 2023 13:37:27 -0300
+Subject: [PATCH 11/11] Avoid the RuntimeError: dictionary changed size during
+ iteration
+
+---
+ tools/gn_args.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/gn_args.py b/tools/gn_args.py
+index 80545da49..9e2e9c061 100644
+--- a/tools/gn_args.py
++++ b/tools/gn_args.py
+@@ -486,7 +486,7 @@ def GetConfigArgs(args, is_debug, cpu, bypass_sysroot_check=False):
+ 
+   if platform == 'linux' and not cpu.startswith('arm'):
+     # Remove any arm-related values from non-arm configs.
+-    for key in result.keys():
++    for key, value in list(result.items()):
+       if key.startswith('arm_'):
+         del result[key]
+ 
+-- 
+2.42.1
+
