@@ -2,4 +2,4 @@
 # without Wayland
 PACKAGECONFIG_GL:append = "${@bb.utils.contains('DISTRO_FEATURES', 'opengl', ' eglfs kms gbm', '', d)}"
 
-PACKAGECONFIG:append = " icu fontconfig sql-sqlite"
+PACKAGECONFIG:append = " xkbcommon icu fontconfig sql-sqlite"
