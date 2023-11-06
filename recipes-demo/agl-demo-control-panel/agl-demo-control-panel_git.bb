@@ -7,7 +7,7 @@ PV = "1.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/agl-demo-control-panel;protocol=https;branch=${AGL_BRANCH} \
            file://agl-demo-control-panel.service \
 "
-SRCREV = "edfd96499fdbcf869c5182f2cfa89703cfb0dfd0"
+SRCREV = "f9aef30f5e78f0f4e179948946d043c4725712d5"
 
 S = "${WORKDIR}/git"
 
