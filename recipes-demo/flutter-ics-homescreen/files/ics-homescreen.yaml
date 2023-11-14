@@ -1,0 +1,2 @@
+authorization : "/etc/xdg/AGL/homescreen/ics-homescreen.token"
+use-tls : true

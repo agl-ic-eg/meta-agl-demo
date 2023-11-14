@@ -1,0 +1,21 @@
+From 7a7dfd8756c8c742aa3cd829a3644e6ec977aa8b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Lisandro=20P=C3=A9rez=20Meyer?= <lperezmeyer@ics.com>
+Date: Tue, 14 Nov 2023 14:59:45 +0000
+Subject: [PATCH] Set the default port to 55555.
+
+The Docker images seems to be using 55556.
+---
+ config/config.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/config.yaml b/config/config.yaml
+index 138fe4b..a552299 100644
+--- a/config/config.yaml
++++ b/config/config.yaml
+@@ -1,2 +1,2 @@
+ hostname: localhost
+-port: 55556
++port: 55555
+--
+2.25.1
+
