@@ -14,6 +14,8 @@ DEPENDS = " \
     wayland \
     qtwayland \
     qtwayland-native \
+    protobuf \
+    grpc grpc-native \
     agl-compositor \
     applaunchd \
 "
@@ -25,7 +27,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/homescreen;protocol=http
            file://homescreen.conf \
            file://homescreen.token \
 "
-SRCREV = "f32f949b3bd39eaebba71812b6bb2cb80d6ff90a"
+SRCREV = "2c522c4ef64678d4445a57fb86550c9db8f019bb"
 
 S = "${WORKDIR}/git"
 
