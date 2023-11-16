@@ -4,7 +4,7 @@ LICENSE = "MPL-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=9741c346eef56131163e13b9db1241b3"
 
 SRC_URI = "git://github.com/COVESA/vss-tools.git;protocol=https;branch=master"
-SRCREV = "97148190d0f84bedfc933b8bc4391c0a7e7a099b"
+SRCREV = "784505f3005c2350d7861c3add030348e2d910e3"
 
 S = "${WORKDIR}/git"
 
