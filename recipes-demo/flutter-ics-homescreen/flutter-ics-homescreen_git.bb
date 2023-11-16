@@ -7,13 +7,12 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;protocol=https;branch=${AGL_BRANCH} \
-  file://change_grpc_port.patch \
   file://flutter-ics-homescreen.json \
   file://flutter-ics-homescreen.service \
   file://ics-homescreen.yaml \
   file://ics-homescreen.token \
 "
-SRCREV = "70ec8a79a121471a004e7e4c23157d10157e136f"
+SRCREV = "94b78fd369c318baf1a98d4f510d791ea9f17017"
 
 S = "${WORKDIR}/git"
 
@@ -37,9 +36,9 @@ do_install:append() {
   # be readable by other users, but currently that's not doable
   # until a packaging/sandboxing/MAC scheme is (re)implemented or
   # something like OAuth is plumbed in as an alternative.
-  install -d ${D}${sysconfdir}/xdg/AGL/homescreen
+  install -d ${D}${sysconfdir}/xdg/AGL/ics-homescreen
   install -m 0644 ${WORKDIR}/ics-homescreen.yaml ${D}${sysconfdir}/xdg/AGL/
-  install -m 0644 ${WORKDIR}/ics-homescreen.token ${D}${sysconfdir}/xdg/AGL/homescreen/
+  install -m 0644 ${WORKDIR}/ics-homescreen.token ${D}${sysconfdir}/xdg/AGL/ics-homescreen/
 }
 
 FILES:${PN} += "${datadir} ${sysconfdir}/xdg/AGL"
