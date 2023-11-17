@@ -88,11 +88,14 @@ OUT_PATH = "${B}/out/Release_GN_${GN_TARGET_ARCH_NAME}"
 DIST_PATH = "${OUT_PATH}/dist/cef-minimal_${GN_TARGET_ARCH_NAME}"
 CEF_DATA_PATH = "${datadir}/cef"
 
-DEPENDS:append = " curl clang clang-native gperf-native gn-native dbus libcxx libcxx-native libpng libxslt jpeg compiler-rt libxkbcommon nss nss-native atk at-spi2-atk libdrm pango cairo virtual/egl qemu-native pciutils glib-2.0 pkgconfig-native pulseaudio xz-native compiler-rt compiler-rt-native"
+DEPENDS:append = " curl clang clang-native gperf-native dbus libcxx libcxx-native libpng libxslt jpeg compiler-rt libxkbcommon nss nss-native atk at-spi2-atk libdrm pango cairo virtual/egl qemu-native pciutils glib-2.0 pkgconfig-native pulseaudio xz-native compiler-rt compiler-rt-native"
 
 do_sync[depends] += "depot-tools-wam-native:do_populate_sysroot"
 do_configure[depends] += "depot-tools-wam-native:do_populate_sysroot"
 do_compile[depends] += "depot-tools-wam-native:do_populate_sysroot"
+
+# needs to fetch a font package
+do_configure[network] = "1"
 
 GN_UNBUNDLE_LIBS = " libjpeg libpng libxslt"
 

@@ -45,7 +45,7 @@ do_install:append:agl-devel() {
     touch ${D}${localstatedir}/agl-devel/preferences/devmode_enabled
 }
 
-require ${@bb.utils.contains('AGL_FEATURES', 'agl-cef', 'wam-cef.inc', 'wam.inc', d)}
+require wam-cef.inc
 
 FILES:${PN} += "${sysconfdir}/init \
                 ${sysconfdir}/wam \
