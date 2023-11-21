@@ -1,6 +1,6 @@
 # Associate all input devices with the first display
 #
 # NOTE: Can be more selective with something like:
-# SUBSYSTEM=="input", ATTRS{idVendor}=="*", ATTRS{idProduct}=="004a", OWNER="display", ENV{ID_SEAT}="seat0", ENV{WL_OUTPUT}="HDMI-A-1"
+# SUBSYSTEM=="input", ATTRS{idVendor}=="*", ATTRS{idProduct}=="004a", OWNER="agl-driver", ENV{ID_SEAT}="seat0", ENV{WL_OUTPUT}="HDMI-A-1"
 #
-SUBSYSTEM=="input", OWNER="display", ENV{ID_SEAT}="seat0", ENV{WL_OUTPUT}="HDMI-A-1"
+SUBSYSTEM=="input", ENV{ID_SEAT}="seat0", ENV{WL_OUTPUT}="HDMI-A-1"
