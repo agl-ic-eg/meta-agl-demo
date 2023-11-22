@@ -1,5 +1,7 @@
 require gn-utils.inc
 
+inherit qemu
+
 LICENSE = "Apache-2.0 & BSD-3-Clause & LGPL-2.0-only & LGPL-2.1-only"
 
 LIC_FILES_CHKSUM = "\
@@ -11,8 +13,6 @@ LIC_FILES_CHKSUM = "\
 CHROMIUM_VERSION = "118.0.5993.80"
 BRANCH = "5993"
 SRCREV = "3cffa575446727e2fe1f6499efa21f8e096e8ca0"
-
-GN_TARGET_CPU = "${@gn_arch_name('${TUNE_ARCH}')}"
 
 PV = "${CHROMIUM_VERSION}.${BRANCH}+git"
 
@@ -60,6 +60,7 @@ SRC_URI = "\
     file://0031-M118-fix-Add-a-way-to-set-different-lib-paths-host-a.patch \
     file://0032-M118-fix-zlib-Fix-arm-build.patch \
     file://0033-M118-fix-Fix-skia-linker-issues-for-arm-neon.patch \
+    file://0034-v8-qemu-wrapper.patch \
     \
     git://bitbucket.org/chromiumembedded/cef.git;branch=${BRANCH};protocol=https;rev=${SRCREV};name=cef;destsuffix=chromium-${CHROMIUM_VERSION}/cef \
     file://0001-Add-an-option-to-use-an-output-directory-outside-src.patch;patchdir=cef \
@@ -83,8 +84,8 @@ DEPOT_TOOLS_DIR="${STAGING_DIR_NATIVE}${datadir}/depot_tools"
 S = "${CHROMIUM_DIR}"
 B = "${WORKDIR}/build"
 
-OUT_PATH = "${B}/out/Release_GN_${GN_TARGET_CPU}"
-DIST_PATH = "${OUT_PATH}/dist/cef-minimal_${GN_TARGET_CPU}"
+OUT_PATH = "${B}/out/Release_GN_${GN_TARGET_ARCH_NAME}"
+DIST_PATH = "${OUT_PATH}/dist/cef-minimal_${GN_TARGET_ARCH_NAME}"
 CEF_DATA_PATH = "${datadir}/cef"
 
 DEPENDS:append = " curl clang clang-native gperf-native gn-native dbus libcxx libcxx-native libpng libxslt jpeg compiler-rt libxkbcommon nss nss-native atk at-spi2-atk libdrm pango cairo virtual/egl qemu-native pciutils glib-2.0 pkgconfig-native pulseaudio xz-native compiler-rt compiler-rt-native"
@@ -232,34 +233,16 @@ GN_DEFINES:append = ' \
               current_os="linux" \
               clang_use_chrome_plugins=false \
               clang_base_path="${STAGING_DIR_NATIVE}/usr" \
-              clang_base_path_target="${STAGING_DIR_TARGET}/usr" \
               clang_version="14.0.6" \
+              clang_base_path_target="${STAGING_DIR_TARGET}/usr" \
               custom_toolchain="//build/toolchain/cros:target" \
               host_toolchain="//build/toolchain/cros:host" \
               v8_snapshot_toolchain="//build/toolchain/cros:v8_snapshot" \
-              target_cpu="${GN_TARGET_CPU}" \
+              target_cpu="${@gn_target_arch_name(d)}" \
               use_v8_context_snapshot=false \
-              cros_host_ar=\"${BUILD_AR}\" \
-              cros_host_cc=\"${BUILD_CC}\" \
-              cros_host_cxx=\"${BUILD_CXX}\" \
-              cros_host_ld=\"${BUILD_CXX}\" \
-              cros_host_extra_cppflags=\"${BUILD_CPPFLAGS}\" \
-              cros_host_extra_cxxflags=\"${BUILD_CXXFLAGS}\" \
-              cros_host_extra_ldflags=\"${BUILD_LDFLAGS}\" \
-              cros_target_ar=\"${AR}\" \
-              cros_target_cc=\"${CC}\" \
-              cros_target_cxx=\"${CXX}\" \
-              cros_target_ld=\"${CXX}\" \
-              cros_target_extra_cppflags=\"${CPPFLAGS}\" \
-              cros_target_extra_cxxflags=\"${CXXFLAGS}\" \
-              cros_target_extra_ldflags=\"${LDFLAGS}\" \
-              cros_v8_snapshot_ar=\"${BUILD_AR}\" \
-              cros_v8_snapshot_cc=\"${BUILD_CC}\" \
-              cros_v8_snapshot_cxx=\"${BUILD_CXX}\" \
-              cros_v8_snapshot_ld=\"${BUILD_CXX}\" \
-              cros_v8_snapshot_cppflags=\"${BUILD_CXXFLAGS}\" \
-              cros_v8_snapshot_cxxflags=\"${BUILD_CXXFLAGS}\" \
-              cros_v8_snapshot_ldflags=\"${BUILD_LDFLAGS}\" \
+              custom_toolchain="//build/toolchain/yocto:yocto_target" \
+              host_toolchain="//build/toolchain/yocto:yocto_native" \
+              v8_snapshot_toolchain="//build/toolchain/yocto:yocto_target" \
 '
 
 PACKAGECONFIG ??= "upower use-egl"
@@ -269,6 +252,43 @@ PACKAGECONFIG[upower] = ",,,upower"
 GN_DEFINES:append = ' \
               ${PACKAGECONFIG_CONFARGS} \
 '
+
+python do_write_toolchain_file () {
+    """Writes a BUILD.gn file for Yocto detailing its toolchains."""
+    toolchain_dir = d.expand("${S}/build/toolchain/yocto")
+    bb.utils.mkdirhier(toolchain_dir)
+    toolchain_file = os.path.join(toolchain_dir, "BUILD.gn")
+    write_toolchain_file(d, toolchain_file)
+}
+addtask write_toolchain_file after do_patch before do_configure
+
+# V8's JIT infrastructure requires binaries such as mksnapshot and
+# mkpeephole to be run in the host during the build. However, these
+# binaries must have the same bit-width as the target (e.g. a x86_64
+# host targeting ARMv6 needs to produce a 32-bit binary). Instead of
+# depending on a third Yocto toolchain, we just build those binaries
+# for the target and run them on the host with QEMU.
+python do_create_v8_qemu_wrapper () {
+    """Creates a small wrapper that invokes QEMU to run some target V8 binaries
+    on the host."""
+    qemu_libdirs = [d.expand('${STAGING_DIR_HOST}${libdir}'),
+                    d.expand('${STAGING_DIR_HOST}${base_libdir}')]
+    qemu_cmd = qemu_wrapper_cmdline(d, d.getVar('STAGING_DIR_HOST', True),
+                                    qemu_libdirs)
+    wrapper_path = d.expand('${OUT_PATH}/v8-qemu-wrapper.sh')
+    with open(wrapper_path, 'w') as wrapper_file:
+        wrapper_file.write("""#!/bin/sh
+
+# This file has been generated automatically.
+# It invokes QEMU to run binaries built for the target in the host during the
+# build process.
+
+%s "$@"
+""" % qemu_cmd)
+    os.chmod(wrapper_path, 0o755)
+}
+do_create_v8_qemu_wrapper[dirs] = "${OUT_PATH}"
+addtask create_v8_qemu_wrapper after do_patch before do_configure
 
 do_configure () {
     bbnote "do_configure:"
@@ -313,7 +333,7 @@ do_install () {
                                   --no-archive \
                                   --ninja-build \
                                   --minimal \
-                                  --${GN_TARGET_CPU}-build \
+                                  --${GN_TARGET_ARCH_NAME}-build \
                                   --ozone
 
     install -d ${D}${CEF_DATA_PATH}
