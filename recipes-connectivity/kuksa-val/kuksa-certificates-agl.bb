@@ -10,6 +10,7 @@ SRC_URI = "file://CA.pem \
            file://Client.pem \
            file://Server.key \
            file://Server.pem \
+	   file://jwt.key.pub \
 "
 
 inherit allarch useradd
@@ -28,6 +29,7 @@ do_install() {
     install -m 0644 ${WORKDIR}/CA.pem ${D}${sysconfdir}/kuksa-val/
     install -m 0640 -g 900 ${WORKDIR}/Server.key ${D}${sysconfdir}/kuksa-val/
     install -m 0640 -g 900 ${WORKDIR}/Server.pem ${D}${sysconfdir}/kuksa-val/
+    install -m 0644 -g 900 ${WORKDIR}/jwt.key.pub ${D}${sysconfdir}/kuksa-val/
     install -m 0644 ${WORKDIR}/Client.key ${D}${sysconfdir}/kuksa-val/
     install -m 0644 ${WORKDIR}/Client.pem ${D}${sysconfdir}/kuksa-val/
 }
@@ -42,6 +44,7 @@ RPROVIDES:${PN}-ca += "kuksa-val-certificates-ca"
 FILES:${PN}-server = " \
     ${sysconfdir}/kuksa-val/Server.key \
     ${sysconfdir}/kuksa-val/Server.pem \
+    ${sysconfdir}/kuksa-val/jwt.key.pub \
 "
 RPROVIDES:${PN}-server += "kuksa-val-certificates-server"
 RDEPENDS:${PN}-server += "${PN}-ca"

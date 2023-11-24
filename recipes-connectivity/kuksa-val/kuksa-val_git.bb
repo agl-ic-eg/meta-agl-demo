@@ -73,6 +73,7 @@ FILES:${PN}-certificates-ca = " \
 FILES:${PN}-certificates-server = " \
     ${sysconfdir}/kuksa-val/Server.key \
     ${sysconfdir}/kuksa-val/Server.pem \
+    ${sysconfdir}/kuksa-val/jwt.key.pub \
 "
 RDEPENDS:${PN}-certificates-server += "${PN}-certificates-ca"
 
