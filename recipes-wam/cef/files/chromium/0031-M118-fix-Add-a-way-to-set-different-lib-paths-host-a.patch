@@ -1,4 +1,4 @@
-From e1bc5ea870e17afee145009194e6f2092dd1d3ff Mon Sep 17 00:00:00 2001
+From e376fd5fa64d34803e821e02c0d5199ca7244944 Mon Sep 17 00:00:00 2001
 From: Roger Zanoni <rzanoni@igalia.com>
 Date: Sun, 12 Nov 2023 19:41:07 -0300
 Subject: [PATCH 31/33] [M118-fix] Add a way to set different lib paths host
@@ -10,12 +10,12 @@ runtime libraries and a different lib naming convention.
 Upstream-Status: Inappropriate
 Signed-off-by: Roger Zanoni <rzanoni@igalia.com>
 ---
- build/config/clang/BUILD.gn  | 80 +++++++++++-------------------------
+ build/config/clang/BUILD.gn  | 79 +++++++++++-------------------------
  build/config/clang/clang.gni |  3 ++
- 2 files changed, 27 insertions(+), 56 deletions(-)
+ 2 files changed, 26 insertions(+), 56 deletions(-)
 
 diff --git a/build/config/clang/BUILD.gn b/build/config/clang/BUILD.gn
-index fe044e29e428b..33edce7aed9a2 100644
+index fe044e29e428b..81ec24d92da72 100644
 --- a/build/config/clang/BUILD.gn
 +++ b/build/config/clang/BUILD.gn
 @@ -3,6 +3,7 @@
@@ -26,18 +26,17 @@ index fe044e29e428b..33edce7aed9a2 100644
  import("clang.gni")
  
  if (is_ios) {
-@@ -95,66 +96,33 @@ template("clang_lib") {
+@@ -95,66 +96,32 @@ template("clang_lib") {
      }
    } else {
      config(target_name) {
 -      _dir = ""
-+      if (current_toolchain == host_toolchain ||
-+          current_toolchain == v8_snapshot_toolchain) {
-+        _base_path = "$clang_base_path"
-+        _cpu = host_cpu
-+      } else {
++      if (is_a_target_toolchain) {
 +        _base_path = "$clang_base_path_target"
 +        _cpu = target_cpu
++      } else {
++        _base_path = "$clang_base_path"
++        _cpu = host_cpu
 +      }
 +
 +      if (_cpu == "x64") {
