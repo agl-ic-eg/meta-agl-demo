@@ -54,5 +54,4 @@ RDEPENDS:${PN} += " \
     qtquickcontrols2-qmlplugins \
     qtgraphicaleffects-qmlplugins \
     qtsvg-plugins \
-    kuksa-val-certificates-client \
 "

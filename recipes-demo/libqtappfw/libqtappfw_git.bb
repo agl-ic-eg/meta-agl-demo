@@ -32,6 +32,6 @@ inherit meson pkgconfig
 
 EXTRA_OEMESON += "-Dprotos=${STAGING_INCDIR}"
 
-RRECOMMENDS:${PN} += "bluez5 connman mpd kuksa-databroker"
+RRECOMMENDS:${PN} += "bluez5 connman mpd"
 
 BBCLASSEXTEND = "nativesdk"

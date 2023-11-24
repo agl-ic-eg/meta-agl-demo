@@ -9,7 +9,7 @@ IMAGE_FEATURES += "splash package-management ssh-server-openssh"
 # Break out KUKSA.val packages, as demo unit configuration
 # points at KUKSA.val server on the IVI board in full demo
 # builds with the "agl-demo-preload" feature enabled.
-IMAGE_KUKSA_PACKAGES = " \
+KUKSA_DATABROKER_PACKAGES = " \
     packagegroup-agl-kuksa-val-databroker \
     ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', 'packagegroup-agl-kuksa-val-databroker-devel' , '', d)} \
 "
@@ -23,7 +23,8 @@ IMAGE_INSTALL += "\
     packagegroup-agl-networking \
     cluster-receiver \
     \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "${IMAGE_KUKSA_PACKAGES}", d)} \
+    kuksa-certificates-agl-ca \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "${KUKSA_DATABROKER_PACKAGES}", d)} \
     simple-can-simulator \
     "
 
