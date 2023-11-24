@@ -27,6 +27,11 @@ APP_CONFIG = "${BPN}.json"
 
 SYSTEMD_SERVICE:${PN} = "flutter-ics-homescreen.service"
 
+# Disable the background animation on all platforms except the Renesas M3/H3 for now
+DISABLE_BG_ANIMATION = "-DDISABLE_BKG_ANIMATION=true"
+DISABLE_BG_ANIMATION:rcar-gen3 = ""
+APP_AOT_EXTRA:append = " ${DISABLE_BG_ANIMATION}"
+
 do_install:append() {
   install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
 
