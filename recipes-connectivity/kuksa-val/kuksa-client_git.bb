@@ -3,7 +3,7 @@ HOMEPAGE = "https://github.com/eclipse/kuksa.val"
 BUGTRACKER = "https://github.com/eclipse/kuksa.val/issues"
 
 LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://../LICENSE;md5=2b42edef8fa55315f34f2370b4715ca9"
+LIC_FILES_CHKSUM = "file://../LICENSE;md5=86d3f3a95c324c9479bd8986968f4327"
 
 DEPENDS = " \
     python3-setuptools-git-versioning-native \
@@ -11,11 +11,13 @@ DEPENDS = " \
     python3-grpcio \
 "
 
-require kuksa-val.inc
+PV = "0.4.2"
 
-SRC_URI += "file://0001-kuksa-client-Update-cmd2-completer-usage.patch;patchdir=.. \
-            file://0002-kuksa-client-Add-external-certificates-support.patch;patchdir=.. \
+SRC_URI = "gitsm://github.com/eclipse-kuksa/kuksa-python-sdk.git;protocol=https;branch=main \
+           file://0001-kuksa-client-Update-cmd2-completer-usage.patch;patchdir=.. \
+           file://0002-kuksa-client-Add-external-certificates-support.patch;patchdir=.. \
 "
+SRCREV = "4ac107a638c8dbf5cde1743a3df2e28589990332"
 
 S = "${WORKDIR}/git/kuksa-client"
 

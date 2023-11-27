@@ -15,26 +15,26 @@ Upstream-Status: pending
 Signed-off-by: Scott Murray <scott.murray@konsulko.com>
 ---
  kuksa-client/kuksa_client/cli_backend/__init__.py | 2 +-
- kuksa_certificates/__init__.py                    | 7 ++++++-
+ kuksa-client/kuksa_client/kuksa_server_certificates/__init__.py | 7 ++++++-
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/kuksa-client/kuksa_client/cli_backend/__init__.py b/kuksa-client/kuksa_client/cli_backend/__init__.py
-index f757cd6..f4d1f35 100644
+index 2cfe51e..96d94f2 100644
 --- a/kuksa-client/kuksa_client/cli_backend/__init__.py
 +++ b/kuksa-client/kuksa_client/cli_backend/__init__.py
-@@ -30,7 +30,7 @@ class Backend:
+@@ -28,7 +28,7 @@ class Backend:
              self.insecure = config.getboolean('insecure', False)
          except AttributeError:
              self.insecure = config.get('insecure', False)
--        self.default_cert_path = pathlib.Path(kuksa_certificates.__path__[0])
-+        self.default_cert_path = pathlib.Path(kuksa_certificates.__certificate_dir__)
+-        self.default_cert_path = pathlib.Path(kuksa_server_certificates.__path__[0])
++        self.default_cert_path = pathlib.Path(kuksa_server_certificates.__certificate_dir__)
          self.cacertificate = config.get(
              'cacertificate', str(self.default_cert_path / 'CA.pem'))
          self.certificate = config.get('certificate', str(
-diff --git a/kuksa_certificates/__init__.py b/kuksa_certificates/__init__.py
+diff --git a/kuksa-client/kuksa_client/kuksa_server_certificates/__init__.py b/kuksa-client/kuksa_client/kuksa_server_certificates/__init__.py
 index 22ccd3f..8323868 100644
---- a/kuksa_certificates/__init__.py
-+++ b/kuksa_certificates/__init__.py
+--- a/kuksa-client/kuksa_client/kuksa_server_certificates/__init__.py
++++ b/kuksa-client/kuksa_client/kuksa_server_certificates/__init__.py
 @@ -2,4 +2,9 @@ import os
  
  from kuksa_client._metadata import *

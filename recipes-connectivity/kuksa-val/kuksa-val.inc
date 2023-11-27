@@ -1,6 +1,6 @@
-PV = "0.4.0+git${SRCPV}"
+PV = "0.4.2"
 
 SRC_URI = "gitsm://github.com/eclipse/kuksa.val.git;protocol=https;branch=master"
-SRCREV = "ce8b6526492e69a3c4217a5651be00cc5109fbad"
+SRCREV = "afaf54200ab8bf2126c9ad4a3dec746828cfecb1"
 
 S = "${WORKDIR}/git"
