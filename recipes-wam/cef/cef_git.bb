@@ -1,6 +1,6 @@
 require gn-utils.inc
 
-inherit qemu
+inherit qemu python3native
 
 LICENSE = "Apache-2.0 & BSD-3-Clause & LGPL-2.0-only & LGPL-2.1-only"
 
@@ -88,7 +88,7 @@ OUT_PATH = "${B}/out/Release_GN_${GN_TARGET_ARCH_NAME}"
 DIST_PATH = "${OUT_PATH}/dist/cef-minimal_${GN_TARGET_ARCH_NAME}"
 CEF_DATA_PATH = "${datadir}/cef"
 
-DEPENDS:append = " curl clang clang-native gperf-native dbus libcxx libcxx-native libpng libxslt jpeg compiler-rt libxkbcommon nss nss-native atk at-spi2-atk libdrm pango cairo virtual/egl qemu-native pciutils glib-2.0 pkgconfig-native pulseaudio xz-native compiler-rt compiler-rt-native"
+DEPENDS:append = " ca-certificates-native curl clang clang-native gperf-native dbus libcxx libcxx-native libpng libxslt jpeg jpeg-native compiler-rt libxkbcommon nss nss-native atk at-spi2-atk libdrm pango cairo virtual/egl qemu-native pciutils glib-2.0 pkgconfig-native pulseaudio xz-native compiler-rt compiler-rt-native"
 
 do_sync[depends] += "depot-tools-wam-native:do_populate_sysroot"
 do_configure[depends] += "depot-tools-wam-native:do_populate_sysroot"
@@ -301,7 +301,7 @@ do_configure () {
     export GCLIENT_PY3=1
     export PATH="${DEPOT_TOOLS_DIR}:$PATH"
     export GN_DEFINES="${GN_DEFINES}"
-
+    export SSL_CERT_DIR="$OECORE_NATIVE_SYSROOT/etc/ssl/certs/"
     cd ${S}
     python3 ./build/linux/unbundle/replace_gn_files.py --system-libraries ${GN_UNBUNDLE_LIBS}
 
