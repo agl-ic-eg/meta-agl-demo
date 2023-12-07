@@ -12,7 +12,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;p
   file://ics-homescreen.yaml \
   file://ics-homescreen.token \
 "
-SRCREV = "193d15a456587bcf3928fb99fe0c1aede82d119d"
+SRCREV = "dca5f5bc58fc3b25972bedc82827b71300d66adc"
 
 S = "${WORKDIR}/git"
 
