@@ -16,10 +16,8 @@ DEPENDS = " \
     qtquickcontrols2 \
     qtlocation \
     libqtappfw \
+    wayland-native \
     qtwayland-native \
-    protobuf \
-    grpc \
-    grpc-native \
 "
 
 PV = "2.0+git${SRCPV}"
@@ -29,11 +27,11 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/tbtnavi;protocol=https;b
            file://tbtnavi.conf \
            file://tbtnavi.token \
 "
-SRCREV = "f00c1e19f5c4cbcd185c8043f3062612bf1537f7"
+SRCREV = "7627784a867bd21e76d2889a3c99bbcfc12d3c3f"
 
 S = "${WORKDIR}/git"
 
-inherit meson systemd pkgconfig
+inherit qmake5 systemd pkgconfig
 
 SYSTEMD_SERVICE:${PN} = "${BPN}.service"
 
