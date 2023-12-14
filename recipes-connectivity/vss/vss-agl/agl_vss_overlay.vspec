@@ -32,6 +32,45 @@ Vehicle.Cabin.Infotainment.Navigation.ElapsedDistance:
   description: Navigation elapsed distance.
 
 
+# Define audio control signals
+
+Vehicle.Cabin.Infotainment.Media.Audio:
+  type: branch
+  description: Media audio controls.
+
+Vehicle.Cabin.Infotainment.Media.Audio.Balance:
+  datatype: int8
+  type: actuator
+  min: -100
+  max: 100
+  unit: percent
+  description: Audio left/right balance.
+
+Vehicle.Cabin.Infotainment.Media.Audio.Fade:
+  datatype: int8
+  type: actuator
+  min: -100
+  max: 100
+  unit: percent
+  description: Audio front/rear balance.
+
+Vehicle.Cabin.Infotainment.Media.Audio.Bass:
+  datatype: int8
+  type: actuator
+  min: -100
+  max: 100
+  unit: percent
+  description: Audio low-frequency filter control.
+
+Vehicle.Cabin.Infotainment.Media.Audio.Treble:
+  datatype: int8
+  type: actuator
+  min: -100
+  max: 100
+  unit: percent
+  description: Audio high-frequency filter control.
+
+
 # Define extra steering wheel switch signals, including DBC mappings
 
 Vehicle.Cabin.SteeringWheel:
