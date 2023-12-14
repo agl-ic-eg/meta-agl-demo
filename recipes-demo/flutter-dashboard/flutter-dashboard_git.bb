@@ -10,7 +10,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-dashboard;protoc
            file://dashboard.yaml \
            file://dashboard.token \
 "
-SRCREV = "e389b9fa646f90d50e853c2dbf870cdf9f9b80b7"
+SRCREV = "2fbe5f8c19863eb4ac013dce5546900592149a26"
 
 S = "${WORKDIR}/git"
 
