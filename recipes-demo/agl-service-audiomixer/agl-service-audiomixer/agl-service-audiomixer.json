@@ -6,5 +6,5 @@
   ],
   "iat": 1516239022,
   "exp": 1767225599,
-  "scope": "provide:Vehicle.Cabin.Infotainment.Media.Volume read:Vehicle.Cabin.SteeringWheel.Switches"
+  "scope": "provide:Vehicle.Cabin.Infotainment.Media.Volume provide:Vehicle.Cabin.Infotainment.Navigation.Volume provide:Vehicle.Cabin.Infotainment.Navigation.Mute provide:Vehicle.Cabin.Infotainment.Media.Audio read:Vehicle.Cabin.SteeringWheel.Switches"
 }
