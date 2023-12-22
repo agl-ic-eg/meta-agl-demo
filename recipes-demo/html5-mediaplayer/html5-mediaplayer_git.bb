@@ -11,7 +11,7 @@ B       = "${WORKDIR}/build"
 SRC_URI = " \
   git://gerrit.automotivelinux.org/gerrit/apps/html5-mediaplayer;protocol=https;branch=master \
 "
-SRCREV = "07adebd03e37a790462f80b6f3bb001bad7e6748"
+SRCREV = "b87776912cc31c976415ceb49e7551f500e0975b"
 
 inherit pythonnative agl-app
 

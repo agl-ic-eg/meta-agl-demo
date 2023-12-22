@@ -8,7 +8,7 @@ SRC_URI = " \
     git://gerrit.automotivelinux.org/gerrit/apps/html5-homescreen;protocol=https;branch=master \
     file://homescreen.service \
 "
-SRCREV = "e85c42ae77592afdb72df8e8d4f27e0e7ad17bb9"
+SRCREV = "32098508fa7375690ea1b8dc9da4e7ca641494c1"
 
 PV      = "1.0+git${SRCPV}"
 S       = "${WORKDIR}/git"

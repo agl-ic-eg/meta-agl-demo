@@ -11,7 +11,7 @@ B       = "${WORKDIR}/build"
 SRC_URI = " \
   git://gerrit.automotivelinux.org/gerrit/apps/html5-launcher;protocol=https;branch=master \
 "
-SRCREV = "5d264b8a8ee7813809ef6131be0037457b9cd1e4"
+SRCREV = "ccdd59db7dc073eee0a35d0318640d9833824073"
 
 inherit pythonnative agl-app
 
