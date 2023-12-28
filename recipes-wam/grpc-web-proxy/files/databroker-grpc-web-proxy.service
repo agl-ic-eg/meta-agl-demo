@@ -1,0 +1,13 @@
+[Unit]
+Description=gRPC web reverse proxy to kuksa.val databroker
+Requires=kuksa-databroker.service
+After=kuksa-databroker.service
+
+[Service]
+User=kuksa
+EnvironmentFile=-/etc/default/databroker-grpc-web-proxy.env
+ExecStart=/usr/bin/grpcwebproxy $EXTRA_ARGS
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
