@@ -14,7 +14,7 @@ DEPENDS = " \
 PV = "1.0+git${SRCPV}"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/camera-gstreamer;protocol=https;branch=${AGL_BRANCH}"
-SRCREV  = "a7b8d60c62554b4571e0155ce44794b123cf1c09"
+SRCREV  = "97faa830c65258ba8b60fa53cdbfb3f9d810abb3"
 
 S  = "${WORKDIR}/git"
 
