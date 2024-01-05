@@ -1,0 +1,108 @@
+initialize:
+- signal: Vehicle.Speed
+  value: 0
+- signal: Vehicle.Powertrain.CombustionEngine.Speed
+  value: 600
+- signal: Vehicle.Powertrain.FuelSystem.RelativeLevel
+  value: 70
+- signal: Vehicle.Powertrain.FuelSystem.Range
+  value: 300000
+- signal: Vehicle.Powertrain.CombustionEngine.ECT
+  value: 70
+- signal: Vehicle.Body.Lights.DirectionIndicator.Left.IsSignaling
+  value: false
+- signal: Vehicle.Body.Lights.DirectionIndicator.Right.IsSignaling
+  value: false
+- signal: Vehicle.Powertrain.Transmission.SelectedGear
+  value: 127
+- signal: Vehicle.Body.Lights.Beam.Low.IsOn
+  value: true
+- signal: Vehicle.Body.Lights.Beam.High.IsOn
+  value: false
+- signal: Vehicle.Body.Lights.Parking.IsOn
+  value: false
+- signal: Vehicle.Body.Lights.Hazard.IsSignaling
+  value: false
+- signal: Vehicle.TraveledDistance
+  value: 1763
+- signal: Vehicle.TraveledDistanceSinceStart
+  value: 0
+- signal: Vehicle.Body.Trunk.Rear.IsLocked
+  value: true
+- signal: Vehicle.Body.Trunk.Rear.IsOpen
+  value: false
+- signal: Vehicle.Powertrain.Transmission.PerformanceMode
+  value: "NORMAL"
+- signal: Vehicle.Cabin.HVAC.AmbientAirTemperature
+  value: 22
+- signal: Vehicle.Exterior.AirTemperature
+  value: 24
+- signal: Vehicle.Chassis.Axle.Row1.Wheel.Left.Tire.Pressure
+  value: 220
+- signal: Vehicle.Chassis.Axle.Row1.Wheel.Right.Tire.Pressure
+  value: 216
+- signal: Vehicle.Chassis.Axle.Row2.Wheel.Left.Tire.Pressure
+  value: 217
+- signal: Vehicle.Chassis.Axle.Row2.Wheel.Right.Tire.Pressure
+  value: 222
+- signal: Vehicle.OBD.Status.IsMILOn
+  value: false
+- signal: Vehicle.Cabin.Infotainment.HMI.DistanceUnit
+  value: "KILOMETERS"
+- signal: Vehicle.Cabin.Infotainment.HMI.TemperatureUnit
+  value: "C"
+- signal: Vehicle.Cabin.Infotainment.HMI.TirePressureUnit
+  value: "KPA"
+- signal: Vehicle.ADAS.CruiseControl.IsEnabled
+  value: false
+- signal: Vehicle.ADAS.CruiseControl.IsActive
+  value: false
+- signal: Vehicle.ADAS.CruiseControl.SpeedSet
+  value: false
+- signal: Vehicle.ADAS.CruiseControl.IsError
+  value: false
+- signal: Vehicle.Powertrain.TractionBattery.Charging.IsCharging
+  value: false
+- signal: Vehicle.Powertrain.TractionBattery.Charging.IsChargingCableConnected
+  value: false
+- signal: Vehicle.Powertrain.TractionBattery.Charging.IsChargingCableLocked
+  value: false
+- signal: Vehicle.Powertrain.TractionBattery.Charging.IsDischarging
+  value: false
+#- signal: Vehicle.CurrentLocation.Latitude
+#  value:
+#- signal: Vehicle.CurrentLocation.Longitude
+#  value:
+#
+# AGL specific signals
+#
+- signal: Vehicle.Cabin.Infotainment.Navigation.State
+  value: "STOPPED"
+- signal: Vehicle.Cabin.Infotainment.Navigation.ElapsedDistance
+  value: 0.0
+#- signal: Vehicle.Cabin.Infotainment.Navigation.DestinationSet.Latitude
+#  value:
+#- signal: Vehicle.Cabin.Infotainment.Navigation.DestinationSet.Longitude
+#  value:
+- signal: Vehicle.Cabin.SteeringWheel.Switches.Info
+  value: false
+- signal: Vehicle.Cabin.SteeringWheel.Switches.VolumeUp
+  value: false
+- signal: Vehicle.Cabin.SteeringWheel.Switches.VolumeDown
+  value: false
+- signal: Vehicle.Cabin.SteeringWheel.Switches.VolumeMute
+  value: false
+- signal: Vehicle.Cabin.SteeringWheel.Switches.Next
+  value: false
+- signal: Vehicle.Cabin.SteeringWheel.Switches.Previous
+  value: false
+- signal: Vehicle.Cabin.SteeringWheel.Switches.Mode
+  value: false
+
+mock:
+- Vehicle.Cabin.Infotainment.HMI.DistanceUnit
+- Vehicle.Cabin.Infotainment.HMI.TemperatureUnit
+- Vehicle.Cabin.Infotainment.HMI.TirePressureUnit
+- Vehicle.ADAS.CruiseControl.IsEnabled
+- Vehicle.ADAS.CruiseControl.IsActive
+- Vehicle.ADAS.CruiseControl.SpeedSet

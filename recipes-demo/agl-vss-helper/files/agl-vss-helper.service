@@ -1,0 +1,11 @@
+[Unit]
+Wants=network.target kuksa-databroker.service
+After=network.target kuksa-databroker.service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/python3 -u /usr/sbin/agl-vss-helper.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
