@@ -13,14 +13,13 @@ require kuksa-val.inc
 
 require ${BPN}-crates.inc
 
-SRC_URI += "file://0001-Force-older-clap-version-to-build-with-Rust-1.68.patch \
-            file://0002-Remove-protobuf-src-usage.patch \
+SRC_URI += "file://0001-Remove-protobuf-src-usage.patch \
             file://kuksa-databroker.service \
 "
 
 S = "${WORKDIR}/git"
 
-inherit cargo systemd useradd
+inherit cargo cargo-update-recipe-crates systemd useradd
 
 # Enable optional VISS support for potential use by e.g. the web apps
 CARGO_BUILD_FLAGS += "--features viss"
