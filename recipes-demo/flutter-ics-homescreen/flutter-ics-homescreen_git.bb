@@ -11,8 +11,9 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;p
   file://flutter-ics-homescreen.service \
   file://ics-homescreen.yaml \
   file://ics-homescreen.token \
+  file://radio-presets.yaml \
 "
-SRCREV = "71d46d03850653c0229c678de197c6f94fceb477"
+SRCREV = "5587c6ae79b482fbff26442bb239d7d7eb55a337"
 
 S = "${WORKDIR}/git"
 
@@ -33,18 +34,26 @@ DISABLE_BG_ANIMATION:rcar-gen3 = ""
 APP_AOT_EXTRA:append = " ${DISABLE_BG_ANIMATION}"
 
 do_install:append() {
-  install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
+    install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
 
-  install -D -m 0644 ${WORKDIR}/${APP_CONFIG} ${D}${datadir}/flutter/${BPN}.json
+    install -D -m 0644 ${WORKDIR}/${APP_CONFIG} ${D}${datadir}/flutter/${BPN}.json
 
-  # VIS authorization token file for KUKSA.val should ideally not
-  # be readable by other users, but currently that's not doable
-  # until a packaging/sandboxing/MAC scheme is (re)implemented or
-  # something like OAuth is plumbed in as an alternative.
-  install -d ${D}${sysconfdir}/xdg/AGL/ics-homescreen
-  install -m 0644 ${WORKDIR}/ics-homescreen.yaml ${D}${sysconfdir}/xdg/AGL/
-  install -m 0644 ${WORKDIR}/ics-homescreen.token ${D}${sysconfdir}/xdg/AGL/ics-homescreen/
+    # VIS authorization token file for KUKSA.val should ideally not
+    # be readable by other users, but currently that's not doable
+    # until a packaging/sandboxing/MAC scheme is (re)implemented or
+    # something like OAuth is plumbed in as an alternative.
+    install -d ${D}${sysconfdir}/xdg/AGL/ics-homescreen
+    install -m 0644 ${WORKDIR}/ics-homescreen.yaml ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/ics-homescreen.token ${D}${sysconfdir}/xdg/AGL/ics-homescreen/
+    install -m 0644 ${WORKDIR}/radio-presets.yaml ${D}${sysconfdir}/xdg/AGL/ics-homescreen/
 }
 
 FILES:${PN} += "${datadir} ${sysconfdir}/xdg/AGL"
-RDEPENDS:${PN} += "flutter-auto agl-flutter-env"
+
+RDEPENDS:${PN} += " \
+    flutter-auto \
+    agl-flutter-env \
+    applaunchd \
+    agl-service-radio \
+    mpd \
+"
