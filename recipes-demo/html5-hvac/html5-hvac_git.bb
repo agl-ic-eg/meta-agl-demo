@@ -11,7 +11,7 @@ B       = "${WORKDIR}/build"
 SRC_URI = " \
   git://gerrit.automotivelinux.org/gerrit/apps/html5-hvac;protocol=https;branch=master \
 "
-SRCREV = "5f1b6075982b872b5db4e2195e53d19529278d5c"
+SRCREV = "c323ab8fde212120d8d1914d453afeb55b3576e5"
 
 inherit pythonnative agl-app
 
@@ -19,13 +19,14 @@ AGL_APP_TEMPLATE = "agl-app-web"
 AGL_APP_ID = "webapps-hvac"
 AGL_APP_NAME = "HTML5 HVAC"
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native protobuf-native"
 
 do_compile[network] = "1"
 do_compile() {
   cd ${S}
   rm -rf package node_modules package-lock.json
   npm install
+  npm run generate-grpc
   npm run build
 }
 
