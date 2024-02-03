@@ -11,7 +11,7 @@ B       = "${WORKDIR}/build"
 SRC_URI = " \
   git://gerrit.automotivelinux.org/gerrit/apps/html5-mixer;protocol=https;branch=master \
 "
-SRCREV = "38587cf96c096a204cd742fff9fea4f8e465393a"
+SRCREV = "e57fc753b3a083ddea52dbe4cd003261e836b2d4"
 
 inherit pythonnative agl-app
 
@@ -19,13 +19,14 @@ AGL_APP_TEMPLATE = "agl-app-web"
 AGL_APP_ID = "webapps-mixer"
 AGL_APP_NAME = "HTML5 Mixer"
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native protobuf-native"
 
 do_compile[network] = "1"
 do_compile() {
   cd ${S}
   rm -rf package node_modules package-lock.json
   npm install
+  npm run generate-grpc
   npm run build
 }
 
