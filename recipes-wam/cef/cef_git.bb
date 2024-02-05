@@ -307,9 +307,9 @@ do_configure () {
 
     # Download a few dependencies.  Check the current chromium DEPS file when
     # upgrading to a new milestone.
-    python3 third_party/depot_tools/download_from_google_storage.py --no_resume --extract --no_auth --bucket chromium-fonts -s third_party/test_fonts/test_fonts.tar.gz.sha1
-    python3 third_party/depot_tools/download_from_google_storage.py --no_resume --extract --no_auth --bucket chromium-nodejs/16.13.0 -s third_party/node/linux/node-linux-x64.tar.gz.sha1
-    python3 tools/rust/update_rust.py
+    vpython3 third_party/depot_tools/download_from_google_storage.py --no_resume --extract --no_auth --bucket chromium-fonts -s third_party/test_fonts/test_fonts.tar.gz.sha1
+    vpython3 third_party/depot_tools/download_from_google_storage.py --no_resume --extract --no_auth --bucket chromium-nodejs/16.13.0 -s third_party/node/linux/node-linux-x64.tar.gz.sha1
+    vpython3 tools/rust/update_rust.py
 
     cd ${S}/cef
     python3 tools/gclient_hook.py --base-out-path ${B} --bypass-sysroot-check
