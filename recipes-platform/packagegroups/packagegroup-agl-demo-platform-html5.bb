@@ -31,7 +31,7 @@ AGL_APPS = " \
     "
 
 RDEPENDS:${PN}:append = " \
-    virtual/webruntime \
+    wam \
     weston-ini-conf-landscape-no-activate \
     ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', 'unzip' , '', d)} \
     qtquickcontrols2-agl \

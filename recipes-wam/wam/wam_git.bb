@@ -53,6 +53,3 @@ FILES:${PN} += "${sysconfdir}/init \
                 ${libdir}/webappmanager/plugins/*.so"
 
 RDEPENDS:${PN} += " bash grpc-web-proxy"
-
-PROVIDES += "virtual/webruntime"
-RPROVIDES:${PN} += "virtual/webruntime"
