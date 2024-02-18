@@ -8,5 +8,3 @@ do_install:append() {
     install -m 0755 ${WORKDIR}/sw-device-hook ${D}${sysconfdir}/gpsd/device-hook
 }
 
-RPROVIDES:${PN}-conf:append = " virtual/gpsd-conf"
-
