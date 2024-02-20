@@ -1,0 +1,10 @@
+kuksa:
+  hostname : 172.16.10.1
+  port : 55555
+  authorization : "/etc/xdg/AGL/ics-homescreen/ics-homescreen.token"
+  use-tls : true
+  tls-server-name : localhost
+radio:
+  hostname : 172.16.10.1
+mpd:
+  hostname : 172.16.10.1

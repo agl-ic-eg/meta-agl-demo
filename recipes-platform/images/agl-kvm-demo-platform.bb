@@ -30,6 +30,29 @@ IMAGE_INSTALL += " \
     alsa-utils \
 "
 
+# Until virtio sound is workable with QEMU, run the audio using
+# services on the host for a better demo experience.  At the
+# moment, this also includes the HVAC service since it does not
+# make sense to try to make things more fine-grained with respect
+# to configuration for where things expect to find the databroker.
+# It will need to be revisited when virtio-snd, virtio-gpio, etc.
+# become feasible to use.
+HOST_AUDIO_INSTALL = " \
+    packagegroup-agl-ivi-services-platform \
+    agl-service-radio-conf-kvm-demo \
+    packagegroup-pipewire \
+    wireplumber-config-agl \
+    wireplumber-policy-config-agl \
+    mpd \
+    udisks2 \
+    ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "packagegroup-pipewire-tools mpc" , "", d)} \
+"
+
+IMAGE_INSTALL += "\
+    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "kuksa-databroker-agl-demo-cluster", "", d)} \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-audio", "${HOST_AUDIO_INSTALL}", "", d)} \
+"
+
 # Potential size reduction options
 #IMAGE_LINGUAS = " "
 #NO_RECOMMENDATIONS = "1"

@@ -14,7 +14,7 @@ IMAGE_INSTALL += " \
     packagegroup-agl-ivi-navigation \
     packagegroup-agl-ivi-identity \
     packagegroup-agl-ivi-services-applaunchd \
-    packagegroup-agl-ivi-services-platform \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-audio", "", "packagegroup-agl-ivi-services-platform", d)} \
     iproute2 \
     "
 

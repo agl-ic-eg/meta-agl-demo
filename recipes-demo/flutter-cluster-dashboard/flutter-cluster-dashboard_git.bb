@@ -14,6 +14,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-instrument-clust
     file://cluster-dashboard.yaml \
     file://cluster-dashboard.yaml.demo \
     file://cluster-dashboard.token \
+    file://kvm.conf \
 "
 
 PV = "1.0+git${SRCPV}"
@@ -35,6 +36,8 @@ SYSTEMD_SERVICE:${PN} = "flutter-cluster-dashboard.service"
 
 do_install:append() {
     install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
+
+    install -D -m 0644 ${WORKDIR}/kvm.conf ${D}${systemd_system_unitdir}/${BPN}.service.d/kvm.conf
 
     install -D -m 0644 ${WORKDIR}/${APP_CONFIG} ${D}${datadir}/flutter/${BPN}.json
 
@@ -60,7 +63,10 @@ RCONFLICTS:${PN}-conf = "${PN}-conf-demo"
 ALTERNATIVE:${PN}-conf = "cluster-dashboard.yaml"
 ALTERNATIVE_TARGET_${PN}-conf = "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.default"
 
-FILES:${PN}-conf-demo += "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.demo"
+FILES:${PN}-conf-demo += " \
+    ${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.demo \
+    ${systemd_system_unitdir}/flutter-cluster-dashboard.service.d/kvm.conf \
+"
 RDEPENDS:${PN}-conf-demo = "${PN}"
 RPROVIDES:${PN}-conf-demo = "cluster-dashboard.yaml"
 RCONFLICTS:${PN}-conf-demo = "${PN}-conf"

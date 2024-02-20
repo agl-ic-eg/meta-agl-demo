@@ -17,7 +17,8 @@ DEPENDS = " \
     libusb-compat \
 "
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-service-radio;protocol=https;branch=${AGL_BRANCH}"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-service-radio;protocol=https;branch=${AGL_BRANCH} \
+           file://radio.conf.kvm-demo"
 SRCREV  = "7f26a2d06410fd3a2768612b9c9daf869778e480"
 
 PV = "2.0+git${SRCPV}"
@@ -27,4 +28,20 @@ inherit meson pkgconfig systemd
 
 SYSTEMD_SERVICE:${PN} = "agl-service-radio.service"
 
+do_install:append() {
+    install -D -m 0644 ${WORKDIR}/radio.conf.kvm-demo ${D}${sysconfdir}/xdg/AGL.conf
+}
+
+PACKAGE_BEFORE_PN += "${PN}-conf-kvm-demo"
+
 FILES:${PN} += "${systemd_system_unitdir}"
+
+FILES:${PN}-conf-kvm-demo += " \
+    ${sysconfdir}/xdg/AGL.conf \
+"
+
+RDEPENDS:${PN} += " \
+    gstreamer1.0 \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-pipewire \
+"

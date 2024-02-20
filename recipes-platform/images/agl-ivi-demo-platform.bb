@@ -6,6 +6,7 @@ AGL_APPS_INSTALL += " \
     dashboard \
     hvac \
     ondemandnavi \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "ondemandnavi-conf-kvm-demo", "ondemandnavi-conf", d)} \
     settings \
     mediaplayer \
     messaging \

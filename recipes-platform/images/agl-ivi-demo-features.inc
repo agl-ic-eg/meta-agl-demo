@@ -1,7 +1,12 @@
 require agl-demo-features.inc
 
 FEATURE_PACKAGES_agl-demo-preload = "packagegroup-agl-demo-preload"
-FEATURE_PACKAGES_agl-demo-cluster-support = "packagegroup-agl-demo-cluster-support"
+
+FEATURE_PACKAGES_agl-demo-cluster-support = " \
+    tbtnavi \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "tbtnavi-conf-kvm-demo", "tbtnavi-conf", d)} \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "", "kuksa-databroker-agl-demo-cluster", d)} \
+"
 
 IMAGE_FEATURES += " \
     ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "can-test-tools" , "", d)} \

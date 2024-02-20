@@ -21,5 +21,5 @@ RDEPENDS:${PN} += "\
     ${@bb.utils.contains('DISTRO_FEATURES', 'pipewire', '${PIPEWIRE_PACKAGES}', '', d)} \
     gstreamer1.0-plugins-base-meta \
     gstreamer1.0-plugins-good-meta \
-    mpd \
+    ${@bb.utils.contains('AGL_FEATURES', 'agl-kvm-host-audio', '', 'mpd', d)} \
     "

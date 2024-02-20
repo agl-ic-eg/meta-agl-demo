@@ -1,0 +1,4 @@
+[kuksa-client]
+hostname = "172.16.10.1"
+tls-server-name = "localhost"
+authorization = "/etc/xdg/AGL/navigation/navigation.token"
