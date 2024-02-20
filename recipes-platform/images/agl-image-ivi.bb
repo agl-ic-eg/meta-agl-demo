@@ -7,7 +7,6 @@ LICENSE = "MIT"
 require recipes-platform/images/agl-image-compositor.bb
 
 IMAGE_INSTALL += " \
-    can-utils \
     packagegroup-agl-ivi-connectivity \
     packagegroup-agl-ivi-graphics \
     packagegroup-agl-ivi-multimedia \

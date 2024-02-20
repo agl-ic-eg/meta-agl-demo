@@ -11,6 +11,7 @@ IMAGE_FEATURES += "splash package-management ssh-server-openssh"
 # some clients run on the host
 IMAGE_FEATURES += " \
     ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "kuksa-val-databroker kuksa-val-databroker-client", "", d)} \
+    ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "can-test-tools" , "", d)} \
 "
 
 # Add packages for KVM+QEMU demo platform here

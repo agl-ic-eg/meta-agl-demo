@@ -33,8 +33,6 @@ RDEPENDS:${PN} += " \
     udisks2 \
     linux-firmware-ath9k \
     linux-firmware-ralink \
-    can-utils \
-    cannelloni \
     iproute2 \
     ${DEMO_PLATFORM_CONF} \
     ${TTF_FONTS} \
