@@ -3,6 +3,7 @@ DESCRIPTION = "AGL Cluster Demo Platform image currently contains a simple clust
 LICENSE = "MIT"
 
 require recipes-platform/images/agl-image-compositor.bb
+require agl-demo-features.inc
 
 IMAGE_FEATURES += "splash package-management ssh-server-openssh"
 
@@ -10,12 +11,12 @@ inherit features_check
 
 REQUIRED_DISTRO_FEATURES = "wayland"
 
-# Break out KUKSA.val packages, as demo unit configuration
-# points at KUKSA.val server on the IVI board in full demo
-# builds with the "agl-demo-preload" feature enabled.
-KUKSA_DATABROKER_PACKAGES = " \
-    packagegroup-agl-kuksa-val-databroker \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', 'packagegroup-agl-kuksa-val-databroker-devel' , '', d)} \
+# KUKSA.val databroker is not installed with "agl-demo-preload"
+# feature enabled, since demo unit configuration points at the
+# databroker on the IVI board in that setup.
+IMAGE_FEATURES += " \
+    kuksa-val-databroker-client \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "kuksa-val-databroker", d)} \
 "
 
 # add packages for cluster demo platform (include demo apps) here
@@ -24,6 +25,5 @@ IMAGE_INSTALL += " \
     kuksa-certificates-agl-ca \
     ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "cluster-demo-config", "", d)} \
     ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "weston-ini-conf-landscape-inverted", "weston-ini-conf-landscape", d)} \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "${KUKSA_DATABROKER_PACKAGES}", d)} \
     ${@bb.utils.contains("AGL_FEATURES", "AGLCI", "qemu-set-display", "", d)} \
     "

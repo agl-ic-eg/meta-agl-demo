@@ -3,8 +3,15 @@ DESCRIPTION = "AGL KVM+QEMU Demo Platform image."
 LICENSE = "MIT"
 
 require recipes-platform/images/agl-image-compositor.bb
+require agl-demo-features.inc
 
 IMAGE_FEATURES += "splash package-management ssh-server-openssh"
+
+# If building with "agl-kvm-host-kuksa", the databroker and likely
+# some clients run on the host
+IMAGE_FEATURES += " \
+    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "kuksa-val-databroker kuksa-val-databroker-client", "", d)} \
+"
 
 # Add packages for KVM+QEMU demo platform here
 IMAGE_INSTALL += " \
