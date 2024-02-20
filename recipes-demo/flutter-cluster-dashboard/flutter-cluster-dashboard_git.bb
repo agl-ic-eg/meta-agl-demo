@@ -28,7 +28,7 @@ FLUTTER_APPLICATION_INSTALL_PREFIX = "/flutter"
 
 inherit flutter-app update-alternatives systemd
 
-CLUSTER_DEMO_VISS_HOSTNAME ??= "192.168.10.2"
+CLUSTER_DEMO_VSS_HOSTNAME ??= "192.168.10.2"
 
 APP_CONFIG = "flutter_cluster_dashboard_on_bg.json"
 
@@ -44,7 +44,7 @@ do_install:append() {
     install -d ${D}${sysconfdir}/xdg/AGL/cluster-dashboard
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.default
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml.demo ${D}${sysconfdir}/xdg/AGL/
-    sed -i "s/^hostname: .*/hostname: ${CLUSTER_DEMO_VISS_HOSTNAME}/" ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.demo
+    sed -i "s/^hostname: .*/hostname: ${CLUSTER_DEMO_VSS_HOSTNAME}/" ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.demo
     install -m 0644 ${WORKDIR}/cluster-dashboard.token ${D}${sysconfdir}/xdg/AGL/cluster-dashboard/
 }
 
