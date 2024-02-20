@@ -11,7 +11,6 @@ PACKAGES = "\
     "
 
 RDEPENDS:${PN} += "\
-    packagegroup-agl-image-ivi \
     packagegroup-agl-demo \
     "
 

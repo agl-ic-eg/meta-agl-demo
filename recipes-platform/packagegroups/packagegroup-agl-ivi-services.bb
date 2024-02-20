@@ -5,12 +5,22 @@ inherit packagegroup
 
 PACKAGES = "\
     packagegroup-agl-ivi-services \
-    "
+    packagegroup-agl-ivi-services-platform \
+    packagegroup-agl-ivi-services-applaunchd \
+"
 
-RDEPENDS:${PN} += "\
+RDEPENDS:${PN}-applaunchd += " \
     applaunchd \
     applaunchd-template-agl-app \
+"
+
+RDEPENDS:${PN}-platform += " \
     agl-service-hvac \
     agl-service-audiomixer \
     agl-service-radio \
-    "
+"
+
+RDEPENDS:${PN} += " \
+    packagegroup-agl-ivi-services-applaunchd \
+    packagegroup-agl-ivi-services-platform \
+"

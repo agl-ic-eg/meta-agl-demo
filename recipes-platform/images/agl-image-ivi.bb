@@ -7,9 +7,15 @@ LICENSE = "MIT"
 require recipes-platform/images/agl-image-compositor.bb
 
 IMAGE_INSTALL += " \
-    packagegroup-agl-image-ivi \
-    packagegroup-agl-ivi-services \
     can-utils \
+    packagegroup-agl-ivi-connectivity \
+    packagegroup-agl-ivi-graphics \
+    packagegroup-agl-ivi-multimedia \
+    packagegroup-agl-ivi-multimedia-hardware \
+    packagegroup-agl-ivi-navigation \
+    packagegroup-agl-ivi-identity \
+    packagegroup-agl-ivi-services-applaunchd \
+    packagegroup-agl-ivi-services-platform \
     iproute2 \
     "
 
