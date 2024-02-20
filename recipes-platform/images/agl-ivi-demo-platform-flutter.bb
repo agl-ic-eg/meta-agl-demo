@@ -4,4 +4,5 @@ DESCRIPTION = "AGL Flutter Demo Platform image"
 
 AGL_APPS_INSTALL += " \
     flutter-ics-homescreen \
+    ondemandnavi \
 "

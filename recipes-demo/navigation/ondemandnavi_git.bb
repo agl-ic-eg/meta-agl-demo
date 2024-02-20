@@ -37,6 +37,13 @@ do_install:append() {
 }
 
 RDEPENDS:${PN} += " \
+    qtwayland \
+    qtbase-qmlplugins \
+    qtgraphicaleffects-qmlplugins \
+    qtquickcontrols-qmlplugins \
+    qtquickcontrols2-qmlplugins \
+    qtquickcontrols2-agl \
+    qtquickcontrols2-agl-style \
     qtlocation \
     flite \
     libqtappfw \

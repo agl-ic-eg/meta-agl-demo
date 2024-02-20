@@ -53,6 +53,9 @@ do_install:append() {
 }
 
 RDEPENDS:${PN} += " \
+    qtwayland \
+    qtbase-qmlplugins \
+    qtgraphicaleffects-qmlplugins \
     qtlocation \
     ondemandnavi-config \
     libqtappfw \
