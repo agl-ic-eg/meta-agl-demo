@@ -13,7 +13,7 @@ SRC_URI = " \
 "
 SRCREV = "aa7e2a81e91ed076c0bc9ba07db5aee0f34668df"
 
-inherit pythonnative agl-app
+inherit agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
 AGL_APP_ID = "webapps-${BPN}"

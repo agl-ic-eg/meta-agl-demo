@@ -14,7 +14,7 @@ PV      = "1.0+git${SRCPV}"
 S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
-inherit pythonnative systemd
+inherit systemd
 
 DEPENDS = "nodejs-native"
 
