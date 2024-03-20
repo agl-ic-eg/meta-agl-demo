@@ -56,7 +56,6 @@ yocto-check-layer --no-auto-dependency \
 	$AGLROOT/external/meta-flutter \
 	$AGLROOT/external/meta-qt5 \
 	$AGLROOT/external/meta-clang \
-	$AGLROOT/external/meta-python2 \
 	-- \
 	$AGLROOT/meta-agl-demo
 
