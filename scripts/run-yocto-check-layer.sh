@@ -28,10 +28,6 @@ DISTRO_FEATURES:append := " systemd wayland pam \${AGL_DEFAULT_DISTRO_FEATURES}"
 DISTRO_FEATURES_BACKFILL_CONSIDERED:append = " sysvinit"
 VIRTUAL-RUNTIME_init_manager = "systemd"
 
-# ignore due to issue upstream
-BBMASK += "meta-flutter/recipes-graphics/toyota/ivi-homescreen_git.bb "
-
-
 # required by meta-flutter/recipes-graphics/toyota/flutter-auto_git.bb"
 LICENSE_FLAGS_ACCEPTED += "commercial"
 
@@ -54,6 +50,7 @@ yocto-check-layer --no-auto-dependency \
 	$AGLROOT/external/meta-openembedded/meta-networking \
 	$AGLROOT/external/meta-openembedded/meta-multimedia \
 	$AGLROOT/external/meta-flutter \
+	$AGLROOT/external/meta-flutter/meta-flutter-apps \
 	$AGLROOT/external/meta-qt5 \
 	$AGLROOT/external/meta-clang \
 	-- \

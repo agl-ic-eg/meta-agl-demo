@@ -24,8 +24,6 @@ S = "${WORKDIR}/git"
 
 PUBSPEC_APPNAME = "flutter_cluster_dashboard"
 
-FLUTTER_APPLICATION_INSTALL_PREFIX = "/flutter"
-
 inherit flutter-app update-alternatives systemd
 
 CLUSTER_DEMO_VSS_HOSTNAME ??= "192.168.10.2"

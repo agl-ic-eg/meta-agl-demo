@@ -20,8 +20,6 @@ SRCREV = "5587c6ae79b482fbff26442bb239d7d7eb55a337"
 S = "${WORKDIR}/git"
 
 PUBSPEC_APPNAME = "flutter_ics_homescreen"
-FLUTTER_APPLICATION_INSTALL_PREFIX = "/flutter"
-
 FLUTTER_BUILD_ARGS = "bundle -v"
 
 inherit flutter-app systemd update-alternatives

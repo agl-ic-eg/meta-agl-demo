@@ -19,7 +19,6 @@ inherit agl-app flutter-app
 # flutter-app
 #############
 PUBSPEC_APPNAME = "dashboard_app"
-FLUTTER_APPLICATION_INSTALL_PREFIX = "/flutter"
 FLUTTER_BUILD_ARGS = "bundle -v"
 
 # agl-app
