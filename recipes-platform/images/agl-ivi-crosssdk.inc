@@ -18,4 +18,7 @@ TOOLCHAIN_HOST_TASK += "nativesdk-grpc nativesdk-grpc-dev"
 # Add gcc-sanitizers to support building applications using the SDK with
 # AddressSanitizer support to detect use-after-frees along with other
 # memory issue.
-TOOLCHAIN_TARGET_TASK += "gcc-sanitizers"
+TOOLCHAIN_SANITIZERS_TASKS = "gcc-sanitizers"
+# gcc-sanitizers is currently (scarthgap) not supported on RISC-V
+TOOLCHAIN_SANITIZERS_TASKS:riscv64 = ""
+TOOLCHAIN_TARGET_TASK += "${TOOLCHAIN_SANITIZERS_TASKS}"
