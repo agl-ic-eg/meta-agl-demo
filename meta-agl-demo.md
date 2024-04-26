@@ -2,9 +2,7 @@
 
 The `meta-agl-demo` layer is the reference user interface layer for the DEMO
 platform of Automotive Grade Linux (AGL).
-The layer provides a reference platform and applications.
-The BitBake target name for the DEMO platform is `agl-demo-platform`, which is
-the full DEMO platform image.
+The layer provides a demo applications and images.
 
 ## Layer Dependencies
 

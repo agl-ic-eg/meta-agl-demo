@@ -1,1 +1,0 @@
-agl-ivi-demo-platform-html5.bb

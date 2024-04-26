@@ -1,6 +1,6 @@
-require agl-ivi-demo-base-flutter.bb
+require agl-ivi-image-flutter.bb
 
-DESCRIPTION = "AGL Flutter Demo Platform image"
+SUMMARY = "AGL IVI demo simple Flutter image"
 
 AGL_APPS_INSTALL += " \
     flutter-homescreen \

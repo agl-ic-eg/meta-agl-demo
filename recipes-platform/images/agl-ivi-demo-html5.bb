@@ -1,6 +1,6 @@
-require agl-image-ivi.bb
+require agl-ivi-image.bb
 
-SUMMARY = "DEMO platform of AGL HTML5 profile"
+SUMMARY = "AGL IVI demo HTML5 image"
 DESCRIPTION = "Contains the web runtime and sample web apps"
 
 require agl-demo-container-guest-integration.inc

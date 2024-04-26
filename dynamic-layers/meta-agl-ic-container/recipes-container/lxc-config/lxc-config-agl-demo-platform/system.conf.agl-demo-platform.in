@@ -1,9 +1,0 @@
-[Manager]
-DefaultEnvironment = DLM_RUNTIME_PATH=/var/display/drm-lease-manager
-DefaultEnvironment = DRM_LEASE_DEVICE=@DRM_LEASE_DEVICE@
-DefaultEnvironment = QT_QPA_PLATFORM=wayland
-DefaultEnvironment = QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/plugins/
-DefaultEnvironment = QML_IMPORT_PATH=/usr/lib/qml/
-DefaultEnvironment = QML2_IMPORT_PATH=/usr/lib/qml/
-DefaultEnvironment = QT_WAYLAND_SHELL_INTEGRATION=xdg-shell
-DefaultEnvironment = PIPEWIRE_RUNTIME_DIR=/var

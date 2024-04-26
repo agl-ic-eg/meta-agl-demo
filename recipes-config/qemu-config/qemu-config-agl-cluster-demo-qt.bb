@@ -9,7 +9,7 @@ SRC_URI = "file://${QEMU_IMAGE}.conf"
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
-QEMU_IMAGE = "agl-cluster-demo-platform"
+QEMU_IMAGE = "agl-cluster-demo-qt"
 QEMU_UNIT = "agl-qemu-runner@${QEMU_IMAGE}.service"
 
 do_install() {

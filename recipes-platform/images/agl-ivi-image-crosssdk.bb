@@ -1,4 +1,4 @@
-require agl-image-ivi.bb
+require agl-ivi-image.bb
 
 SUMMARY = "Cross SDK of minimal AGL Distribution for IVI profile"
 

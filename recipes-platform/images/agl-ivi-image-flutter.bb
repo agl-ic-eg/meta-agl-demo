@@ -1,6 +1,6 @@
-require agl-ivi-demo-base.bb
+require agl-ivi-image.bb
 
-DESCRIPTION = "AGL Flutter demo base image"
+SUMMARY = "AGL IVI demo base Flutter image"
 
 IMAGE_INSTALL += " \
     packagegroup-agl-demo-platform-flutter \

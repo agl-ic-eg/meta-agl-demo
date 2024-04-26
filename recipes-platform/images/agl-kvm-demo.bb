@@ -1,5 +1,4 @@
-DESCRIPTION = "AGL KVM+QEMU Demo Platform image."
-
+SUMMARY = "AGL KVM+QEMU Demo Platform image."
 LICENSE = "MIT"
 
 require recipes-platform/images/agl-image-compositor.bb
@@ -59,8 +58,8 @@ IMAGE_INSTALL += "\
 
 GUEST_MACHINE ?= "virtio-${TUNE_ARCH}"
 
-GUEST_VM1_IMAGE ?= "agl-ivi-demo-platform-flutter"
-GUEST_VM2_IMAGE ?= "agl-cluster-demo-platform-flutter"
+GUEST_VM1_IMAGE ?= "agl-ivi-demo-flutter"
+GUEST_VM2_IMAGE ?= "agl-cluster-demo-flutter"
 
 GUEST_IMAGES ?= "agl-kvm-guest:${GUEST_VM1_IMAGE} agl-kvm-guest:${GUEST_VM2_IMAGE}"
 

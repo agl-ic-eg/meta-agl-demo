@@ -1,5 +1,4 @@
-DESCRIPTION = "AGL Telematics Demo Platform image."
-
+SUMMARY = "AGL Telematics Demo Platform image."
 LICENSE = "MIT"
 
 require recipes-platform/images/agl-image-minimal.bb

@@ -2,8 +2,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/weston-ini-conf:"
 
 SRC_URI += "file://weston.ini.kvm.in"
 
-GUEST_VM1_IMAGE ?= "agl-ivi-demo-platform-flutter"
-GUEST_VM2_IMAGE ?= "agl-cluster-demo-platform-flutter"
+GUEST_VM1_IMAGE ?= "agl-ivi-demo-flutter"
+GUEST_VM2_IMAGE ?= "agl-cluster-demo-flutter"
 
 do_compile:append() {
     # Start with a canned configuration for a KVM host, filling in

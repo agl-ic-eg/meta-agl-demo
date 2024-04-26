@@ -14,9 +14,6 @@ SRC_URI = "file://vmnet0.netdev \
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
-QEMU_IMAGE = "agl-cluster-demo-platform"
-QEMU_UNIT = "agl-qemu-runner@${QEMU_IMAGE}.service"
-
 do_install() {
     # Install systemd-networkd vmnet0 configuration
     install -d ${D}${systemd_unitdir}/network

@@ -1,6 +1,6 @@
-require agl-ivi-demo-platform.bb
+require agl-ivi-demo-qt.bb
 
-SUMMARY = "Cross SDK of demo AGL Distribution for IVI profile"
+SUMMARY = "Cross SDK of AGL IVI demo"
 
 DESCRIPTION = "SDK image for full AGL Distribution for IVI profile. \
 It includes the full toolchain, plus development headers and libraries \

@@ -1,6 +1,6 @@
-require agl-ivi-demo-base.bb
+require agl-ivi-image.bb
 
-DESCRIPTION = "AGL Qt Demo Platform image"
+SUMMARY = "AGL IVI demo Qt image"
 
 AGL_APPS_INSTALL += " \
     dashboard \
