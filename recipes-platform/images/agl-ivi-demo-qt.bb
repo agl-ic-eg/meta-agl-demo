@@ -18,6 +18,6 @@ AGL_APPS_INSTALL += " \
 
 IMAGE_INSTALL += " \
     packagegroup-agl-demo-platform \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-demo-preload", "", "weston-terminal-conf", d)} \
+    weston-terminal-conf \
 "
 
