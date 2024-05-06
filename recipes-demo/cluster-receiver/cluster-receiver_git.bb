@@ -17,7 +17,7 @@ PV = "1.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-cluster-demo-receiver;protocol=https;branch=${AGL_BRANCH} \
            file://cluster-receiver.service \
 "
-SRCREV  = "8633f9754fc0b644e45862fc3ed6f95554ce58cf"
+SRCREV  = "7dd7d94968d1ac2edae62c4b1797407ea8640e3c"
 
 S  = "${WORKDIR}/git"
 
