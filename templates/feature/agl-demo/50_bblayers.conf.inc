@@ -10,5 +10,5 @@ AGL_META_NETWORKING = "${METADIR}/external/meta-openembedded/meta-networking"
 AGL_META_PYTHON = "${METADIR}/external/meta-openembedded/meta-python"
 AGL_META_QT5 = "${METADIR}/external/meta-qt5"
 
-# Needed to satisfy uutils-coreutils DEPENDS when using SELinux
+# Needed to build CEF and WAM
 AGL_META_CLANG = "${METADIR}/external/meta-clang"
