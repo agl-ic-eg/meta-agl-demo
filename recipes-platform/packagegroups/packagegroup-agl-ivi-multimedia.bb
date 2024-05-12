@@ -6,7 +6,9 @@ inherit packagegroup
 
 PACKAGES = "\
     packagegroup-agl-ivi-multimedia \
-    "
+    packagegroup-agl-ivi-multimedia-client \
+    packagegroup-agl-ivi-multimedia-platform \
+"
 
 ALLOW_EMPTY:${PN} = "1"
 
@@ -15,11 +17,19 @@ PIPEWIRE_PACKAGES = " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', 'packagegroup-pipewire-tools alsa-utils', '', d)} \
     wireplumber-config-agl \
     wireplumber-policy-config-agl \
-    "
+"
 
-RDEPENDS:${PN} += "\
+RDEPENDS:${PN}-platform += " \
+    mpd \
+"
+
+RDEPENDS:${PN}-client += "\
     ${@bb.utils.contains('DISTRO_FEATURES', 'pipewire', '${PIPEWIRE_PACKAGES}', '', d)} \
     gstreamer1.0-plugins-base-meta \
     gstreamer1.0-plugins-good-meta \
-    ${@bb.utils.contains('AGL_FEATURES', 'agl-kvm-host-audio', '', 'mpd', d)} \
-    "
+"
+
+RDEPENDS:${PN} += "\
+    packagegroup-agl-ivi-multimedia-client \
+    packagegroup-agl-ivi-multimedia-platform \
+"

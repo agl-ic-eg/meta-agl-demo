@@ -1,15 +1,12 @@
-SUMMARY = "AGL KVM+QEMU Demo Platform image."
+SUMMARY = "AGL KVM+QEMU demo image"
 LICENSE = "MIT"
 
 require recipes-platform/images/agl-image-compositor.bb
-require agl-demo-features.inc
+require recipes-platform/images/agl-demo-features.inc
 
 IMAGE_FEATURES += "splash package-management ssh-server-openssh"
 
-# If building with "agl-kvm-host-kuksa", the databroker and likely
-# some clients run on the host
 IMAGE_FEATURES += " \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "kuksa-val-databroker kuksa-val-databroker-client", "", d)} \
     ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "can-test-tools" , "", d)} \
 "
 
@@ -29,37 +26,14 @@ IMAGE_INSTALL += " \
     alsa-utils \
 "
 
-# Until virtio sound is workable with QEMU, run the audio using
-# services on the host for a better demo experience.  At the
-# moment, this also includes the HVAC service since it does not
-# make sense to try to make things more fine-grained with respect
-# to configuration for where things expect to find the databroker.
-# It will need to be revisited when virtio-snd, virtio-gpio, etc.
-# become feasible to use.
-HOST_AUDIO_INSTALL = " \
-    packagegroup-agl-ivi-services-platform \
-    agl-service-radio-conf-kvm-demo \
-    packagegroup-pipewire \
-    wireplumber-config-agl \
-    wireplumber-policy-config-agl \
-    mpd \
-    udisks2 \
-    ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "packagegroup-pipewire-tools mpc" , "", d)} \
-"
-
-IMAGE_INSTALL += "\
-    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "kuksa-databroker-agl-demo-cluster", "", d)} \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-audio", "${HOST_AUDIO_INSTALL}", "", d)} \
-"
-
 # Potential size reduction options
 #IMAGE_LINGUAS = " "
 #NO_RECOMMENDATIONS = "1"
 
 GUEST_MACHINE ?= "virtio-${TUNE_ARCH}"
 
-GUEST_VM1_IMAGE ?= "agl-ivi-demo-flutter"
-GUEST_VM2_IMAGE ?= "agl-cluster-demo-flutter"
+GUEST_VM1_IMAGE ?= "agl-ivi-demo-flutter-guest"
+GUEST_VM2_IMAGE ?= "agl-cluster-demo-flutter-guest"
 
 GUEST_IMAGES ?= "agl-kvm-guest:${GUEST_VM1_IMAGE} agl-kvm-guest:${GUEST_VM2_IMAGE}"
 

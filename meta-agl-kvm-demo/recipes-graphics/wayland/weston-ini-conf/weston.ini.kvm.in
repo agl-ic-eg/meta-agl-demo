@@ -10,9 +10,9 @@ panel-position=none
 # A display is connected to HDMI-A-1
 [output]
 name=HDMI-A-1
-agl-shell-app-id=@GUEST_VM1_IMAGE@
+agl-shell-app-id=@GUEST_VM1_ID@
 
 # A display is connected to HDMI-A-2
 [output]
 name=HDMI-A-2
-agl-shell-app-id=@GUEST_VM2_IMAGE@
+agl-shell-app-id=@GUEST_VM2_ID@

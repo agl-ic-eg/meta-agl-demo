@@ -9,7 +9,7 @@ SRC_URI = "file://${QEMU_IMAGE}.conf"
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
-QEMU_IMAGE = "agl-ivi-demo-flutter"
+QEMU_IMAGE = "agl-ivi-demo-flutter-guest"
 QEMU_UNIT = "agl-qemu-runner@${QEMU_IMAGE}.service"
 
 do_install() {

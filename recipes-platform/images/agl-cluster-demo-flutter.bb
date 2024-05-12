@@ -23,10 +23,12 @@ IMAGE_INSTALL += "\
 "
 
 # Flutter
+FLUTTER_CLUSTER_DASHBOARD_CONF = "flutter-cluster-dashboard-conf"
+
 IMAGE_INSTALL += "\
     flutter-auto \
     flutter-cluster-dashboard \
-    flutter-cluster-dashboard-conf \
+    ${FLUTTER_CLUSTER_DASHBOARD_CONF} \
     cluster-demo-config-flutter \
 "
 

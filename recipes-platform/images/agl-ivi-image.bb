@@ -16,17 +16,22 @@ AGL_DEVEL_INSTALL += "\
 
 AGL_APPS_INSTALL = ""
 
+PLATFORM_SERVICES_INSTALL = " \
+    packagegroup-agl-ivi-multimedia-platform \
+    packagegroup-agl-ivi-services-platform \
+"
+
 IMAGE_INSTALL += " \
     packagegroup-agl-ivi-connectivity \
     packagegroup-agl-ivi-graphics \
-    packagegroup-agl-ivi-multimedia \
+    packagegroup-agl-ivi-multimedia-client \
     packagegroup-agl-ivi-multimedia-hardware \
     packagegroup-agl-ivi-navigation \
     packagegroup-agl-ivi-identity \
     packagegroup-agl-ivi-services-applaunchd \
+    ${PLATFORM_SERVICES_INSTALL} \
     iproute2 \
     ${AGL_APPS_INSTALL} \
     ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "${AGL_DEVEL_INSTALL}" , "", d)} \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-audio", "", "packagegroup-agl-ivi-services-platform", d)} \
 "
 

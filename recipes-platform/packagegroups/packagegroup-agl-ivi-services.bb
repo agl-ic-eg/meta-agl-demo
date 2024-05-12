@@ -18,6 +18,7 @@ RDEPENDS:${PN}-platform += " \
     agl-service-hvac \
     agl-service-audiomixer \
     agl-service-radio \
+    mpd \
 "
 
 RDEPENDS:${PN} += " \

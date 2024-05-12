@@ -59,7 +59,6 @@ RDEPENDS:${PN} += " \
     flutter-auto \
     agl-flutter-env \
     applaunchd \
-    ${@bb.utils.contains('AGL_FEATURES', 'agl-kvm-host-audio', '', 'agl-service-radio mpd', d)} \
 "
 
 PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-kvm-demo"

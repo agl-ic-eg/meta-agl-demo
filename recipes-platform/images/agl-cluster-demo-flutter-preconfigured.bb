@@ -11,10 +11,9 @@ IMAGE_INSTALL:remove = "weston-ini-conf-landscape"
 
 # Cluster application configuration needs to be replaced for
 # the full demo to handle different databroker configuration.
-IMAGE_INSTALL:remove = "flutter-cluster-dashboard-conf"
+FLUTTER_CLUSTER_DASHBOARD_CONF = "flutter-cluster-dashboard-conf-demo"
 
 IMAGE_INSTALL += " \
     psplash-inverted-config \
     weston-ini-conf-landscape-inverted \
-    flutter-cluster-dashboard-conf-demo \
 "

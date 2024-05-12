@@ -35,7 +35,6 @@ EXTRA_OEMESON += "-Dprotos=${STAGING_INCDIR}"
 RRECOMMENDS:${PN} += " \
     bluez5 \
     connman \
-    ${@bb.utils.contains('AGL_FEATURES', 'agl-kvm-host-audio', '', 'mpd', d)} \
 "
 
 BBCLASSEXTEND = "nativesdk"

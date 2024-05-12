@@ -13,6 +13,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-instrument-clust
     file://flutter_cluster_dashboard_on_bg.json \
     file://cluster-dashboard.yaml \
     file://cluster-dashboard.yaml.demo \
+    file://cluster-dashboard.yaml.kvm-demo \
     file://cluster-dashboard.token \
     file://kvm.conf \
 "
@@ -25,8 +26,6 @@ S = "${WORKDIR}/git"
 PUBSPEC_APPNAME = "flutter_cluster_dashboard"
 
 inherit flutter-app update-alternatives systemd
-
-CLUSTER_DEMO_VSS_HOSTNAME ??= "192.168.10.2"
 
 APP_CONFIG = "flutter_cluster_dashboard_on_bg.json"
 
@@ -42,7 +41,7 @@ do_install:append() {
     install -d ${D}${sysconfdir}/xdg/AGL/cluster-dashboard
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.default
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml.demo ${D}${sysconfdir}/xdg/AGL/
-    sed -i "s/^hostname: .*/hostname: ${CLUSTER_DEMO_VSS_HOSTNAME}/" ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.demo
+    install -m 0644 ${WORKDIR}/cluster-dashboard.yaml.kvm-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/cluster-dashboard.token ${D}${sysconfdir}/xdg/AGL/cluster-dashboard/
 }
 
@@ -52,7 +51,7 @@ FILES:${PN} += "${datadir} ${sysconfdir}/xdg/AGL"
 
 RDEPENDS:${PN} += "flutter-auto agl-flutter-env liberation-fonts"
 
-PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-demo"
+PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-demo ${PN}-conf-kvm-demo"
 
 FILES:${PN}-conf += "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.default"
 RDEPENDS:${PN}-conf = "${PN}"
@@ -63,10 +62,19 @@ ALTERNATIVE_TARGET_${PN}-conf = "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.de
 
 FILES:${PN}-conf-demo += " \
     ${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.demo \
-    ${systemd_system_unitdir}/flutter-cluster-dashboard.service.d/kvm.conf \
 "
 RDEPENDS:${PN}-conf-demo = "${PN}"
 RPROVIDES:${PN}-conf-demo = "cluster-dashboard.yaml"
 RCONFLICTS:${PN}-conf-demo = "${PN}-conf"
 ALTERNATIVE:${PN}-conf-demo = "cluster-dashboard.yaml"
 ALTERNATIVE_TARGET_${PN}-conf-demo = "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.demo"
+
+FILES:${PN}-conf-kvm-demo += " \
+    ${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.kvm-demo \
+    ${systemd_system_unitdir}/flutter-cluster-dashboard.service.d/kvm.conf \
+"
+RDEPENDS:${PN}-conf-kvm-demo = "${PN}"
+RPROVIDES:${PN}-conf-kvm-demo = "cluster-dashboard.yaml"
+RCONFLICTS:${PN}-conf-kvm-demo = "${PN}-conf"
+ALTERNATIVE:${PN}-conf-kvm-demo = "cluster-dashboard.yaml"
+ALTERNATIVE_TARGET_${PN}-conf-kvm-demo = "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.kvm-demo"

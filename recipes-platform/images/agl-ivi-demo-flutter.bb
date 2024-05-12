@@ -2,10 +2,13 @@ require agl-ivi-image-flutter.bb
 
 SUMMARY = "AGL IVI demo Flutter image"
 
+FLUTTER_ICS_HOMESCREEN_CONF = "flutter-ics-homescreen-conf"
+ONDEMANDNAVI_CONF = "ondemandnavi-conf"
+
 AGL_APPS_INSTALL += " \
     flutter-ics-homescreen \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "flutter-ics-homescreen-conf-kvm-demo", "flutter-ics-homescreen-conf", d)} \
+    ${FLUTTER_ICS_HOMESCREEN_CONF} \
     camera-gstreamer \
     ondemandnavi \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "ondemandnavi-conf-kvm-demo", "ondemandnavi-conf", d)} \
+    ${ONDEMANDNAVI_CONF} \
 "

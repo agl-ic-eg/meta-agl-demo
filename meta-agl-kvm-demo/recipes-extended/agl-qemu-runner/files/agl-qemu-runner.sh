@@ -43,8 +43,9 @@ export XDG_RUNTIME_DIR=/run/user/1001
 #export WAYLAND_DISPLAY=wayland-1
 
 # This sets the XDG app id, which we need for setting outputs with
-# agl-compositor
-export SDL_VIDEO_WAYLAND_WMCLASS="${image}"
+# agl-compositor.  If QEMU_XDG_APP_ID is not set, the image name
+# is used.
+export SDL_VIDEO_WAYLAND_WMCLASS="${QEMU_XDG_APP_ID:-${image}}"
 
 ${TASKSET_CMD} \
 qemu-system-${arch} \

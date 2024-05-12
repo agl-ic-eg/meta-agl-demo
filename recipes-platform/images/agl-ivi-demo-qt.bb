@@ -2,11 +2,13 @@ require agl-ivi-image.bb
 
 SUMMARY = "AGL IVI demo Qt image"
 
+ONDEMANDNAVI_CONF = "ondemandnavi-conf"
+
 AGL_APPS_INSTALL += " \
     dashboard \
     hvac \
     ondemandnavi \
-    ${@bb.utils.contains("AGL_FEATURES", "agl-kvm-host-kuksa", "ondemandnavi-conf-kvm-demo", "ondemandnavi-conf", d)} \
+    ${ONDEMANDNAVI_CONF} \
     settings \
     mediaplayer \
     messaging \
