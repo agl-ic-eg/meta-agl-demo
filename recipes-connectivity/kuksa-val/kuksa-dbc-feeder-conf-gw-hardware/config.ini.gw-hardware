@@ -1,0 +1,30 @@
+[general]
+# server type:
+# switch between kuksa_databroker and kuksa_val_server
+server_type = kuksa_databroker
+# VSS mapping file
+mapping = /usr/share/vss/vss_rel_4.0-agl-gw-hardware.json
+
+# IP address for server (KUKSA.val Server or Databroker)
+ip = localhost
+
+# Port for server (KUKSA.val Server or Databroker)
+port = 55555
+
+# Shall TLS be used (default False for Databroker, True for KUKSA.val Server)
+tls = True
+
+# TLS-related settings
+# Path to root CA, needed if using TLS
+root_ca_path=/etc/kuksa-val/CA.pem
+
+# Token file for authorization.
+token = /etc/kuksa-dbc-feeder/dbc_feeder.token
+
+[can]
+# CAN port
+port = can1
+# Enable SAE-J1939 Mode. False: ignore
+j1939 = False
+# DBC file used to parse CAN messages
+dbcfile = /etc/kuksa-dbc-feeder/agl-vcar.dbc

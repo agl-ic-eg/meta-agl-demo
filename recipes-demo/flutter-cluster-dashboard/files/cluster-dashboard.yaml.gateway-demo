@@ -1,0 +1,4 @@
+hostname: 192.168.10.4
+authorization : "/etc/xdg/AGL/cluster-dashboard/cluster-dashboard.token"
+use-tls : true
+tls-server-name : "localhost"

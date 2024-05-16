@@ -28,6 +28,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/tbtnavi;protocol=https;b
            file://tbtnavi.service \
            file://tbtnavi.conf \
            file://tbtnavi.conf.kvm-demo \
+           file://tbtnavi.conf.gateway-demo \
            file://tbtnavi.token \
            file://kvm.conf \
 "
@@ -54,6 +55,7 @@ do_install:append() {
     install -d ${D}${sysconfdir}/xdg/AGL/tbtnavi
     install -m 0644 ${WORKDIR}/tbtnavi.conf ${D}${sysconfdir}/xdg/AGL/tbtnavi.conf.default
     install -m 0644 ${WORKDIR}/tbtnavi.conf.kvm-demo ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/tbtnavi.conf.gateway-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/tbtnavi.token ${D}${sysconfdir}/xdg/AGL/tbtnavi/
 }
 
@@ -68,21 +70,33 @@ RDEPENDS:${PN} += " \
     libqtappfw \
 "
 
-PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-kvm-demo"
+PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-kvm ${PN}-conf-kvm-demo ${PN}-conf-gateway-demo"
 
 FILES:${PN}-conf += "${sysconfdir}/xdg/AGL/tbtnavi.conf.default"
 RDEPENDS:${PN}-conf = "${PN}"
 RPROVIDES:${PN}-conf = "tbtnavi.conf"
-RCONFLICTS:${PN}-conf = "${PN}-conf-kvm-demo"
 ALTERNATIVE:${PN}-conf = "tbtnavi.conf"
 ALTERNATIVE_TARGET_${PN}-conf = "${sysconfdir}/xdg/AGL/tbtnavi.conf.default"
 
-FILES:${PN}-conf-kvm-demo += " \
-    ${sysconfdir}/xdg/AGL/tbtnavi.conf.kvm-demo \
+FILES:${PN}-conf-gateway-demo += " \
+    ${sysconfdir}/xdg/AGL/tbtnavi.conf.gateway-demo \
+"
+RDEPENDS:${PN}-conf-gateway-demo = "${PN}"
+RPROVIDES:${PN}-conf-gateway-demo = "tbtnavi.conf"
+ALTERNATIVE:${PN}-conf-gateway-demo = "tbtnavi.conf"
+ALTERNATIVE_TARGET_${PN}-conf-gateway-demo = "${sysconfdir}/xdg/AGL/tbtnavi.conf.gateway-demo"
+ALTERNATIVE_PRIORITY_${PN}-conf-gateway-demo = "20"
+
+FILES:${PN}-conf-kvm += " \
     ${systemd_system_unitdir}/tbtnavi.service.d/kvm.conf \
 "
-RDEPENDS:${PN}-conf-kvm-demo = "${PN}"
+RDEPENDS:${PN}-conf-kvm = "${PN}"
+
+FILES:${PN}-conf-kvm-demo += " \
+    ${sysconfdir}/xdg/AGL/tbtnavi.conf.kvm-demo \
+"
+RDEPENDS:${PN}-conf-kvm-demo = "${PN} ${PN}-conf-kvm"
 RPROVIDES:${PN}-conf-kvm-demo = "tbtnavi.conf"
-RCONFLICTS:${PN}-conf-kvm-demo = "${PN}-conf"
 ALTERNATIVE:${PN}-conf-kvm-demo = "tbtnavi.conf"
 ALTERNATIVE_TARGET_${PN}-conf-kvm-demo = "${sysconfdir}/xdg/AGL/tbtnavi.conf.kvm-demo"
+ALTERNATIVE_PRIORITY_${PN}-conf-kvm-demo = "30"

@@ -1,10 +1,10 @@
 [Unit]
-Description=Eclipse KUKSA.val DBC feeder
+Description=Eclipse KUKSA.val DBC feeder (can1)
 Requires=kuksa-databroker.service can-dev-helper.service
 After=kuksa-databroker.service can-dev-helper.service
 
 [Service]
-EnvironmentFile=-/etc/default/kuksa-dbc-feeder
+EnvironmentFile=-/etc/default/kuksa-dbc-feeder.gw-hardware
 ExecStart=/usr/bin/dbcfeeder.py $EXTRA_ARGS
 Restart=on-failure
 

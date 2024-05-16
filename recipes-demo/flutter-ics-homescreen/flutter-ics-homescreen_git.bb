@@ -10,7 +10,9 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;p
   file://flutter-ics-homescreen.json \
   file://flutter-ics-homescreen.service \
   file://ics-homescreen.yaml \
+  file://ics-homescreen.yaml.gateway-demo \
   file://ics-homescreen.yaml.kvm-demo \
+  file://ics-homescreen.yaml.kvm-gateway-demo \
   file://ics-homescreen.token \
   file://radio-presets.yaml \
   file://kvm.conf \
@@ -46,7 +48,9 @@ do_install:append() {
     # something like OAuth is plumbed in as an alternative.
     install -d ${D}${sysconfdir}/xdg/AGL/ics-homescreen
     install -m 0644 ${WORKDIR}/ics-homescreen.yaml ${D}${sysconfdir}/xdg/AGL/ics-homescreen.yaml.default
+    install -m 0644 ${WORKDIR}/ics-homescreen.yaml.gateway-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/ics-homescreen.yaml.kvm-demo ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/ics-homescreen.yaml.kvm-gateway-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/ics-homescreen.token ${D}${sysconfdir}/xdg/AGL/ics-homescreen/
     install -m 0644 ${WORKDIR}/radio-presets.yaml ${D}${sysconfdir}/xdg/AGL/ics-homescreen/
 }
@@ -61,21 +65,38 @@ RDEPENDS:${PN} += " \
     applaunchd \
 "
 
-PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-kvm-demo"
-
+PACKAGE_BEFORE_PN += "${PN}-conf"
 FILES:${PN}-conf += "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.default"
 RDEPENDS:${PN}-conf = "${PN}"
 RPROVIDES:${PN}-conf = "ics-homescreen.yaml"
-RCONFLICTS:${PN}-conf = "${PN}-conf-kvm-demo"
 ALTERNATIVE:${PN}-conf = "ics-homescreen.yaml"
 ALTERNATIVE_TARGET_${PN}-conf = "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.default"
 
-FILES:${PN}-conf-kvm-demo += " \
-    ${sysconfdir}/xdg/AGL/ics-homescreen.yaml.kvm-demo \
-    ${systemd_system_unitdir}/flutter-ics-homescreen.service.d/kvm.conf \
-"
-RDEPENDS:${PN}-conf-kvm-demo = "${PN}"
+PACKAGE_BEFORE_PN += "${PN}-conf-gateway-demo"
+FILES:${PN}-conf-gateway-demo += "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.gateway-demo"
+RDEPENDS:${PN}-conf-gateway-demo = "${PN}"
+RPROVIDES:${PN}-conf-gateway-demo = "ics-homescreen.yaml"
+ALTERNATIVE:${PN}-conf-gateway-demo = "ics-homescreen.yaml"
+ALTERNATIVE_TARGET_${PN}-conf-gateway-demo = "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.gateway-demo"
+ALTERNATIVE_PRIORITY_${PN}-conf-gateway-demo = "20"
+
+# systemd override to add network-online.target dependency for KVM setups
+PACKAGE_BEFORE_PN += "${PN}-conf-kvm"
+FILES:${PN}-conf-kvm += "${systemd_system_unitdir}/flutter-ics-homescreen.service.d/kvm.conf"
+RDEPENDS:${PN}-conf-kvm = "${PN}"
+
+PACKAGE_BEFORE_PN += "${PN}-conf-kvm-demo"
+FILES:${PN}-conf-kvm-demo += "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.kvm-demo"
+RDEPENDS:${PN}-conf-kvm-demo = "${PN} ${PN}-conf-kvm"
 RPROVIDES:${PN}-conf-kvm-demo = "ics-homescreen.yaml"
-RCONFLICTS:${PN}-conf-kvm-demo = "${PN}-conf"
 ALTERNATIVE:${PN}-conf-kvm-demo = "ics-homescreen.yaml"
 ALTERNATIVE_TARGET_${PN}-conf-kvm-demo = "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.kvm-demo"
+ALTERNATIVE_PRIORITY_${PN}-conf-kvm-demo = "30"
+
+PACKAGE_BEFORE_PN += "${PN}-conf-kvm-gateway-demo"
+FILES:${PN}-conf-kvm-gateway-demo += "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.kvm-gateway-demo"
+RDEPENDS:${PN}-conf-kvm-gateway-demo = "${PN} ${PN}-conf-kvm"
+RPROVIDES:${PN}-conf-kvm-gateway-demo = "ics-homescreen.yaml"
+ALTERNATIVE:${PN}-conf-kvm-gateway-demo = "ics-homescreen.yaml"
+ALTERNATIVE_TARGET_${PN}-conf-kvm-gateway-demo = "${sysconfdir}/xdg/AGL/ics-homescreen.yaml.kvm-gateway-demo"
+ALTERNATIVE_PRIORITY_${PN}-conf-kvm-gateway-demo = "31"

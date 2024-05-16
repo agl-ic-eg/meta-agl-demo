@@ -20,7 +20,8 @@ DEPENDS = " \
 "
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-service-audiomixer.git;protocol=https;branch=${AGL_BRANCH} \
-           file://agl-service-audiomixer.conf \
+           file://agl-service-audiomixer.conf.default \
+           file://agl-service-audiomixer.conf.gateway-demo \
            file://agl-service-audiomixer.token \
 "
 SRCREV  = "0ff3ef1b254364639fc42495bbcfb4760250990a"
@@ -28,7 +29,7 @@ SRCREV  = "0ff3ef1b254364639fc42495bbcfb4760250990a"
 PV = "2.0+git${SRCPV}"
 S  = "${WORKDIR}/git"
 
-inherit meson pkgconfig systemd
+inherit meson pkgconfig systemd update-alternatives
 
 EXTRA_OEMESON += "-Dprotos=${STAGING_INCDIR}"
 
@@ -43,10 +44,28 @@ do_install:append() {
     # until a packaging/sandboxing/MAC scheme is (re)implemented or
     # something like OAuth is plumbed in as an alternative.
     install -d ${D}${sysconfdir}/xdg/AGL/agl-service-audiomixer
-    install -m 0644 ${WORKDIR}/agl-service-audiomixer.conf ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/agl-service-audiomixer.conf.default ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/agl-service-audiomixer.conf.gateway-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/agl-service-audiomixer.token ${D}${sysconfdir}/xdg/AGL/agl-service-audiomixer/
 }
 
 FILES:${PN} += "${systemd_system_unitdir}"
 
-RDEPENDS:${PN} += "kuksa-databroker"
+RDEPENDS:${PN} += "${PN}-conf"
+
+ALTERNATIVE_LINK_NAME[agl-service-audiomixer.conf] = "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf"
+
+PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-gateway-demo"
+
+FILES:${PN}-conf += "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf.default"
+RDEPENDS:${PN}-conf = "${PN}"
+RPROVIDES:${PN}-conf = "agl-service-audiomixer.conf"
+ALTERNATIVE:${PN}-conf = "agl-service-audiomixer.conf"
+ALTERNATIVE_TARGET_${PN}-conf = "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf.default"
+
+FILES:${PN}-conf-gateway-demo += "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf.gateway-demo"
+RDEPENDS:${PN}-conf-gateway-demo = "${PN}"
+RPROVIDES:${PN}-conf-gateway-demo = "agl-service-audiomixer.conf"
+ALTERNATIVE:${PN}-conf-gateway-demo = "agl-service-audiomixer.conf"
+ALTERNATIVE_TARGET_${PN}-conf-gateway-demo = "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf.gateway-demo"
+ALTERNATIVE_PRIORITY_${PN}-conf-gateway-demo = "20"

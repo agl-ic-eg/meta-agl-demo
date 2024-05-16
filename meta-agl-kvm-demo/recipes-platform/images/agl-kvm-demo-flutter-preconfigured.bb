@@ -1,11 +1,9 @@
-LICENSE = "MIT"
-
 require agl-kvm-demo.bb
 
-SUMMARY = "AGL KVM+QEMU preconfigured Flutter demo image"
+SUMMARY = "AGL KVM preconfigured Flutter demo image"
 
-# If building with "agl-kvm-host-kuksa", the databroker and likely
-# some clients run on the host
+# The databroker runs on the host to simplify things when running
+# clients on the host instead of just in the guests.
 IMAGE_FEATURES += " \
     kuksa-val-databroker \
     kuksa-val-databroker-client \

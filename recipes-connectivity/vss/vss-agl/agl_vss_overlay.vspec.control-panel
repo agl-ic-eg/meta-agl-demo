@@ -3,20 +3,12 @@
 Vehicle.Speed:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: PT_VehicleAvgSpeed
-    interval_ms: 100
   vss2dbc:
     signal: PT_VehicleAvgSpeed
 
 Vehicle.Powertrain.CombustionEngine.Speed:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: PT_EngineSpeed
-    interval_ms: 100
-    transform:
-      math: "floor(x+0.5)"
   vss2dbc:
     signal: PT_EngineSpeed
 
@@ -25,68 +17,54 @@ Vehicle.Powertrain.CombustionEngine.Speed:
 Vehicle.Body.Lights.Hazard.IsSignaling:
   datatype: boolean
   type: actuator
-  dbc2vss:
+  vss2dbc:
     signal: PT_HazardOn
-    on_change: true
     transform:
       mapping:
-        - from: 0
-          to: false
-        - from: 1
-          to: true
+        - from: false
+          to: 0
+        - from: true
+          to: 1
 
 Vehicle.Body.Lights.DirectionIndicator.Left.IsSignaling:
   datatype: boolean
   type: actuator
-  dbc2vss:
+  vss2dbc:
     signal: PT_LeftTurnOn
-    on_change: true
     transform:
       mapping:
-        - from: 0
-          to: false
-        - from: 1
-          to: true
+        - from: false
+          to: 0
+        - from: true
+          to: 1
 
 Vehicle.Body.Lights.DirectionIndicator.Right.IsSignaling:
   datatype: boolean
   type: actuator
-  dbc2vss:
+  vss2dbc:
     signal: PT_RightTurnOn
-    on_change: true
     transform:
       mapping:
-        - from: 0
-          to: false
-        - from: 1
-          to: true
+        - from: false
+          to: 0
+        - from: true
+          to: 1
 
 Vehicle.OBD.ThrottlePosition:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: ThrottlePosition
-    interval_ms: 100
   vss2dbc:
     signal: ThrottlePosition
 
 Vehicle.Chassis.SteeringWheel.Angle:
   datatype: int16
   type: sensor
-  dbc2vss:
-    signal: SteeringPosition
-    interval_ms: 100
   vss2dbc:
     signal: SteeringPosition
 
 Vehicle.Chassis.Brake.PedalPosition:
   datatype: uint8
   type: sensor
-  dbc2vss:
-    signal: BrakePressure
-    interval_ms: 100
-    transform:
-      math: "floor(x / 19125 * 100 + 0.5)"
   vss2dbc:
     signal: BrakePressure
     transform:
@@ -95,81 +73,54 @@ Vehicle.Chassis.Brake.PedalPosition:
 Vehicle.Powertrain.Transmission.SelectedGear:
   datatype: int8
   type: sensor
-  dbc2vss:
-    signal: Gear
-    interval_ms: 100
   vss2dbc:
     signal: Gear
 
 Vehicle.Acceleration.Lateral:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: AccelerationX
-    interval_ms: 100
   vss2dbc:
     signal: AccelerationX
 
 Vehicle.Acceleration.Longitudinal:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: AccelerationY
-    interval_ms: 100
   vss2dbc:
     signal: AccelerationY
 
 Vehicle.Acceleration.Vertical:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: AccelerationZ
-    interval_ms: 100
   vss2dbc:
     signal: AccelerationZ
 
 Vehicle.AngularVelocity.Pitch:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: GyroscopeX
-    interval_ms: 100
   vss2dbc:
     signal: GyroscopeX
 
 Vehicle.AngularVelocity.Roll:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: GyroscopeY
-    interval_ms: 100
   vss2dbc:
     signal: GyroscopeY
 
 Vehicle.AngularVelocity.Yaw:
   datatype: float
   type: sensor
-  dbc2vss:
-    signal: GyroscopeZ
-    interval_ms: 100
   vss2dbc:
     signal: GyroscopeZ
 
 Vehicle.CurrentLocation.Latitude:
   datatype: double
   type: sensor
-  dbc2vss:
-    signal: Latitude
-    interval_ms: 100
   vss2dbc:
     signal: Latitude
 
 Vehicle.CurrentLocation.Longitude:
   datatype: double
   type: sensor
-  dbc2vss:
-    signal: Longitude
-    interval_ms: 100
   vss2dbc:
     signal: Longitude
 
