@@ -2,6 +2,8 @@ require recipes-platform/images/agl-image-weston.bb
 
 SUMMARY = "AGL demo control panel image"
 
+require agl-demo-features.inc
+
 IMAGE_FEATURES += "splash package-management ssh-server-openssh"
 
 # NOTE: The client key and certificate in kuksa-certificates-agl-client
