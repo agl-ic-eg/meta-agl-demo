@@ -1,2 +1,0 @@
-authorization : "/etc/xdg/AGL/homescreen/homescreen.token"
-use-tls : true
