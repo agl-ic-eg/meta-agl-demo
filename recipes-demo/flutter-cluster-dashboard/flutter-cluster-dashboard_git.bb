@@ -15,6 +15,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-instrument-clust
     file://cluster-dashboard.yaml.demo \
     file://cluster-dashboard.yaml.gateway-demo \
     file://cluster-dashboard.yaml.kvm-demo \
+    file://cluster-dashboard.yaml.kvm-demo-preconfigured \
     file://cluster-dashboard.token \
     file://kvm.conf \
 "
@@ -44,6 +45,7 @@ do_install:append() {
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml.demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml.gateway-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml.kvm-demo ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/cluster-dashboard.yaml.kvm-demo-preconfigured ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/cluster-dashboard.token ${D}${sysconfdir}/xdg/AGL/cluster-dashboard/
 }
 
@@ -85,3 +87,10 @@ RDEPENDS:${PN}-conf-kvm-demo = "${PN} ${PN}-conf-kvm"
 RPROVIDES:${PN}-conf-kvm-demo = "cluster-dashboard.yaml"
 ALTERNATIVE:${PN}-conf-kvm-demo = "cluster-dashboard.yaml"
 ALTERNATIVE_TARGET_${PN}-conf-kvm-demo = "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.kvm-demo"
+
+PACKAGE_BEFORE_PN += "${PN}-conf-kvm-demo-preconfigured"
+FILES:${PN}-conf-kvm-demo-preconfigured += "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.kvm-demo-preconfigured"
+RDEPENDS:${PN}-conf-kvm-demo-preconfigured = "${PN} ${PN}-conf-kvm"
+RPROVIDES:${PN}-conf-kvm-demo-preconfigured = "cluster-dashboard.yaml"
+ALTERNATIVE:${PN}-conf-kvm-demo-preconfigured = "cluster-dashboard.yaml"
+ALTERNATIVE_TARGET_${PN}-conf-kvm-demo-preconfigured = "${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.kvm-demo-preconfigured"
