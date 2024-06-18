@@ -4,18 +4,20 @@ HOMEPAGE = "https://github.com/eclipse/kuksa.val"
 BUGTRACKER = "https://github.com/eclipse/kuksa.val/issues"
 
 LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=2b42edef8fa55315f34f2370b4715ca9 \
+LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
  
 DEPENDS = "protobuf-native grpc-native"
 
-require kuksa-val.inc
+PV = "0.4.5+git${SRCPV}"
+
+SRC_URI = "git://github.com/eclipse-kuksa/kuksa-databroker.git;protocol=https;branch=main \
+           file://0001-Remove-protobuf-src-usage.patch \
+           file://kuksa-databroker.service \
+"
+SRCREV = "8eb7d1a36ccdbec18f742bcecddf8691cb57df46"
 
 require ${BPN}-crates.inc
-
-SRC_URI += "file://0001-Remove-protobuf-src-usage.patch \
-            file://kuksa-databroker.service \
-"
 
 S = "${WORKDIR}/git"
 
@@ -39,8 +41,7 @@ do_install:append() {
 
     # Install gRPC API protobuf files
     install -d ${D}${includedir}
-    cp -dr ${S}/proto/kuksa ${D}${includedir}
-    cp -dr ${S}/kuksa_databroker/proto/sdv ${D}${includedir}
+    cp -dr ${S}/proto/* ${D}${includedir}/
 }
 
 PACKAGE_BEFORE_PN += "${PN}-cli"
