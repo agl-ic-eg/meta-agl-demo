@@ -1,3 +1,0 @@
-# DBC input for steering wheel, output for HVAC
-EXTRA_ARGS="--val2dbc --dbc2val --dbc-default /etc/kuksa-dbc-feeder/dbc_default_values.json --config /etc/kuksa-dbc-feeder/config.ini.gw-hardware"
-#LOG_LEVEL=debug

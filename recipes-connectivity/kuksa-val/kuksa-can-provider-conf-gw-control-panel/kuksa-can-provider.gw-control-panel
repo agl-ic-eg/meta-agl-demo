@@ -1,4 +1,4 @@
 # Leave DBC output disabled until cruise support is added to the
 # control panel simulator
-EXTRA_ARGS="--no-val2dbc --dbc2val --dbc-default /etc/kuksa-dbc-feeder/dbc_default_values.json"
+EXTRA_ARGS="--no-val2dbc --dbc2val --dbc-default /etc/kuksa-can-provider/dbc_default_values.json"
 #LOG_LEVEL=debug

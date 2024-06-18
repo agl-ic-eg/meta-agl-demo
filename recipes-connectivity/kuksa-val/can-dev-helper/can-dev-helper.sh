@@ -2,7 +2,7 @@
 
 #
 # Script to bring up CAN interface configured for the kuksa.val
-# CAN feeder in /etc/kuksa-dbc-feeder/dbc_feeder.ini as vcan
+# CAN provider in /etc/kuksa-can-provider/dbc_feeder.ini as vcan
 # interfaces if no physical interface is present.
 #
 
@@ -14,7 +14,7 @@ vcan_up() {
     fi
 }
 
-CONF=/etc/kuksa-dbc-feeder/config.ini
+CONF=/etc/kuksa-can-provider/config.ini
 if [ $# -gt 0 ]; then
     CONF=$1
 fi

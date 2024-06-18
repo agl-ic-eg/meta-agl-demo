@@ -1,7 +1,7 @@
-From dc20da27a73141b04cc6b0ce5d74e547d6fc7256 Mon Sep 17 00:00:00 2001
+From 0b5822c6a8f8fa489bc7ae67f91284ac150f6518 Mon Sep 17 00:00:00 2001
 From: Scott Murray <scott.murray@konsulko.com>
-Date: Mon, 8 May 2023 14:58:06 -0400
-Subject: [PATCH] dbc2val: fix token file configuration option
+Date: Sat, 15 Jun 2024 13:18:08 -0400
+Subject: [PATCH 3/4] dbc2val: fix token file configuration option
 
 The client library changed the token option name to
 'token_or_tokenfile', update things to match so that token
@@ -10,16 +10,15 @@ location can be configured again for dbcfeeder.py.
 Upstream-Status: pending
 
 Signed-off-by: Scott Murray <scott.murray@konsulko.com>
-
 ---
- dbc2val/dbcfeederlib/serverclientwrapper.py | 2 +-
+ dbcfeederlib/serverclientwrapper.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/dbc2val/dbcfeederlib/serverclientwrapper.py b/dbc2val/dbcfeederlib/serverclientwrapper.py
-index 1219a76..63bc12e 100644
---- a/dbc2val/dbcfeederlib/serverclientwrapper.py
-+++ b/dbc2val/dbcfeederlib/serverclientwrapper.py
-@@ -59,7 +59,7 @@ class ServerClientWrapper(clientwrapper.ClientWrapper):
+diff --git a/dbcfeederlib/serverclientwrapper.py b/dbcfeederlib/serverclientwrapper.py
+index 498e1b6..fa43d28 100644
+--- a/dbcfeederlib/serverclientwrapper.py
++++ b/dbcfeederlib/serverclientwrapper.py
+@@ -56,7 +56,7 @@ class ServerClientWrapper(clientwrapper.ClientWrapper):
          self._client_config["insecure"] = not self._tls
          # Do not set token if it is empty to allow default client lib info to be used
          if self._token_path != "":
@@ -28,3 +27,6 @@ index 1219a76..63bc12e 100644
  
          if self._root_ca_path:
              self._client_config['cacertificate'] = self._root_ca_path
+-- 
+2.44.0
+

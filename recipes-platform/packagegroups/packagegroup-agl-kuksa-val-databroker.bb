@@ -12,7 +12,7 @@ RDEPENDS:packagegroup-agl-kuksa-val-databroker = "\
     kuksa-databroker \
     kuksa-databroker-agl \
     kuksa-certificates-agl \
-    kuksa-dbc-feeder \
+    kuksa-can-provider \
     agl-vss-helper \
 "
 

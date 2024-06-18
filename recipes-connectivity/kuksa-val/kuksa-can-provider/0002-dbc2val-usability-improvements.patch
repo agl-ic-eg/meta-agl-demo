@@ -1,0 +1,80 @@
+From 2e4e1f9147f1ebe5b545ae0cab41341e3abb00ae Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Sat, 15 Jun 2024 13:13:17 -0400
+Subject: [PATCH 2/4] dbc2val: usability improvements
+
+Changes:
+- Tweaked default configuration file search path to better match
+  Linux FHS.  First look for a config.ini or dbc_feeder.ini in
+  /etc/kuksa-can-provider, then fall back to /etc/dbc_feeder.ini
+  before using trying other possible paths.
+- Add catching of exceptions around CAN device opening so that the
+  script can exit cleanly with an error message if the device is
+  not available.
+- Tweaked DBC default value file command line argument parsing so
+  that it does not attempt to fallback to "dbc_default_values.json"
+  in the current working directory.  That likely works for upstream
+  test scenarios, but prevents running on a target.
+
+Upstream-Status: pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ dbcfeeder.py | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/dbcfeeder.py b/dbcfeeder.py
+index a1ef174..c252503 100755
+--- a/dbcfeeder.py
++++ b/dbcfeeder.py
+@@ -144,7 +144,11 @@ class Feeder:
+                     whitelisted_frame_ids.append(filter.can_id)  # type: ignore
+                 elm2canbridge.elm2canbridge(canport, self._elmcan_config, whitelisted_frame_ids)
+ 
+-            self._reader.start()
++            try:
++                self._reader.start()
++            except:
++                log.error("Could not open %s, exiting", canport)
++                sys.exit(-1)
+ 
+             receiver = threading.Thread(target=self._run_receiver)
+             receiver.start()
+@@ -165,7 +169,12 @@ class Feeder:
+             # For now creating another bus
+             # Maybe support different buses for downstream/upstream in the future
+ 
+-            self._canclient = CANClient(interface="socketcan", channel=canport, can_fd=can_fd)
++            self._canclient = None
++            try:
++                self._canclient = CANClient(interface="socketcan", channel=canport, can_fd=can_fd)
++            except:
++                log.error("Could not open %s, exiting", canport)
++                sys.exit(-1)
+ 
+             transmitter = threading.Thread(target=self._run_transmitter)
+             transmitter.start()
+@@ -335,8 +344,10 @@ def _parse_config(filename: str) -> configparser.ConfigParser:
+         configfile = filename
+     else:
+         config_candidates = [
+-            "/config/dbc_feeder.ini",
++            "/etc/kuksa-can-provider/config.ini",
++            "/etc/kuksa-can-provider/dbc_feeder.ini",
+             "/etc/dbc_feeder.ini",
++            "/config/dbc_feeder.ini",
+             "config/dbc_feeder.ini",
+         ]
+         for candidate in config_candidates:
+@@ -534,7 +545,7 @@ def main(argv):
+     elif os.environ.get("DBC_DEFAULT_FILE"):
+         dbc_default = os.environ.get("DBC_DEFAULT_FILE")
+     else:
+-        dbc_default = config.get(CONFIG_SECTION_CAN, CONFIG_OPTION_DBC_DEFAULT_FILE, fallback="dbc_default_values.json")
++        dbc_default = config.get(CONFIG_SECTION_CAN, CONFIG_OPTION_DBC_DEFAULT_FILE, fallback=None)
+ 
+     if args.mapping:
+         mappingfile = args.mapping
+-- 
+2.44.0
+

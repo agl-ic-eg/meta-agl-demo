@@ -1,0 +1,174 @@
+From 937218a357ac1914fe410cf3ad31a67d54a63270 Mon Sep 17 00:00:00 2001
+From: Scott Murray <scott.murray@konsulko.com>
+Date: Mon, 17 Jun 2024 17:07:44 -0400
+Subject: [PATCH 4/4] Enable val2dbc for sensor values
+
+Rework to allow val2dbc mode to write out sensor values in
+addition to actuator target values.
+
+Upstream-Status: pending
+
+Signed-off-by: Scott Murray <scott.murray@konsulko.com>
+---
+ dbcfeeder.py                            |  8 ++++++--
+ dbcfeederlib/databrokerclientwrapper.py | 18 ++++++++++++------
+ dbcfeederlib/dbc2vssmapper.py           | 21 ++++++++++-----------
+ dbcfeederlib/serverclientwrapper.py     |  2 +-
+ mapping/README.md                       |  2 --
+ 5 files changed, 29 insertions(+), 22 deletions(-)
+
+diff --git a/dbcfeeder.py b/dbcfeeder.py
+index c252503..c1e20c4 100755
+--- a/dbcfeeder.py
++++ b/dbcfeeder.py
+@@ -289,19 +289,23 @@ class Feeder:
+             log.debug("Processing %d VSS Data Entry updates", len(updates))
+             dbc_signal_names: Set[str] = set()
+             for update in updates:
++                value = None
+                 if update.entry.value is not None:
+-                    # This should never happen as we do not subscribe to current value
+                     log.warning(
+                         "Current value for %s is now: %s of type %s",
+                         update.entry.path, update.entry.value.value, type(update.entry.value.value)
+                     )
++                    value = update.entry.value.value
+ 
+                 if update.entry.actuator_target is not None:
+                     log.debug(
+                         "Target value for %s is now: %s of type %s",
+                         update.entry.path, update.entry.actuator_target, type(update.entry.actuator_target.value)
+                     )
+-                    affected_signals = self._mapper.handle_update(update.entry.path, update.entry.actuator_target.value)
++                    value = update.entry.actuator_target.value
++
++                if value != None:
++                    affected_signals = self._mapper.handle_update(update.entry.path, value)
+                     dbc_signal_names.update(affected_signals)
+ 
+             messages_to_send: Set[Message] = set()
+diff --git a/dbcfeederlib/databrokerclientwrapper.py b/dbcfeederlib/databrokerclientwrapper.py
+index 716ee6d..db2b80a 100644
+--- a/dbcfeederlib/databrokerclientwrapper.py
++++ b/dbcfeederlib/databrokerclientwrapper.py
+@@ -199,14 +199,20 @@ class DatabrokerClientWrapper(clientwrapper.ClientWrapper):
+     def supports_subscription(self) -> bool:
+         return True
+ 
+-    async def subscribe(self, vss_names: List[str], callback):
++    async def subscribe(self, vss_entries: dict[str, str], callback):
+         """Create a subscription and invoke the callback when data received."""
+         entries: List[SubscribeEntry] = []
+-        for name in vss_names:
+-            # Always subscribe to target
+-            subscribe_entry = SubscribeEntry(name, View.FIELDS, [Field.ACTUATOR_TARGET])
+-            log.info("Subscribe entry: %s", subscribe_entry)
+-            entries.append(subscribe_entry)
++        for name, signal_type in vss_entries.items():
++            if signal_type == "actuator":
++                subscribe_entry = SubscribeEntry(name, View.FIELDS, [Field.ACTUATOR_TARGET])
++                log.info("Subscribe entry: %s", subscribe_entry)
++                entries.append(subscribe_entry)
++            if signal_type == "sensor":
++                subscribe_entry = SubscribeEntry(name, View.FIELDS, [Field.VALUE])
++                log.info("Subscribe entry: %s", subscribe_entry)
++                entries.append(subscribe_entry)
++        if not entries:
++            return
+ 
+         # If there is a path VSSClient will request a secure connection
+         if self._tls and self._root_ca_path:
+diff --git a/dbcfeederlib/dbc2vssmapper.py b/dbcfeederlib/dbc2vssmapper.py
+index 218f693..2be5e98 100644
+--- a/dbcfeederlib/dbc2vssmapper.py
++++ b/dbcfeederlib/dbc2vssmapper.py
+@@ -69,12 +69,13 @@ class VSSMapping:
+     parser: Parser = Parser()
+ 
+     def __init__(self, vss_name: str, dbc_name: str, transform: dict, interval_ms: int,
+-                 on_change: bool, datatype: str, description: str):
++                 on_change: bool, signal_type: str, datatype: str, description: str):
+         self.vss_name = vss_name
+         self.dbc_name = dbc_name
+         self.transform = transform
+         self.interval_ms = interval_ms
+         self.on_change = on_change
++        self.signal_type = signal_type
+         self.datatype = datatype
+         self.description = description
+         # For time comparison (interval_ms) we store last value used for comparison. Unit seconds.
+@@ -347,7 +348,7 @@ class Mapper(DBCParser):
+         if can_signal_name not in self._dbc2vss_mapping:
+             self._dbc2vss_mapping[can_signal_name] = []
+         mapping_entry = VSSMapping(expanded_name, can_signal_name, transformation_definition, interval, on_change,
+-                                   node["datatype"], node["description"])
++                                   node["type"], node["datatype"], node["description"])
+         self._dbc2vss_mapping[can_signal_name].append(mapping_entry)
+ 
+         for msg_def in self.get_messages_for_signal(can_signal_name):
+@@ -398,7 +399,7 @@ class Mapper(DBCParser):
+             log.warning("Ignoring \"interval_ms\" property of mapping definition for %s", expanded_name)
+ 
+         mapping_entry = VSSMapping(expanded_name, can_signal_name, transform, interval, on_change,
+-                                   node["datatype"], node["description"])
++                                   node["type"], node["datatype"], node["description"])
+         if can_signal_name not in self._vss2dbc_mapping:
+             self._vss2dbc_mapping[expanded_name] = []
+         self._vss2dbc_mapping[expanded_name].append(mapping_entry)
+@@ -426,12 +427,7 @@ class Mapper(DBCParser):
+         if dbc2vss_def is not None:
+             self._analyze_dbc2vss(expanded_name, node, dbc2vss_def)
+         if "vss2dbc" in node:
+-            if node["type"] == "actuator":
+-                self._analyze_vss2dbc(expanded_name, node, node["vss2dbc"])
+-            else:
+-                # vss2dbc is handled by subscription to target value, so only makes sense for actuators
+-                log.error("vss2dbc only allowed for actuators, VSS signal %s is not an actuator!", expanded_name)
+-                sys.exit(-1)
++            self._analyze_vss2dbc(expanded_name, node, node["vss2dbc"])
+ 
+     def _traverse_vss_node(self, name, node, prefix=""):
+         """
+@@ -474,9 +470,12 @@ class Mapper(DBCParser):
+         """Get all CAN signal names for which a mapping to a VSS Data Entry exists."""
+         return self._dbc2vss_mapping.keys()
+ 
+-    def get_vss2dbc_entries(self) -> KeysView[str]:
++    def get_vss2dbc_entries(self) -> Dict[str, str]:
+         """Get all VSS Data Entry paths for which a mapping to a CAN signal name exists."""
+-        return self._vss2dbc_mapping.keys()
++        entries: Dict[str, str] = {}
++        for name, mappings in self._vss2dbc_mapping.items():
++            entries[name] = mappings[0].signal_type
++        return entries
+ 
+     def get_vss_names(self) -> Set[str]:
+         """Get all VSS names used in mappings, both vss2dbc and dbc2vss"""
+diff --git a/dbcfeederlib/serverclientwrapper.py b/dbcfeederlib/serverclientwrapper.py
+index fa43d28..86b2ceb 100644
+--- a/dbcfeederlib/serverclientwrapper.py
++++ b/dbcfeederlib/serverclientwrapper.py
+@@ -122,6 +122,6 @@ class ServerClientWrapper(clientwrapper.ClientWrapper):
+         log.info("Feature not implemented")
+         return False
+ 
+-    async def subscribe(self, vss_names: List[str], callback):
++    async def subscribe(self, vss_entries: dict[str, str], callback):
+         log.error("Feature not implemented")
+         return
+diff --git a/mapping/README.md b/mapping/README.md
+index 2155f28..ea6de07 100644
+--- a/mapping/README.md
++++ b/mapping/README.md
+@@ -44,8 +44,6 @@ This is built on the assumption that the DBC provider always send target values
+ Having separate configurations (`dbc2vss` and `vss2dbc`) is needed as wanted value and actual value never are sent
+ by the same DBC signal, they are not even part of the same CAN-frame.
+ 
+-*This means that `vss2dbc` only can be used for actuators, as only actuators have target values!*
+-
+ ## Example mapping files
+ 
+ Example mapping files for various VSS versions can be found in this folder.
+-- 
+2.44.0
+

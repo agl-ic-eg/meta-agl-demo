@@ -18,7 +18,7 @@ AGL_DEVEL_INSTALL = " \
 
 IMAGE_INSTALL += " \
     agl-vss-proxy \
-    kuksa-dbc-feeder-conf-gw-control-panel \
+    kuksa-can-provider-conf-gw-control-panel \
     vss-agl-gw-control-panel \
     ${@bb.utils.contains('DISTRO_FEATURES', 'agl-devel', '${AGL_DEVEL_INSTALL}', '', d)} \
 "

@@ -1,0 +1,3 @@
+# For output only mode:
+#EXTRA_ARGS="--val2dbc --no-dbc2val --dbc-default /etc/kuksa-can-provider/dbc_default_values.json"
+#LOG_LEVEL=debug

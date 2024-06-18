@@ -7,5 +7,5 @@ IMAGE_FEATURES += "kuksa-val-databroker"
 IMAGE_INSTALL += " \
     agl-demo-control-panel-conf-gateway-demo \
     vss-agl-control-panel \
-    kuksa-dbc-feeder-conf-control-panel \
+    kuksa-can-provider-conf-control-panel \
 "
