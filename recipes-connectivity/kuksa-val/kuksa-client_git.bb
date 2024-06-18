@@ -11,13 +11,13 @@ DEPENDS = " \
     python3-grpcio \
 "
 
-PV = "0.4.2"
+PV = "0.4.3"
 
 SRC_URI = "gitsm://github.com/eclipse-kuksa/kuksa-python-sdk.git;protocol=https;branch=main \
            file://0001-kuksa-client-Update-cmd2-completer-usage.patch;patchdir=.. \
-           file://0002-kuksa-client-Add-external-certificates-support.patch;patchdir=.. \
+           file://0002-Tweak-grpcio-tools-requirement.patch;patchdir=.. \
 "
-SRCREV = "4ac107a638c8dbf5cde1743a3df2e28589990332"
+SRCREV = "d72777a6aec6bd9f9a2bdf5ae5d01a9bc2de423a"
 
 S = "${WORKDIR}/git/kuksa-client"
 
