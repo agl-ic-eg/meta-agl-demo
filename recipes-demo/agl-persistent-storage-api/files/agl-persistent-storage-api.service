@@ -1,0 +1,11 @@
+[Unit]
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/agl-service-persistent-storage
+Restart=on-failure
+#User=persistent-api
+
+[Install]
+WantedBy=default.target
