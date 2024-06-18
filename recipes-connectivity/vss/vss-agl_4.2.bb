@@ -19,7 +19,6 @@ B = "${WORKDIR}/build"
 
 do_configure[noexec] = "1"
 
-#VSPEC2JSON_OPTS = "-e dbc2vss,vss2dbc -o ${WORKDIR}/agl_vss_overlay.vspec --no-uuid --json-pretty"
 VSPEC2JSON_OPTS = "-e dbc2vss,vss2dbc --no-uuid --json-pretty"
 
 do_compile() {
