@@ -2,6 +2,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/weston-ini-conf:"
 
 SRC_URI += "file://remote-output.cfg.in"
 
+WESTON_FRAGMENTS_BASE += "grpc-proxy"
+
 # Options for the user to change in local.conf
 # e.g. REMOTING_OUTPUT_MODE = "1080x1488"
 REMOTING_OUTPUT_MODE ??= "640x720@30"
