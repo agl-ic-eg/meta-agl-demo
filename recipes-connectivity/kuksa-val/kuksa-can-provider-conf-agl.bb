@@ -7,7 +7,6 @@ SRC_URI = "file://config.ini \
            file://can-provider.token \
            file://dbc_default_values.json \
            file://can-dev-helper.conf \
-           file://agl-vcar.dbc \
 "
 
 S = "${WORKDIR}"
@@ -21,12 +20,11 @@ do_install() {
     install -m 0644 ${WORKDIR}/config.ini ${D}${sysconfdir}/kuksa-can-provider/
     install -m 0644 ${WORKDIR}/can-provider.token ${D}${sysconfdir}/kuksa-can-provider/
     install -m 0644 ${WORKDIR}/dbc_default_values.json ${D}${sysconfdir}/kuksa-can-provider/
-    install -m 0644 ${WORKDIR}/agl-vcar.dbc ${D}${sysconfdir}/kuksa-can-provider/
     install -d ${D}${systemd_system_unitdir}/kuksa-can-provider.service.d
     install -m 0644 ${WORKDIR}/can-dev-helper.conf ${D}${systemd_system_unitdir}/kuksa-can-provider.service.d/
 }
 
 FILES:${PN} += "${systemd_system_unitdir}"
 
-RDEPENDS:${PN} += "kuksa-can-provider can-dev-helper"
+RDEPENDS:${PN} += "kuksa-can-provider agl-dbc can-dev-helper"
 RPROVIDES:${PN} += "kuksa-can-provider-conf"
