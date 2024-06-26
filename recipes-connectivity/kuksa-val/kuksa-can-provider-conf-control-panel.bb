@@ -7,7 +7,7 @@ SRC_URI = "file://kuksa-can-provider.control-panel"
 
 S = "${WORKDIR}"
 
-inherit update-alternatives
+inherit allarch update-alternatives
 
 do_compile[noexec] = "1"
 
@@ -22,4 +22,4 @@ RPROVIDES:${PN} = "kuksa-can-provider.env"
 ALTERNATIVE:${PN} = "kuksa-can-provider.env"
 ALTERNATIVE_TARGET_${PN} = "${sysconfdir}/default/kuksa-can-provider.control-panel"
 
-RDEPENDS:${PN} += "kuksa-can-provider"
+RDEPENDS:${PN} += "kuksa-can-provider kuksa-can-provider-conf-agl"

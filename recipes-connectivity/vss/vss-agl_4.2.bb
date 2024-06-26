@@ -6,7 +6,7 @@ DEPENDS = "vss-tools-native"
 
 inherit allarch update-alternatives
 
-require vss.inc
+require recipes-support/vss/vss.inc
 
 SRC_URI += "file://agl_vss_overlay.vspec \
             file://agl_vss_overlay.vspec.control-panel \

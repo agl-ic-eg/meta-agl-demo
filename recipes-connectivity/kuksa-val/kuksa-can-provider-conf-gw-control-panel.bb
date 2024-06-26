@@ -22,4 +22,4 @@ RPROVIDES:${PN} = "kuksa-can-provider.env"
 ALTERNATIVE:${PN} = "kuksa-can-provider.env"
 ALTERNATIVE_TARGET_${PN} = "${sysconfdir}/default/kuksa-can-provider.gw-control-panel"
 
-RDEPENDS:${PN} += "kuksa-can-provider"
+RDEPENDS:${PN} += "kuksa-can-provider kuksa-can-provider-conf-agl"

@@ -29,4 +29,4 @@ do_install() {
 
 FILES:${PN} += "${systemd_system_unitdir}"
 
-RDEPENDS:${PN} += "kuksa-can-provider vss-agl-gw-hardware"
+RDEPENDS:${PN} += "kuksa-can-provider kuksa-can-provider-conf-agl vss-agl-gw-hardware"
