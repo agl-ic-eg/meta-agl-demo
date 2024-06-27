@@ -1,5 +1,5 @@
-SUMMARY     = "AGL HTML5 media player Application"
-HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-mediaplayer/"
+SUMMARY     = "AGL HTML5 settings Application"
+HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-settings/"
 SECTION     = "apps"
 LICENSE     = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
@@ -9,17 +9,17 @@ S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
 SRC_URI = " \
-  git://gerrit.automotivelinux.org/gerrit/apps/html5-mediaplayer;protocol=https;branch=master \
+  git://gerrit.automotivelinux.org/gerrit/apps/html5-settings;protocol=https;branch=master \
 "
-SRCREV = "b87776912cc31c976415ceb49e7551f500e0975b"
+SRCREV = "69af4d9b9b209fcb33ef9071ddfa8561106044c2"
 
 inherit agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
-AGL_APP_ID = "webapps-mediaplayer"
-AGL_APP_NAME = "HTML5 Media Player"
+AGL_APP_ID = "webapps-settings"
+AGL_APP_NAME = "HTML5 Settings"
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native icu-native"
 
 do_compile[network] = "1"
 do_compile() {

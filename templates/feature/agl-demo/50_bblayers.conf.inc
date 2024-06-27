@@ -12,4 +12,4 @@ AGL_META_PYTHON = "${METADIR}/external/meta-openembedded/meta-python"
 AGL_META_QT5 = "${METADIR}/external/meta-qt5"
 
 # Needed to build CEF and WAM
-AGL_META_CLANG = "${METADIR}/external/meta-clang"
+#AGL_META_CLANG = "${METADIR}/external/meta-clang"

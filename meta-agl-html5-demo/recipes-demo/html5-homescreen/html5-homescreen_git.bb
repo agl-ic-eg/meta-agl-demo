@@ -16,7 +16,7 @@ B       = "${WORKDIR}/build"
 
 inherit systemd
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native icu-native"
 
 do_compile[network] = "1"
 do_compile() {

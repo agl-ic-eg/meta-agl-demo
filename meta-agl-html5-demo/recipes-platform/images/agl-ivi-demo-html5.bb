@@ -1,4 +1,4 @@
-require agl-ivi-image.bb
+require recipes-platform/images/agl-ivi-image.bb
 
 SUMMARY = "AGL IVI demo HTML5 image"
 DESCRIPTION = "Contains the web runtime and sample web apps"

@@ -1,5 +1,5 @@
-SUMMARY     = "AGL HTML5 Launcher Application"
-HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-launcher/"
+SUMMARY     = "AGL HTML5 dashboard Application"
+HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-dashboard/"
 SECTION     = "apps"
 LICENSE     = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
@@ -9,17 +9,17 @@ S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
 SRC_URI = " \
-  git://gerrit.automotivelinux.org/gerrit/apps/html5-launcher;protocol=https;branch=master \
+  git://gerrit.automotivelinux.org/gerrit/apps/html5-dashboard;protocol=https;branch=master \
 "
-SRCREV = "ccdd59db7dc073eee0a35d0318640d9833824073"
+SRCREV = "38befd7704f64781bf4bce85fd9b2cdffc7845fa"
 
 inherit agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
-AGL_APP_ID = "launcher"
-AGL_APP_NAME = "HTML5 Launcher"
+AGL_APP_ID = "webapps-dashboard"
+AGL_APP_NAME = "HTML5 Dashboard"
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native icu-native"
 
 do_compile[network] = "1"
 do_compile() {
@@ -37,6 +37,3 @@ do_install() {
 }
 
 FILES:${PN} = "${WAM_APPLICATIONS_DIR}/${PN}"
-
-RCONFLICTS:${PN} = "launcher flutter-homescreen"
-RDEPENDS:${PN} = "applaunchd"

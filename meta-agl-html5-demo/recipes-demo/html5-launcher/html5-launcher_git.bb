@@ -1,5 +1,5 @@
-SUMMARY     = "AGL HTML5 settings Application"
-HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-settings/"
+SUMMARY     = "AGL HTML5 Launcher Application"
+HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-launcher/"
 SECTION     = "apps"
 LICENSE     = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
@@ -9,17 +9,17 @@ S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
 SRC_URI = " \
-  git://gerrit.automotivelinux.org/gerrit/apps/html5-settings;protocol=https;branch=master \
+  git://gerrit.automotivelinux.org/gerrit/apps/html5-launcher;protocol=https;branch=master \
 "
-SRCREV = "69af4d9b9b209fcb33ef9071ddfa8561106044c2"
+SRCREV = "ccdd59db7dc073eee0a35d0318640d9833824073"
 
 inherit agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
-AGL_APP_ID = "webapps-settings"
-AGL_APP_NAME = "HTML5 Settings"
+AGL_APP_ID = "launcher"
+AGL_APP_NAME = "HTML5 Launcher"
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native icu-native"
 
 do_compile[network] = "1"
 do_compile() {
@@ -37,3 +37,6 @@ do_install() {
 }
 
 FILES:${PN} = "${WAM_APPLICATIONS_DIR}/${PN}"
+
+RCONFLICTS:${PN} = "launcher flutter-homescreen"
+RDEPENDS:${PN} = "applaunchd"

@@ -19,7 +19,7 @@ AGL_APP_TEMPLATE = "agl-app-web"
 AGL_APP_ID = "webapps-mixer"
 AGL_APP_NAME = "HTML5 Mixer"
 
-DEPENDS = "nodejs-native protobuf-native"
+DEPENDS = "nodejs-native protobuf-native icu-native"
 
 do_compile[network] = "1"
 do_compile() {

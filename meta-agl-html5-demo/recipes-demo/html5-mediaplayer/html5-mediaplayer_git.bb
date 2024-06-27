@@ -1,5 +1,5 @@
-SUMMARY     = "AGL HTML5 Background"
-HOMEPAGE    = "https://github.com/AGL-web-applications/background"
+SUMMARY     = "AGL HTML5 media player Application"
+HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-mediaplayer/"
 SECTION     = "apps"
 LICENSE     = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
@@ -9,17 +9,17 @@ S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
 SRC_URI = " \
-  git://gerrit.automotivelinux.org/gerrit/apps/html5-background;protocol=https;branch=master \
+  git://gerrit.automotivelinux.org/gerrit/apps/html5-mediaplayer;protocol=https;branch=master \
 "
-SRCREV = "aa7e2a81e91ed076c0bc9ba07db5aee0f34668df"
+SRCREV = "b87776912cc31c976415ceb49e7551f500e0975b"
 
 inherit agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
-AGL_APP_ID = "webapps-${BPN}"
-AGL_APP_NAME = "HTML5 Background"
+AGL_APP_ID = "webapps-mediaplayer"
+AGL_APP_NAME = "HTML5 Media Player"
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native icu-native"
 
 do_compile[network] = "1"
 do_compile() {
@@ -37,5 +37,3 @@ do_install() {
 }
 
 FILES:${PN} = "${WAM_APPLICATIONS_DIR}/${PN}"
-
-RCONFLICTS:${PN} = "homescreen"

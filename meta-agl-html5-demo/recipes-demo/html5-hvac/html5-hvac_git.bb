@@ -1,5 +1,5 @@
-SUMMARY     = "AGL HTML5 dashboard Application"
-HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-dashboard/"
+SUMMARY     = "AGL HTML5 HVAC Application"
+HOMEPAGE    = "https://git.automotivelinux.org/apps/html5-hvac/"
 SECTION     = "apps"
 LICENSE     = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
@@ -9,23 +9,24 @@ S       = "${WORKDIR}/git"
 B       = "${WORKDIR}/build"
 
 SRC_URI = " \
-  git://gerrit.automotivelinux.org/gerrit/apps/html5-dashboard;protocol=https;branch=master \
+  git://gerrit.automotivelinux.org/gerrit/apps/html5-hvac;protocol=https;branch=master \
 "
-SRCREV = "38befd7704f64781bf4bce85fd9b2cdffc7845fa"
+SRCREV = "c323ab8fde212120d8d1914d453afeb55b3576e5"
 
 inherit agl-app
 
 AGL_APP_TEMPLATE = "agl-app-web"
-AGL_APP_ID = "webapps-dashboard"
-AGL_APP_NAME = "HTML5 Dashboard"
+AGL_APP_ID = "webapps-hvac"
+AGL_APP_NAME = "HTML5 HVAC"
 
-DEPENDS = "nodejs-native"
+DEPENDS = "nodejs-native protobuf-native icu-native"
 
 do_compile[network] = "1"
 do_compile() {
   cd ${S}
   rm -rf package node_modules package-lock.json
   npm install
+  npm run generate-grpc
   npm run build
 }
 
