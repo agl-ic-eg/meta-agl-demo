@@ -1,2 +1,2 @@
-#see meta-agl-demo/conf/include/agl-kvm.inc
-require conf/include/agl-kvm.inc
+# see meta-agl-demo/meta-agl-kvm-demo/conf/include/agl-kvm.inc
+require meta-agl-kvm-demo/conf/include/agl-kvm.inc

@@ -30,7 +30,7 @@ IMAGE_INSTALL += " \
 #IMAGE_LINGUAS = " "
 #NO_RECOMMENDATIONS = "1"
 
-GUEST_MACHINE ?= "virtio-${TUNE_ARCH}"
+GUEST_MACHINE ?= "${AGL_GUEST_MACHINE}"
 
 GUEST_VM1_IMAGE ?= "agl-ivi-demo-flutter-guest"
 GUEST_VM2_IMAGE ?= "agl-cluster-demo-flutter-guest"
@@ -56,7 +56,7 @@ install_guest_images() {
         name=${image}
         rm -rf  ${IMAGE_ROOTFS}/var/lib/machines/${name}
         install -m 0755 -d ${IMAGE_ROOTFS}/var/lib/machines/${name}
-        src="${TOPDIR}/tmp-${config}/deploy/images/${GUEST_MACHINE}/${image}-${GUEST_MACHINE}.ext4"
+        src="${TOPDIR}/tmp-${config}/deploy/images/${GUEST_MACHINE}/${image}-${GUEST_MACHINE}${IMAGE_NAME_SUFFIX}.ext4"
         bbnote "Installing ${src}"
         install -m 0600 ${src} ${IMAGE_ROOTFS}/var/lib/machines/${name}/
 	# Placeholder until booting from kernel in VM image is worked out

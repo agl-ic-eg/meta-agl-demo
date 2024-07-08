@@ -20,7 +20,7 @@ if [ -z "$QEMU_IMAGE_ARCH" ]; then
     QEMU_IMAGE_ARCH="virtio-${arch}"
 fi
 
-disk="/var/lib/machines/${image}/${image}-${QEMU_IMAGE_ARCH}.ext4"
+disk="/var/lib/machines/${image}/${image}-${QEMU_IMAGE_ARCH}.rootfs.ext4"
 if [ ! -f "$disk" ]; then
     echo "No disk image for $image"
     exit 1
@@ -65,7 +65,7 @@ qemu-system-${arch} \
 	${QEMU_INPUT_OPT} \
 	-global virtio-mmio.force-legacy=false \
 	-device virtio-gpu-gl-device \
-	-display sdl,gl=on -vga std \
+	-display sdl,gl=on \
 	${QEMU_AUDIO_OPT} \
 	${QEMU_CAN_OPT} \
 	${QEMU_EXTRA_OPT} \
