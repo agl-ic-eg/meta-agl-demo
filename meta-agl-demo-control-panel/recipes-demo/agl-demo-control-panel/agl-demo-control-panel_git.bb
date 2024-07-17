@@ -12,12 +12,18 @@ S = "${WORKDIR}/git"
 
 inherit systemd allarch update-alternatives
 
+DEPENDS += "qtbase-native"
+
 SYSTEMD_SERVICE:${PN} = "${BPN}.service"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
 do_install() {
+    # compile qrc
+    # RECIPE_SYSROOT_NATIVE
+    ${RECIPE_SYSROOT_NATIVE}/usr/libexec/rcc -g python ${S}/assets/res.qrc | sed '0,/PySide6/s//PyQt6/' > ${S}/res_rc.py
+
     # There's no provision for a Pythonic install into /usr/lib, so dump
     # into a directory /usr/libexec.
     install -d ${D}${libexecdir}/${BPN}
@@ -40,12 +46,6 @@ do_install() {
         ${D}${sysconfdir}/agl-demo-control-panel/config.ini.gateway-demo
 }
 
-# For now generate resource wrapper on first boot, as it looks non-trivial
-# to get python3-pyqt5-native working to run pyrcc5 during build.
-pkg_postinst_ontarget:${PN} () {
-    /usr/bin/pyrcc5 -o ${libexecdir}/${BPN}/res_rc.py ${libexecdir}/${BPN}/assets/res.qrc
-    true
-}
 
 ALTERNATIVE_LINK_NAME[agl-demo-control-panel.ini] = "${sysconfdir}/agl-demo-control-panel/config.ini"
 
@@ -55,10 +55,11 @@ RDEPENDS:${PN} += " \
     python3-modules \
     python3-packaging \
     python3-can \
+    python3-rich \
     python3-pyqt6 \
-    python3-pyside6 \
     agl-users \
     weston \
+    bash \
 "
 
 PACKAGE_BEFORE_PN += "${PN}-conf"
