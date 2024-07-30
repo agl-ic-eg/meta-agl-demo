@@ -6,7 +6,7 @@ SECTION     = "apps"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984"
 
-DEPENDS = "qtquickcontrols2 qtlocation libqtappfw"
+DEPENDS = "qtdeclarative qtlocation libqtappfw"
 
 PV = "2.0+git${SRCPV}"
 
@@ -15,12 +15,13 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/ondemandnavi;protocol=ht
            file://navigation.conf.kvm-demo \
            file://navigation.conf.gateway-demo \
            file://navigation.token \
-"
+           file://0001-Migrate-to-Qt-6.patch \
+           "
 SRCREV = "d6b883ef6bdb63fb501b03d64c9a32bc29b7b2c7"
 
 S = "${WORKDIR}/git"
 
-inherit qmake5 pkgconfig agl-app update-alternatives
+inherit qt6-qmake pkgconfig agl-app update-alternatives
 
 AGL_APP_ID = "navigation"
 AGL_APP_NAME = "Navigation"
@@ -67,9 +68,7 @@ ALTERNATIVE_PRIORITY_${PN}-conf-kvm-demo = "30"
 RDEPENDS:${PN} += " \
     qtwayland \
     qtbase-qmlplugins \
-    qtgraphicaleffects-qmlplugins \
-    qtquickcontrols-qmlplugins \
-    qtquickcontrols2-qmlplugins \
+    qt5compat \
     qtquickcontrols2-agl \
     qtquickcontrols2-agl-style \
     qtlocation \

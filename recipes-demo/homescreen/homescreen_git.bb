@@ -8,7 +8,6 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984"
 DEPENDS = " \
     qtbase \
     qtdeclarative \
-    qtquickcontrols2 \
     libqtappfw \
     wayland-native \
     wayland \
@@ -26,12 +25,13 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/homescreen;protocol=http
            file://homescreen.service \
            file://homescreen.conf \
            file://homescreen.token \
-"
+           file://0001-Migrate-to-Qt-6.patch \
+           "
 SRCREV = "2c91ad7b3b125176b2e26b435705557a089604a0"
 
 S = "${WORKDIR}/git"
 
-inherit meson pkgconfig systemd
+inherit meson pkgconfig systemd meson_qt6_path
 
 PATH:prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
 
@@ -59,5 +59,6 @@ RDEPENDS:${PN} += " \
     applaunchd \
     qtwayland \
     qtbase-qmlplugins \
-    qtgraphicaleffects-qmlplugins \
+    qt5compat \
+    qtshadertools \
 "

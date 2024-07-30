@@ -10,7 +10,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984 \
 DEPENDS = " \
     wayland wayland-native \
     qtwayland qtwayland-native \
-    qtquickcontrols2 qtwebsockets qtbase qtdeclarative \
+    qtdeclarative qtwebsockets qtbase qtdeclarative \
     gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-bad \
 "
 
@@ -23,7 +23,7 @@ SRCREV  = "b3ea52f3c9b4ff11447151f086f3c314cada148a"
 
 S  = "${WORKDIR}/git"
 
-inherit cmake_qt5 pkgconfig systemd
+inherit qt6-cmake pkgconfig systemd
 
 do_install:append() {
     # Only install unit, do not enable it by default

@@ -6,6 +6,7 @@ After=homescreen.service applaunchd.service
 Type=simple
 User=agl-driver
 Environment=XDG_RUNTIME_DIR=/run/user/1001/
+Environment=QT_QPA_PLATFORM=wayland
 ExecStart=/usr/bin/launcher
 Restart=on-failure
 

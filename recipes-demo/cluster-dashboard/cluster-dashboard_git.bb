@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984 \
                     file://app/cluster-gauges.qml;beginline=9;endline=48;md5=54187d50b29429abee6095fe8b7c1a78"
 
 DEPENDS = " \
-    qtquickcontrols2 \
+    qtdeclarative \
     libqtappfw \
     glib-2.0 \
     wayland wayland-native \
@@ -27,7 +27,7 @@ SRCREV  = "5b69d50808ea4d90af1cdb037f25309baae23fdf"
 
 S  = "${WORKDIR}/git"
 
-inherit pkgconfig cmake_qt5 update-alternatives systemd
+inherit pkgconfig qt6-cmake update-alternatives systemd
 
 CLUSTER_DEMO_VSS_HOSTNAME ??= "192.168.10.2"
 
@@ -67,10 +67,7 @@ ALTERNATIVE_TARGET_${PN}-conf-demo = "${sysconfdir}/xdg/AGL/cluster-dashboard.co
 RDEPENDS:${PN} += " \
     qtwayland \
     qtbase-qmlplugins \
-    qtquickcontrols \
-    qtquickcontrols-qmlplugins \
-    qtquickcontrols2 \
-    qtquickcontrols2-qmlplugins \
-    qtgraphicaleffects-qmlplugins \
+    qtdeclarative \
+    qt5compat \
     qtsvg-plugins \
 "

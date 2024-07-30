@@ -10,7 +10,6 @@ DEPENDS = " \
     qttools-native \
     qtbase \
     qtdeclarative \
-    qtquickcontrols2 \
     libqtappfw \
 "
 
@@ -19,12 +18,13 @@ PV = "2.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/hvac;protocol=https;branch=${AGL_BRANCH} \
            file://hvac.conf \
            file://hvac.token \
-"
+           file://0001-Migrate-to-Qt-6.patch \
+           "
 SRCREV = "d37674bb6dbb5ceb15c650a0344b0caf624963bc"
 
 S = "${WORKDIR}/git"
 
-inherit qmake5 pkgconfig agl-app
+inherit qt6-qmake pkgconfig agl-app
 
 AGL_APP_NAME = "HVAC"
 
@@ -44,7 +44,7 @@ do_install:append() {
 RDEPENDS:${PN} += " \
     qtwayland \
     qtbase-qmlplugins \
-    qtgraphicaleffects-qmlplugins \
+    qt5compat \
     qtquickcontrols2-agl-style \
     libqtappfw \
 "

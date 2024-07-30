@@ -14,12 +14,12 @@ S  = "${WORKDIR}/git"
 
 # build-time dependencies
 DEPENDS += " \
-    qtquickcontrols2 \
+    qtdeclarative \
     libqtappfw \
     qtmultimedia \
 "
 
-inherit qmake5 agl-app
+inherit qt6-qmake agl-app
 
 AGL_APP_NAME = "Video"
 

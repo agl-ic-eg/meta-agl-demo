@@ -6,19 +6,20 @@ SECTION     = "apps"
 LICENSE     = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984"
 
-DEPENDS = "qtquickcontrols2 libqtappfw"
+DEPENDS = "qtdeclarative libqtappfw"
 
 PV = "2.0+git${SRCPV}"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/mediaplayer;protocol=https;branch=${AGL_BRANCH} \
            file://mediaplayer.conf \
            file://mediaplayer.token \
-"
+           file://0001-Migrate-to-Qt-6.patch \
+           "
 SRCREV  = "0aefba20fe07dbb79d7b3683ab38c0b0b313a655"
 
 S  = "${WORKDIR}/git"
 
-inherit qmake5 pkgconfig agl-app
+inherit qt6-qmake pkgconfig agl-app
 
 AGL_APP_NAME = "Mediaplayer"
 

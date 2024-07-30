@@ -1,0 +1,72 @@
+From 00e6b77cef1f3b07dc49653d513628e452d71a8d Mon Sep 17 00:00:00 2001
+From: Indivara Weerasuriya <1806262-indivara@users.noreply.git.qt.io>
+Date: Wed, 24 Jul 2024 09:05:10 +0900
+Subject: [PATCH] Migrate to Qt 6
+
+---
+ app/Dashboard.qml    | 8 ++++----
+ app/TirePressure.qml | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/app/Dashboard.qml b/app/Dashboard.qml
+index 1a797c6..5aabaf0 100644
+--- a/app/Dashboard.qml
++++ b/app/Dashboard.qml
+@@ -118,7 +118,7 @@ ApplicationWindow {
+     Image {
+         id: car
+         anchors.centerIn: parent
+-        source: './images/HMI_Dashboard_Car.png'
++        source: 'qrc:/images/HMI_Dashboard_Car.png'
+     }
+ 
+     TirePressure {
+@@ -167,7 +167,7 @@ ApplicationWindow {
+ 
+         Image {
+             id: speedIcon
+-            source: './images/HMI_Dashboard_Speed_Icon.svg'
++            source: 'qrc:/images/HMI_Dashboard_Speed_Icon.svg'
+         }
+         ProgressBar {
+             id: tachometer
+@@ -187,7 +187,7 @@ ApplicationWindow {
+         }
+         Image {
+             id: fuelIcon
+-            source: './images/HMI_Dashboard_Fuel_Icon.svg'
++            source: 'qrc:/images/HMI_Dashboard_Fuel_Icon.svg'
+         }
+         ProgressBar {
+             Layout.fillWidth: true
+@@ -196,7 +196,7 @@ ApplicationWindow {
+                 anchors.left: parent.left
+                 anchors.leftMargin: -40
+                 anchors.bottom: parent.top
+-                source: './images/HMI_Dashboard_Fuel_Details.svg'
++                source: 'qrc:/images/HMI_Dashboard_Fuel_Details.svg'
+                 GridLayout {
+                     anchors.fill: parent
+                     columns: 2
+diff --git a/app/TirePressure.qml b/app/TirePressure.qml
+index 437cf2f..eb02482 100644
+--- a/app/TirePressure.qml
++++ b/app/TirePressure.qml
+@@ -31,7 +31,7 @@ Image {
+             when: !mirror
+             PropertyChanges {
+                 target: root
+-                source: './images/HMI_Dashboard_LeftTire.svg'
++                source: 'qrc:/images/HMI_Dashboard_LeftTire.svg'
+             }
+             AnchorChanges {
+                 target: title
+@@ -47,7 +47,7 @@ Image {
+             when: mirror
+             PropertyChanges {
+                 target: root
+-                source: './images/HMI_Dashboard_RightTire.svg'
++                source: 'qrc:/images/HMI_Dashboard_RightTire.svg'
+             }
+             AnchorChanges {
+                 target: title

@@ -1,0 +1,119 @@
+From 2a425094986a7ad5c584803e03ff723689fa1b47 Mon Sep 17 00:00:00 2001
+From: Indivara Weerasuriya <1806262-indivara@users.noreply.git.qt.io>
+Date: Wed, 24 Jul 2024 09:18:03 +0900
+Subject: [PATCH] Migrate to Qt 6
+
+---
+ app/HVAC.qml           | 19 +++++++++----------
+ app/SeatHeatButton.qml | 10 +++++-----
+ 2 files changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/app/HVAC.qml b/app/HVAC.qml
+index 4e27e2d..592dd1b 100644
+--- a/app/HVAC.qml
++++ b/app/HVAC.qml
+@@ -43,7 +43,6 @@ ApplicationWindow {
+         anchors.centerIn: parent
+         width: Window.width
+         height: Window.height
+-        scale: Window.scale
+ 
+ 	ColumnLayout {
+ 		anchors.fill: parent
+@@ -53,7 +52,7 @@ ApplicationWindow {
+ 			Layout.fillHeight: true
+ 			Layout.alignment: Qt.AlignHCenter
+ 			Image {
+-				source: './images/HMI_HVAC_Fan_Icon.svg'
++				source: 'qrc:/images/HMI_HVAC_Fan_Icon.svg'
+ 			}
+ 			Item {
+ 				width: 1080 * 0.8
+@@ -100,8 +99,8 @@ ApplicationWindow {
+ 				Layout.fillWidth: true
+ 				spacing: 20
+ 				ToggleButton {
+-					onImage: './images/HMI_HVAC_Active.svg'
+-					offImage: './images/HMI_HVAC_Inactive.svg'
++					onImage: 'qrc:/images/HMI_HVAC_Active.svg'
++					offImage: 'qrc:/images/HMI_HVAC_Inactive.svg'
+ 					Label {
+ 						anchors.centerIn: parent
+ 						color: parent.checked ? '#00ADDC' : '#848286'
+@@ -113,8 +112,8 @@ ApplicationWindow {
+ 					}
+ 				}
+ 				ToggleButton {
+-					onImage: './images/HMI_HVAC_Active.svg'
+-					offImage: './images/HMI_HVAC_Inactive.svg'
++					onImage: 'qrc:/images/HMI_HVAC_Active.svg'
++					offImage: 'qrc:/images/HMI_HVAC_Inactive.svg'
+ 					Label {
+ 						anchors.centerIn: parent
+ 						color: parent.checked ? '#00ADDC' : '#848286'
+@@ -126,8 +125,8 @@ ApplicationWindow {
+ 					}
+ 				}
+ 				ToggleButton {
+-					onImage: './images/HMI_HVAC_Circulation_Active.svg'
+-					offImage: './images/HMI_HVAC_Circulation_Inactive.svg'
++					onImage: 'qrc:/images/HMI_HVAC_Circulation_Active.svg'
++					offImage: 'qrc:/images/HMI_HVAC_Circulation_Inactive.svg'
+ 					onCheckedChanged: {
+ 						console.debug('Circulation', checked)
+ 					}
+@@ -157,8 +156,8 @@ ApplicationWindow {
+ 			Repeater {
+ 				model: ['AirDown', 'AirUp', 'AirRight', 'Rear', 'Front']
+ 				ToggleButton {
+-					onImage: './images/HMI_HVAC_%1_Active.svg'.arg(model.modelData)
+-					offImage: './images/HMI_HVAC_%1_Inactive.svg'.arg(model.modelData)
++					onImage: 'qrc:/images/HMI_HVAC_%1_Active.svg'.arg(model.modelData)
++					offImage: 'qrc:/images/HMI_HVAC_%1_Inactive.svg'.arg(model.modelData)
+ 					onCheckedChanged: {
+ 						console.debug(model.modelData, checked)
+ 					}
+diff --git a/app/SeatHeatButton.qml b/app/SeatHeatButton.qml
+index 3495cf6..7e2e1d4 100644
+--- a/app/SeatHeatButton.qml
++++ b/app/SeatHeatButton.qml
+@@ -33,13 +33,13 @@ Item {
+         anchors.centerIn: parent
+         Image {
+             id: chair
+-            source: './images/HMI_HVAC_%1_Chair_OFF.svg'.arg(root.side)
++            source: 'qrc:/images/HMI_HVAC_%1_Chair_OFF.svg'.arg(root.side)
+             states: [
+                 State {
+                     when: root.headLevel > 0
+                     PropertyChanges {
+                         target: chair
+-                        source: './images/HMI_HVAC_%1_Chair_ON.svg'.arg(root.side)
++                        source: 'qrc:/images/HMI_HVAC_%1_Chair_ON.svg'.arg(root.side)
+                     }
+                 }
+             ]
+@@ -48,20 +48,20 @@ Item {
+             id: indicator
+             width: 178
+             height: 18
+-            source: './images/HMI_HVAC_ChairIndicator_OFF.svg'
++            source: 'qrc:/images/HMI_HVAC_ChairIndicator_OFF.svg'
+             states: [
+                 State {
+                     when: root.headLevel === 1
+                     PropertyChanges {
+                         target: indicator
+-                        source: './images/HMI_HVAC_ChairIndicator_One.svg'
++                        source: 'qrc:/images/HMI_HVAC_ChairIndicator_One.svg'
+                     }
+                 },
+                 State {
+                     when: root.headLevel === 2
+                     PropertyChanges {
+                         target: indicator
+-                        source: './images/HMI_HVAC_ChairIndicator_Two.svg'
++                        source: 'qrc:/images/HMI_HVAC_ChairIndicator_Two.svg'
+                     }
+                 }
+             ]

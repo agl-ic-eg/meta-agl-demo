@@ -1,0 +1,74 @@
+From 75a141871c45b7e940fbdc9f0c97c43734789074 Mon Sep 17 00:00:00 2001
+From: Indivara Weerasuriya <1806262-indivara@users.noreply.git.qt.io>
+Date: Wed, 24 Jul 2024 09:57:30 +0900
+Subject: [PATCH] Migrate to Qt 6
+
+---
+ meson.build      |  2 +-
+ src/meson.build  | 10 +++++-----
+ src/qml/Main.qml |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index beb933d..634714f 100644
+--- a/meson.build
++++ b/meson.build
+@@ -26,5 +26,5 @@ project (
+   license: 'MIT/Expat',
+ )
+ 
+-qt5 = import('qt5')
++qt = import('qt6')
+ subdir('src')
+diff --git a/src/meson.build b/src/meson.build
+index b37e24f..5a59f13 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -1,7 +1,7 @@
+ pkgconfig = import('pkgconfig')
+ cpp = meson.get_compiler('cpp')
+ 
+-qt5_dep = dependency('qt5', modules: ['Qml', 'Quick', 'Gui'])
++qt_dep = dependency('qt6', modules: ['Qml', 'Quick', 'Gui'])
+ 
+ grpcpp_reflection_dep = cpp.find_library('grpc++_reflection')
+ protoc = find_program('protoc')
+@@ -31,7 +31,7 @@ grpc_deps = [
+ ]
+ 
+ window_mgnt_dep = [
+-    qt5_dep,
++    qt_dep,
+     grpc_deps,
+ ]
+ 
+@@ -40,14 +40,14 @@ window_mgnt_resources = [
+   'qml/qml.qrc'
+ ]
+ 
+-resource_files = qt5.compile_resources(sources: window_mgnt_resources)
++resource_files = qt.compile_resources(sources: window_mgnt_resources)
+ 
+ window_mgnt_src_headers = [
+   'AglShellGrpcClient.h',
+ ]
+ 
+-moc_files = qt5.compile_moc(headers: window_mgnt_src_headers,
+-                            dependencies: qt5_dep)
++moc_files = qt.compile_moc(headers: window_mgnt_src_headers,
++                            dependencies: qt_dep)
+ window_mgnt_src = [
+   'AglShellGrpcClient.cpp',
+   'main.cpp',
+diff --git a/src/qml/Main.qml b/src/qml/Main.qml
+index 151f3b8..5ddd2f7 100644
+--- a/src/qml/Main.qml
++++ b/src/qml/Main.qml
+@@ -10,6 +10,6 @@ Window {
+ 
+     Image {
+         anchors.fill: parent
+-        source: './images/AGL_HMI_Blue_Background_NoCar-01.png'
++        source: 'qrc:/images/AGL_HMI_Blue_Background_NoCar-01.png'
+     }
+ }

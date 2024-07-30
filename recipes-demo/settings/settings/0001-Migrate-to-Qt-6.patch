@@ -1,0 +1,253 @@
+From 9fb7185321d509d1e3a56fb47c0c135a06e42480 Mon Sep 17 00:00:00 2001
+From: Indivara Weerasuriya <1806262-indivara@users.noreply.git.qt.io>
+Date: Wed, 24 Jul 2024 09:47:24 +0900
+Subject: [PATCH] Migrate to Qt 6
+
+---
+ app/SettingPage.qml            |  2 +-
+ app/SettingsLauncher.qml       |  2 +-
+ app/bluetooth/Bluetooth.qml    |  2 +-
+ app/datetime/DateEdit.qml      | 12 ++++++------
+ app/datetime/DateTime.qml      |  2 +-
+ app/datetime/EditSeparator.qml |  2 +-
+ app/datetime/TimeEdit.qml      | 12 ++++++------
+ app/main.cpp                   |  7 ++++---
+ app/version/Version.qml        |  2 +-
+ app/wifi/Wifi.qml              |  2 +-
+ app/wired/Wired.qml            |  2 +-
+ 11 files changed, 24 insertions(+), 23 deletions(-)
+
+diff --git a/app/SettingPage.qml b/app/SettingPage.qml
+index d5858e8..b0a587d 100644
+--- a/app/SettingPage.qml
++++ b/app/SettingPage.qml
+@@ -52,7 +52,7 @@ Page {
+         ImageButton {
+             id: back
+             anchors.bottom: parent.bottom
+-            offImage: '../images/HMI_Settings_X.svg'
++            offImage: 'qrc:/images/HMI_Settings_X.svg'
+             onClicked: root.done()
+         }
+     }
+diff --git a/app/SettingsLauncher.qml b/app/SettingsLauncher.qml
+index 01c5433..14059d0 100644
+--- a/app/SettingsLauncher.qml
++++ b/app/SettingsLauncher.qml
+@@ -69,7 +69,7 @@ Page {
+                 }
+             }
+             Image {
+-                source: '../images/HMI_Settings_DividingLine.svg'
++                source: 'qrc:/images/HMI_Settings_DividingLine.svg'
+                 anchors.horizontalCenter: parent.horizontalCenter
+                 anchors.top: parent.top
+                 visible: model.index > 0
+diff --git a/app/bluetooth/Bluetooth.qml b/app/bluetooth/Bluetooth.qml
+index c1b2aa2..d5178df 100644
+--- a/app/bluetooth/Bluetooth.qml
++++ b/app/bluetooth/Bluetooth.qml
+@@ -199,7 +199,7 @@ SettingPage {
+           anchors.left: parent.left
+           anchors.leftMargin: 80
+           height: 5
+-          source: (bluetooth.power === true && pairedListView.count) ? '../images/HMI_Settings_DividingLine.svg':''
++          source: (bluetooth.power === true && pairedListView.count) ? 'qrc:/images/HMI_Settings_DividingLine.svg':''
+       }
+       Text {
+           id: detectedlabel
+diff --git a/app/datetime/DateEdit.qml b/app/datetime/DateEdit.qml
+index abfcfa9..cac55e8 100644
+--- a/app/datetime/DateEdit.qml
++++ b/app/datetime/DateEdit.qml
+@@ -30,7 +30,7 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Up.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Up.svg'
+         onClicked: monthControl.currentIndex++
+     }
+     Tumbler {
+@@ -43,7 +43,7 @@ GridLayout {
+     }
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Down.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Down.svg'
+         onClicked: monthControl.currentIndex--
+     }
+ 
+@@ -53,7 +53,7 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Up.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Up.svg'
+         onClicked: dayControl.currentIndex++
+     }
+ 
+@@ -91,13 +91,13 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Down.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Down.svg'
+         onClicked: dayControl.currentIndex--
+     }
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Up.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Up.svg'
+         onClicked: yearControl.currentIndex++
+     }
+ 
+@@ -116,7 +116,7 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Down.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Down.svg'
+         onClicked: yearControl.currentIndex--
+     }
+ }
+diff --git a/app/datetime/DateTime.qml b/app/datetime/DateTime.qml
+index 06cbc8c..c58de69 100644
+--- a/app/datetime/DateTime.qml
++++ b/app/datetime/DateTime.qml
+@@ -31,7 +31,7 @@ SettingPage {
+         Label { text: 'Date'}
+         DateEdit {}
+         Image {
+-            source: '../images/HMI_Settings_DividingLine.svg'
++            source: 'qrc:/images/HMI_Settings_DividingLine.svg'
+         }
+         Label { text: 'Time'}
+         TimeEdit {}
+diff --git a/app/datetime/EditSeparator.qml b/app/datetime/EditSeparator.qml
+index e833b52..a58c809 100644
+--- a/app/datetime/EditSeparator.qml
++++ b/app/datetime/EditSeparator.qml
+@@ -30,7 +30,7 @@ ColumnLayout {
+             Layout.fillHeight: true
+             Layout.preferredHeight: 2
+             Layout.alignment: Layout.Center
+-            source: './images/HMI_Settings_TimeDate_Arrow_DividingLine.svg'
++            source: 'qrc:/images/HMI_Settings_TimeDate_Arrow_DividingLine.svg'
+         }
+     }
+     Item {
+diff --git a/app/datetime/TimeEdit.qml b/app/datetime/TimeEdit.qml
+index 69a049b..2db1403 100644
+--- a/app/datetime/TimeEdit.qml
++++ b/app/datetime/TimeEdit.qml
+@@ -30,7 +30,7 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Up.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Up.svg'
+         onClicked: hourControl.currentIndex++
+     }
+     Tumbler {
+@@ -40,7 +40,7 @@ GridLayout {
+     }
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Down.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Down.svg'
+         onClicked: hourControl.currentIndex--
+     }
+ 
+@@ -50,7 +50,7 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Up.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Up.svg'
+         onClicked: minutesControl.currentIndex++
+     }
+ 
+@@ -62,13 +62,13 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Down.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Down.svg'
+         onClicked: minutesControl.currentIndex--
+     }
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Up.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Up.svg'
+         onClicked: ampmControl.currentIndex++
+     }
+ 
+@@ -80,7 +80,7 @@ GridLayout {
+ 
+     ImageButton {
+         Layout.alignment: Layout.Center
+-        offImage: './images/HMI_Settings_TimeDate_Arrow_Down.svg'
++        offImage: 'qrc:/images/HMI_Settings_TimeDate_Arrow_Down.svg'
+         onClicked: ampmControl.currentIndex--
+     }
+ }
+diff --git a/app/main.cpp b/app/main.cpp
+index bf82588..35b4c0e 100644
+--- a/app/main.cpp
++++ b/app/main.cpp
+@@ -78,9 +78,10 @@ int main(int argc, char *argv[])
+     // active auto-connect that was in agl-service-bluetooth.  The latter is
+     // now dependent on this application being run until further re-architecting
+     // takes place.
+-    Network *network = new Network(true, context);
+-    network->power(true, QString("bluetooth"));
+-    context->setContextProperty("network", network);
++    // Network *network = new Network(true, context);
++    // network->power(true, QString("bluetooth"));
++    QObject *network = new QObject(context); // prevent crash
++    context->setContextProperty("network", network);    
+ 
+     engine.load(QUrl(QStringLiteral("qrc:/Settings.qml")));
+ 
+diff --git a/app/version/Version.qml b/app/version/Version.qml
+index 8d47ad5..1eaced7 100644
+--- a/app/version/Version.qml
++++ b/app/version/Version.qml
+@@ -40,7 +40,7 @@ SettingPage {
+             clip: true
+             Image {
+                 anchors.centerIn: parent
+-                source: './images/agl_slide_0.png'
++                source: 'qrc:/images/agl_slide_0.png'
+                 z: -1
+                 opacity: 0.5
+             }
+diff --git a/app/wifi/Wifi.qml b/app/wifi/Wifi.qml
+index ba9d89e..9331d73 100644
+--- a/app/wifi/Wifi.qml
++++ b/app/wifi/Wifi.qml
+@@ -106,7 +106,7 @@ SettingPage {
+             }
+ 
+             Image {
+-                source: '../images/HMI_Settings_DividingLine.svg'
++                source: 'qrc:/images/HMI_Settings_DividingLine.svg'
+                 anchors.horizontalCenter: parent.horizontalCenter
+                 anchors.top: parent.top
+                 anchors.topMargin: -15
+diff --git a/app/wired/Wired.qml b/app/wired/Wired.qml
+index 0a3e312..610d2c6 100644
+--- a/app/wired/Wired.qml
++++ b/app/wired/Wired.qml
+@@ -111,7 +111,7 @@ SettingPage {
+             }
+ 
+             Image {
+-                source: '../images/HMI_Settings_DividingLine.svg'
++                source: 'qrc:/images/HMI_Settings_DividingLine.svg'
+                 anchors.horizontalCenter: parent.horizontalCenter
+                 anchors.top: parent.top
+                 anchors.topMargin: -15

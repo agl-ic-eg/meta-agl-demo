@@ -13,7 +13,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984 \
 
 DEPENDS = " \
     qtbase \
-    qtquickcontrols2 \
+    qtdeclarative \
     qtlocation \
     libqtappfw \
     qtwayland-native \
@@ -64,7 +64,7 @@ ALTERNATIVE_LINK_NAME[tbtnavi.conf] = "${sysconfdir}/xdg/AGL/tbtnavi.conf"
 RDEPENDS:${PN} += " \
     qtwayland \
     qtbase-qmlplugins \
-    qtgraphicaleffects-qmlplugins \
+    qt5compat \
     qtlocation \
     ondemandnavi-config \
     libqtappfw \

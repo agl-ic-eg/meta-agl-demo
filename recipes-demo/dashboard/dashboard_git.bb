@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984"
 
 DEPENDS = " \
     qttools-native \
-    qtquickcontrols2 \
+    qtdeclarative \
     libqtappfw \
 "
 
@@ -17,12 +17,13 @@ PV = "2.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/dashboard;protocol=https;branch=${AGL_BRANCH} \
            file://dashboard.conf \
            file://dashboard.token \
-"
+           file://0001-Migrate-to-Qt-6.patch \
+           "
 SRCREV  = "b1b67ab525555a082ca257ad08fc4fba9b1f74e3"
 
 S = "${WORKDIR}/git"
 
-inherit qmake5 pkgconfig agl-app
+inherit qt6-qmake pkgconfig agl-app
 
 AGL_APP_NAME = "Dashboard"
 
@@ -42,6 +43,6 @@ do_install:append() {
 RDEPENDS:${PN} += " \
     qtwayland \
     qtbase-qmlplugins \
-    qtgraphicaleffects-qmlplugins \
+    qt5compat \
     qtquickcontrols2-agl-style \
 "

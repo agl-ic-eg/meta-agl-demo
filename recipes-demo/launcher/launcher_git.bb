@@ -8,7 +8,6 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 DEPENDS = "\
         qtbase \
         qtdeclarative \
-        qtquickcontrols2 \
         libqtappfw \
         wayland-native \
         wayland \
@@ -23,12 +22,13 @@ PV = "1.0+git${SRCPV}"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/launcher;protocol=https;branch=${AGL_BRANCH} \
            file://launcher.service \
-"
+           file://0001-Migrate-to-Qt-6.patch \
+           "
 SRCREV = "4be88c049f31b7659e09223857b92ca531835039"
 
 S = "${WORKDIR}/git"
 
-inherit qmake5 systemd pkgconfig
+inherit qt6-qmake systemd pkgconfig
 
 PATH:prepend = "${STAGING_DIR_NATIVE}${OE_QMAKE_PATH_QT_BINS}:"
 
