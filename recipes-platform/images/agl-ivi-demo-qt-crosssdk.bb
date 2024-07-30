@@ -10,7 +10,7 @@ inherit agl-crosssdk
 
 require agl-ivi-crosssdk.inc
 
-inherit populate_sdk_qt5
+inherit populate_sdk_qt6
 
 # Add qtwaylandscanner to the SDK
 TOOLCHAIN_HOST_TASK += "nativesdk-qtwayland-tools"
