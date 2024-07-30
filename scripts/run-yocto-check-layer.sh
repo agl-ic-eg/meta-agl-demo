@@ -51,7 +51,7 @@ yocto-check-layer --no-auto-dependency \
 	$AGLROOT/external/meta-openembedded/meta-multimedia \
 	$AGLROOT/external/meta-flutter \
 	$AGLROOT/external/meta-flutter/meta-flutter-apps \
-	$AGLROOT/external/meta-qt5 \
+	$AGLROOT/external/meta-qt6 \
 	$AGLROOT/external/meta-clang \
 	-- \
 	$AGLROOT/meta-agl-demo
