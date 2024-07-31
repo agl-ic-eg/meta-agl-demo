@@ -35,6 +35,8 @@ DISABLE_BG_ANIMATION = "-DDISABLE_BKG_ANIMATION=true"
 DISABLE_BG_ANIMATION:rcar-gen3 = ""
 APP_AOT_EXTRA:append = " ${DISABLE_BG_ANIMATION}"
 
+do_compile[network] = "1"
+
 do_install:append() {
     install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
 

@@ -33,6 +33,8 @@ APP_CONFIG = "flutter_cluster_dashboard_on_bg.json"
 
 SYSTEMD_SERVICE:${PN} = "flutter-cluster-dashboard.service"
 
+do_compile[network] = "1"
+
 do_install:append() {
     install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
 
