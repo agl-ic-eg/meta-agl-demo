@@ -9,7 +9,7 @@ SRC_URI = "git://github.com/LSchwiedrzik/agl-persistent-storage-api.git;protocol
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"
-SRCREV = "f69d46510e5b13cdb559dbc077aced1f74e19f66"
+SRCREV = "de8ecba1279ee2bcb55f0595017165c606fac835"
 
 S = "${WORKDIR}/git"
 
