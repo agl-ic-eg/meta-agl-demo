@@ -7,7 +7,7 @@ Vehicle.Speed:
     signal: PT_VehicleAvgSpeed
 
 Vehicle.Powertrain.CombustionEngine.Speed:
-  datatype: float
+  datatype: uint16
   type: sensor
   vss2dbc:
     signal: PT_EngineSpeed

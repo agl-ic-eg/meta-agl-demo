@@ -10,13 +10,11 @@ Vehicle.Speed:
     signal: PT_VehicleAvgSpeed
 
 Vehicle.Powertrain.CombustionEngine.Speed:
-  datatype: float
+  datatype: uint16
   type: sensor
   dbc2vss:
     signal: PT_EngineSpeed
     interval_ms: 100
-    transform:
-      math: "floor(x+0.5)"
   vss2dbc:
     signal: PT_EngineSpeed
 

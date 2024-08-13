@@ -8,13 +8,11 @@ Vehicle.Speed:
     interval_ms: 100
 
 Vehicle.Powertrain.CombustionEngine.Speed:
-  datatype: float
+  datatype: uint16
   type: sensor
   dbc2vss:
     signal: PT_EngineSpeed
     interval_ms: 100
-    transform:
-      math: "floor(x+0.5)"
 
 # DBC mappings for other signals for V2C demo
 
