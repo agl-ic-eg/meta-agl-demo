@@ -12,6 +12,10 @@ IMAGE_FEATURES += " \
     kuksa-val-databroker \
 "
 
+AGL_DEVEL_INSTALL = " \
+    simple-can-simulator \
+"
+
 # Generic
 IMAGE_INSTALL += "\
     weston-ini-conf-landscape \
@@ -19,7 +23,7 @@ IMAGE_INSTALL += "\
     packagegroup-agl-networking \
     cluster-receiver \
     \
-    simple-can-simulator \
+    ${@bb.utils.contains("DISTRO_FEATURES", "agl-devel", "${AGL_DEVEL_INSTALL}" , "", d)} \
 "
 
 # Flutter

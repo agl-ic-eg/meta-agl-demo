@@ -19,14 +19,15 @@ PV = "1.0+git${SRCPV}"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-cluster-demo-dashboard;protocol=https;branch=${AGL_BRANCH} \
            file://cluster-dashboard.service \
-           file://cluster-dashboard.conf \
+           file://cluster-dashboard.conf.default \
+           file://cluster-dashboard.conf.demo \
            file://cluster-dashboard.token \
 "
 SRCREV  = "137144c447d8adb618f5acbcbafd65f50264d6eb"
 
 S  = "${WORKDIR}/git"
 
-inherit pkgconfig cmake_qt5 systemd
+inherit pkgconfig cmake_qt5 update-alternatives systemd
 
 CLUSTER_DEMO_VSS_HOSTNAME ??= "192.168.10.2"
 
@@ -40,10 +41,28 @@ do_install:append() {
     # until a packaging/sandboxing/MAC scheme is (re)implemented or
     # something like OAuth is plumbed in as an alternative.
     install -d ${D}${sysconfdir}/xdg/AGL/cluster-dashboard
-    install -m 0644 ${WORKDIR}/cluster-dashboard.conf ${D}${sysconfdir}/xdg/AGL/
-    sed -i "s/^server = .*/server = \"${CLUSTER_DEMO_VSS_HOSTNAME}\"/" ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.conf
+    install -m 0644 ${WORKDIR}/cluster-dashboard.conf.default ${D}${sysconfdir}/xdg/AGL/
+    install -m 0644 ${WORKDIR}/cluster-dashboard.conf.demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/cluster-dashboard.token ${D}${sysconfdir}/xdg/AGL/cluster-dashboard/
 }
+
+ALTERNATIVE_LINK_NAME[cluster-dashboard.conf] = "${sysconfdir}/xdg/AGL/cluster-dashboard.conf"
+
+PACKAGE_BEFORE_PN += "${PN}-conf"
+FILES:${PN}-conf += "${sysconfdir}/xdg/AGL/cluster-dashboard.conf.default"
+RDEPENDS:${PN}-conf = "${PN}"
+RPROVIDES:${PN}-conf = "cluster-dashboard.conf"
+ALTERNATIVE:${PN}-conf = "cluster-dashboard.conf"
+ALTERNATIVE_TARGET_${PN}-conf = "${sysconfdir}/xdg/AGL/cluster-dashboard.conf.default"
+
+PACKAGE_BEFORE_PN += "${PN}-conf-demo"
+FILES:${PN}-conf-demo += "${sysconfdir}/xdg/AGL/cluster-dashboard.conf.demo"
+RDEPENDS:${PN}-conf-demo = "${PN}"
+RPROVIDES:${PN}-conf-demo = "cluster-dashboard.conf"
+ALTERNATIVE:${PN}-conf-demo = "cluster-dashboard.conf"
+ALTERNATIVE_TARGET_${PN}-conf-demo = "${sysconfdir}/xdg/AGL/cluster-dashboard.conf.demo"
+
+# NOTE: Not currently used in KVM demo, so no extra configurations packaged here
 
 RDEPENDS:${PN} += " \
     qtwayland \
