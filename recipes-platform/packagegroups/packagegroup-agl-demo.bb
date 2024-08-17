@@ -34,6 +34,7 @@ RDEPENDS:${PN} += " \
     linux-firmware-ath9k \
     linux-firmware-ralink \
     iproute2 \
+    pre-install-music-data \
     ${DEMO_PLATFORM_CONF} \
     ${TTF_FONTS} \
     "
