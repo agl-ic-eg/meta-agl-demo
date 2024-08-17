@@ -17,7 +17,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;p
   file://radio-presets.yaml \
   file://kvm.conf \
 "
-SRCREV = "25b6a079d5fe9c1365d776298ae5230a4de1ba16"
+SRCREV = "3ef28eeae6e3336232ab13d0d934aa82892dfe74"
 
 S = "${WORKDIR}/git"
 
