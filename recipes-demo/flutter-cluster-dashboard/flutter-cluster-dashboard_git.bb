@@ -10,7 +10,7 @@ LIC_FILES_CHKSUM = "file://LICENSE.md;md5=0c52b0e4b5f0dbf57ea7d44bebb2e29d"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-instrument-cluster;protocol=https;branch=${AGL_BRANCH} \
     file://flutter-cluster-dashboard.service \
-    file://flutter_cluster_dashboard_on_bg.json \
+    file://flutter_cluster_dashboard_on_bg.toml \
     file://cluster-dashboard.yaml \
     file://cluster-dashboard.yaml.demo \
     file://cluster-dashboard.yaml.gateway-demo \
@@ -21,7 +21,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-instrument-clust
 "
 
 PV = "1.0+git${SRCPV}"
-SRCREV = "4a6dd91a1e1c7821eae1668449885a8c04825071"
+SRCREV = "15093ee4880d535c65faed929801c2d79d1a212c"
 
 S = "${WORKDIR}/git"
 
@@ -29,7 +29,7 @@ PUBSPEC_APPNAME = "flutter_cluster_dashboard"
 
 inherit flutter-app update-alternatives systemd
 
-APP_CONFIG = "flutter_cluster_dashboard_on_bg.json"
+APP_CONFIG = "flutter_cluster_dashboard_on_bg.toml"
 
 SYSTEMD_SERVICE:${PN} = "flutter-cluster-dashboard.service"
 
@@ -40,7 +40,12 @@ do_install:append() {
 
     install -D -m 0644 ${WORKDIR}/kvm.conf ${D}${systemd_system_unitdir}/${BPN}.service.d/kvm.conf
 
-    install -D -m 0644 ${WORKDIR}/${APP_CONFIG} ${D}${datadir}/flutter/${BPN}.json
+    # determine build type based on what flutter-engine installed.
+    for runtime_mode in ${FLUTTER_RUNTIME_MODES}
+    do
+        install -D -m 0644 ${WORKDIR}/${APP_CONFIG} \
+            ${D}${datadir}/flutter/${PUBSPEC_APPNAME}/${FLUTTER_SDK_VERSION}/${runtime_mode}/config.toml
+    done
 
     install -d ${D}${sysconfdir}/xdg/AGL/cluster-dashboard
     install -m 0644 ${WORKDIR}/cluster-dashboard.yaml ${D}${sysconfdir}/xdg/AGL/cluster-dashboard.yaml.default

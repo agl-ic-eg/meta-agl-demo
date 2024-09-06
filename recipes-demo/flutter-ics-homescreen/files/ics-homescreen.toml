@@ -1,0 +1,11 @@
+[view]
+window_type = "BG"
+width = 1080
+height = 1920
+fullscreen = true
+
+[window_activation_area]
+x = 0
+y = 56
+width = 1080
+height = 1712

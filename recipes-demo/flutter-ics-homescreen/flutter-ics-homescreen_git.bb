@@ -7,7 +7,7 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;protocol=https;branch=${AGL_BRANCH} \
-  file://flutter-ics-homescreen.json \
+  file://ics-homescreen.toml \
   file://flutter-ics-homescreen.service \
   file://ics-homescreen.yaml \
   file://ics-homescreen.yaml.gateway-demo \
@@ -17,16 +17,15 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;p
   file://radio-presets.yaml \
   file://kvm.conf \
 "
-SRCREV = "3ef28eeae6e3336232ab13d0d934aa82892dfe74"
+SRCREV = "d3ea8d7fa4518c258fca3c825ee895487fcaa8ec"
 
 S = "${WORKDIR}/git"
 
 PUBSPEC_APPNAME = "flutter_ics_homescreen"
-FLUTTER_BUILD_ARGS = "bundle -v"
 
 inherit flutter-app systemd update-alternatives
 
-APP_CONFIG = "${BPN}.json"
+APP_CONFIG = "ics-homescreen.toml"
 
 SYSTEMD_SERVICE:${PN} = "flutter-ics-homescreen.service"
 
@@ -42,7 +41,13 @@ do_install:append() {
 
     install -D -m 0644 ${WORKDIR}/kvm.conf ${D}${systemd_system_unitdir}/${BPN}.service.d/kvm.conf
 
-    install -D -m 0644 ${WORKDIR}/${APP_CONFIG} ${D}${datadir}/flutter/${BPN}.json
+    # determine build type based on what flutter-engine installed.
+    for runtime_mode in ${FLUTTER_RUNTIME_MODES}
+    do
+        install -D -m 0644 ${WORKDIR}/${APP_CONFIG} \
+            ${D}${datadir}/flutter/${PUBSPEC_APPNAME}/${FLUTTER_SDK_VERSION}/${runtime_mode}/config.toml
+    done
+
 
     # VIS authorization token file for KUKSA.val should ideally not
     # be readable by other users, but currently that's not doable
