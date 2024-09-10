@@ -27,6 +27,8 @@ inherit flutter-app systemd update-alternatives
 
 APP_CONFIG = "ics-homescreen.toml"
 
+PUBSPEC_IGNORE_LOCKFILE = "1"
+
 SYSTEMD_SERVICE:${PN} = "flutter-ics-homescreen.service"
 
 # Disable the background animation on all platforms except the Renesas M3/H3 for now
@@ -34,20 +36,10 @@ DISABLE_BG_ANIMATION = "-DDISABLE_BKG_ANIMATION=true"
 DISABLE_BG_ANIMATION:rcar-gen3 = ""
 APP_AOT_EXTRA:append = " ${DISABLE_BG_ANIMATION}"
 
-do_compile[network] = "1"
-
 do_install:append() {
     install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
 
     install -D -m 0644 ${WORKDIR}/kvm.conf ${D}${systemd_system_unitdir}/${BPN}.service.d/kvm.conf
-
-    # determine build type based on what flutter-engine installed.
-    for runtime_mode in ${FLUTTER_RUNTIME_MODES}
-    do
-        install -D -m 0644 ${WORKDIR}/${APP_CONFIG} \
-            ${D}${datadir}/flutter/${PUBSPEC_APPNAME}/${FLUTTER_SDK_VERSION}/${runtime_mode}/config.toml
-    done
-
 
     # VIS authorization token file for KUKSA.val should ideally not
     # be readable by other users, but currently that's not doable
