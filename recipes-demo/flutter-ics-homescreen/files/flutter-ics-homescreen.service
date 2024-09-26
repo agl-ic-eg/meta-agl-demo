@@ -1,6 +1,6 @@
 [Unit]
-Requires=agl-compositor.service applaunchd.service
-After=agl-compositor.service applaunchd.service
+Requires=agl-compositor.service applaunchd.service agl-persistent-storage-api.service
+After=agl-compositor.service applaunchd.service agl-persistent-storage-api.service
 
 [Service]
 User=agl-driver

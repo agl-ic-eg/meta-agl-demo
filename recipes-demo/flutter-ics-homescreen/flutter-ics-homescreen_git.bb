@@ -9,6 +9,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;protocol=https;branch=${AGL_BRANCH} \
   file://ics-homescreen.toml \
   file://flutter-ics-homescreen.service \
+  file://flutter-ics-homescreen.env \
   file://ics-homescreen.yaml \
   file://ics-homescreen.yaml.gateway-demo \
   file://ics-homescreen.yaml.kvm-demo \
@@ -17,7 +18,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;p
   file://radio-presets.yaml \
   file://kvm.conf \
 "
-SRCREV = "d3ea8d7fa4518c258fca3c825ee895487fcaa8ec"
+SRCREV = "bdc33c218e3e62e5a3121d3ab0de6e26ef7ad3eb"
 
 S = "${WORKDIR}/git"
 
@@ -39,6 +40,8 @@ APP_AOT_EXTRA:append = " ${DISABLE_BG_ANIMATION}"
 do_install:append() {
     install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
 
+    install -D -m 0644 ${WORKDIR}/${BPN}.env ${D}${sysconfdir}/default/${BPN}
+
     install -D -m 0644 ${WORKDIR}/kvm.conf ${D}${systemd_system_unitdir}/${BPN}.service.d/kvm.conf
 
     # VIS authorization token file for KUKSA.val should ideally not
@@ -56,7 +59,7 @@ do_install:append() {
 
 ALTERNATIVE_LINK_NAME[ics-homescreen.yaml] = "${sysconfdir}/xdg/AGL/ics-homescreen.yaml"
 
-FILES:${PN} += "${datadir} ${sysconfdir}/xdg/AGL"
+FILES:${PN} += "${datadir} ${sysconfdir}/xdg/AGL ${sysconfdir}/default"
 
 RDEPENDS:${PN} += " \
     flutter-auto \
