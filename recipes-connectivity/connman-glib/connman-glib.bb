@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ae6497158920d9524cf208c09cc4c984"
 DEPENDS = "systemd glib-2.0"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/connman-glib;protocol=https;branch=${AGL_BRANCH}"
-SRCREV = "86ecfa16aeb5c4942990f0181dab7f60b4f45a83"
+SRCREV = "1afb908c72eeaee137e843aea1835859cf14a5ff"
 
 S = "${WORKDIR}/git"
 
