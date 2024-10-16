@@ -31,6 +31,10 @@ USERADD_PARAM:${PN} = "--system -g 903 -u 903 -o -d / --shell /bin/nologin persi
 do_compile:prepend() {
     export ROCKSDB_CXX_STD="--std=c99"
     export ROCKSDB_INCLUDE_DIR="${RECIPE_SYSROOT}/usr/include"
+
+    # Need to set options for the rust-librocksdb-sys crate's bindgen invocation of clang,
+    # or there's a good chance it will choke when trying to use the host system's headers.
+    export BINDGEN_EXTRA_CLANG_ARGS="${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}"
 }
 
 do_install:append () {
