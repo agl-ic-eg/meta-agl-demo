@@ -7,7 +7,7 @@ PV = "1.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/agl-demo-control-panel;protocol=https;branch=${AGL_BRANCH} \
            file://agl-demo-control-panel.service \
 "
-SRCREV = "25d451d87046a1cfbf7ac3cd47c2303fd29a22c5"
+SRCREV = "6fdddee7d45206dc64eacd08700f79566ad9b4a6"
 S = "${WORKDIR}/git"
 
 inherit systemd allarch update-alternatives
@@ -55,6 +55,7 @@ RDEPENDS:${PN} += " \
     python3-modules \
     python3-packaging \
     python3-can \
+    python3-cantools \
     python3-rich \
     python3-pyqt6 \
     agl-users \
