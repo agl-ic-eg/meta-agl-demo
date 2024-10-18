@@ -18,7 +18,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/flutter-ics-homescreen;p
   file://radio-presets.yaml \
   file://kvm.conf \
 "
-SRCREV = "f870bbe3c49d421ff8ea561752b3b0a38ad04e96"
+SRCREV = "f8b39a2902e73422259965e724a44c56f49ce103"
 
 S = "${WORKDIR}/git"
 
@@ -36,6 +36,10 @@ SYSTEMD_SERVICE:${PN} = "flutter-ics-homescreen.service"
 DISABLE_BG_ANIMATION = "-DDISABLE_BKG_ANIMATION=true"
 DISABLE_BG_ANIMATION:rcar-gen3 = ""
 APP_AOT_EXTRA:append = " ${DISABLE_BG_ANIMATION}"
+
+# Check for agl-offline-voice-agent feature
+ENABLE_VOICE_ASSISTANT = "${@bb.utils.contains('EXTRA_IMAGE_FEATURES', 'agl-offline-voice-agent', '-DENABLE_VOICE_ASSISTANT=true', '-DENABLE_VOICE_ASSISTANT=false', d)}"
+APP_AOT_EXTRA:append = " ${ENABLE_VOICE_ASSISTANT}"
 
 do_install:append() {
     install -D -m 0644 ${WORKDIR}/${BPN}.service ${D}${systemd_system_unitdir}/${BPN}.service
