@@ -24,3 +24,12 @@ AGL_FEATURES:append = " agldemo"
 PREFERRED_RPROVIDER_kuksa-val-certificates-ca = "kuksa-certificates-agl"
 PREFERRED_RPROVIDER_kuksa-val-certificates-server = "kuksa-certificates-agl"
 PREFERRED_RPROVIDER_kuksa-val-certificates-client = "kuksa-certificates-agl"
+
+
+# meta-clang replaces llvm with clang - avoid installation errors
+PREFERRED_PROVIDER_llvm = "clang"
+PREFERRED_PROVIDER_llvm-native = "clang-native"
+PREFERRED_PROVIDER_nativesdk-llvm = "nativesdk-clang"
+PROVIDES:pn-clang = "llvm"
+PROVIDES:pn-clang-native = "llvm-native"
+PROVIDES:pn-nativesdk-clang = "nativesdk-llvm"

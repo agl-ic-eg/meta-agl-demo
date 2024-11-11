@@ -1,1 +1,1 @@
-PACKAGECONFIG:append = " xkbcommon icu fontconfig sql-sqlite"
+PACKAGECONFIG:append = " icu fontconfig sql-sqlite"
