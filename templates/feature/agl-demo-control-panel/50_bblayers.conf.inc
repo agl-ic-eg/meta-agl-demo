@@ -2,7 +2,6 @@
 #---------------------------------------------------
 BBLAYERS =+ " \
    ${METADIR}/meta-agl-demo/meta-agl-demo-control-panel \
-   ${METADIR}/meta-agl/meta-agl-kuksa-val \
 "
 
 #AGL_META_FILESYSTEMS = "${METADIR}/external/meta-openembedded/meta-filesystems"
