@@ -63,9 +63,9 @@ initialize:
   value: false
 - signal: Vehicle.Powertrain.TractionBattery.Charging.IsCharging
   value: false
-- signal: Vehicle.Powertrain.TractionBattery.Charging.IsChargingCableConnected
+- signal: Vehicle.Powertrain.TractionBattery.Charging.ChargingPort.AnyPosition.IsChargingCableConnected
   value: false
-- signal: Vehicle.Powertrain.TractionBattery.Charging.IsChargingCableLocked
+- signal: Vehicle.Powertrain.TractionBattery.Charging.ChargingPort.AnyPosition.IsChargingCableLocked
   value: false
 - signal: Vehicle.Powertrain.TractionBattery.Charging.IsDischarging
   value: false
