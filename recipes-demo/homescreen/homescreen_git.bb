@@ -25,9 +25,8 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/homescreen;protocol=http
            file://homescreen.service \
            file://homescreen.conf \
            file://homescreen.token \
-           file://0001-Migrate-to-Qt-6.patch \
            "
-SRCREV = "2c91ad7b3b125176b2e26b435705557a089604a0"
+SRCREV = "0253013fb268f820a965bbebd8388f78686ccef6"
 
 S = "${WORKDIR}/git"
 

@@ -13,9 +13,8 @@ PV = "2.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/mediaplayer;protocol=https;branch=${AGL_BRANCH} \
            file://mediaplayer.conf \
            file://mediaplayer.token \
-           file://0001-Migrate-to-Qt-6.patch \
            "
-SRCREV  = "0aefba20fe07dbb79d7b3683ab38c0b0b313a655"
+SRCREV  = "4f733db769ac96df3e83b9c90506924ee6f19800"
 
 S  = "${WORKDIR}/git"
 

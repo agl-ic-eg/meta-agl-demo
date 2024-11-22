@@ -15,9 +15,8 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/ondemandnavi;protocol=ht
            file://navigation.conf.kvm-demo \
            file://navigation.conf.gateway-demo \
            file://navigation.token \
-           file://0001-Migrate-to-Qt-6.patch \
            "
-SRCREV = "d6b883ef6bdb63fb501b03d64c9a32bc29b7b2c7"
+SRCREV = "5fdb5a29f54919a9ab6050f7408bfa31037a8d7d"
 
 S = "${WORKDIR}/git"
 

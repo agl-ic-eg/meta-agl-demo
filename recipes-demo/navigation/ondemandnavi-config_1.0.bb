@@ -11,14 +11,8 @@ SRC_URI = "file://naviconfig.ini \
 
 inherit allarch
 
-MAPBOX_ACCESS_TOKEN ?= ""
-
 do_compile[noexec] = "1"
 
 do_install () {
     install -D -m 644 ${WORKDIR}/naviconfig.ini ${D}${sysconfdir}/naviconfig.ini
-    if [ -n "${MAPBOX_ACCESS_TOKEN}" ]; then
-        sed -i -e 's/MAPBOX_ACCESS_TOKEN/${MAPBOX_ACCESS_TOKEN}/;s/\("enableOSM":\)true/\1false/' \
-        ${D}${sysconfdir}/naviconfig.ini
-    fi
 }

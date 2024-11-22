@@ -22,9 +22,8 @@ PV = "1.0+git${SRCPV}"
 
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/launcher;protocol=https;branch=${AGL_BRANCH} \
            file://launcher.service \
-           file://0001-Migrate-to-Qt-6.patch \
            "
-SRCREV = "4be88c049f31b7659e09223857b92ca531835039"
+SRCREV = "83e68bfb154332e591da318301f604d2252a81fd"
 
 S = "${WORKDIR}/git"
 

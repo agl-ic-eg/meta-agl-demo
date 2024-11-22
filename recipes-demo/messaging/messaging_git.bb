@@ -10,10 +10,8 @@ DEPENDS = "qtdeclarative libqtappfw"
 
 PV = "1.0+git${SRCPV}"
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/messaging;protocol=https;branch=${AGL_BRANCH} \
-           file://0001-Migrate-to-Qt-6.patch \
-           "
-SRCREV  = "e58b0382de8e665d64b8e3486022a6bcb0572823"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/messaging;protocol=https;branch=${AGL_BRANCH}"
+SRCREV  = "77ea1b245737d0cfc4d20035e6476dae6969e699"
 
 S  = "${WORKDIR}/git"
 

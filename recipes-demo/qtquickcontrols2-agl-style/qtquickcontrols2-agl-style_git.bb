@@ -7,10 +7,8 @@ DEPENDS = "qtdeclarative"
 
 PV = "1.0+git${SRCPV}"
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/qtquickcontrols2-agl-style;protocol=https;branch=${AGL_BRANCH} \
-           file://0001-Migrate-to-Qt-6.patch \
-           "
-SRCREV = "c02692a3c20d9aed1192137a67d5be882c60e71f"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/qtquickcontrols2-agl-style;protocol=https;branch=${AGL_BRANCH}"
+SRCREV = "4059077eb23b6338e153036c602972cbbb46cbb8"
 
 S = "${WORKDIR}/git"
 

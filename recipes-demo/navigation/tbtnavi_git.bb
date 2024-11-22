@@ -32,7 +32,7 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/tbtnavi;protocol=https;b
            file://tbtnavi.token \
            file://kvm.conf \
 "
-SRCREV = "f00c1e19f5c4cbcd185c8043f3062612bf1537f7"
+SRCREV = "7b54a3782d9981f849a88c023742a7d7f8be7232"
 
 S = "${WORKDIR}/git"
 

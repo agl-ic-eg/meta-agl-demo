@@ -12,10 +12,8 @@ DEPENDS = "qtbase qtdeclarative qtwayland \
 
 PV = "2.0+git${SRCPV}"
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/window-management-client-grpc.git;protocol=https;branch=${AGL_BRANCH} \
-           file://0001-Migrate-to-Qt-6.patch \
-           "
-SRCREV  = "cb7aa009ef9873967152e716fb01fecc30d401f7"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/window-management-client-grpc.git;protocol=https;branch=${AGL_BRANCH}"
+SRCREV  = "ddb80d78079653871100e64ebd7fbe112a22bf4c"
 
 S  = "${WORKDIR}/git"
 

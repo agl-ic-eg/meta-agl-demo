@@ -21,10 +21,8 @@ DEPENDS = " \
     kuksa-databroker \
 "
 
-SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/libqtappfw;protocol=https;branch=${AGL_BRANCH} \
-           file://0001-Migrate-to-Qt-6.patch \
-           "
-SRCREV  = "4694b211569e15dc8aa4e75b6fb70e75946e766d"
+SRC_URI = "git://gerrit.automotivelinux.org/gerrit/src/libqtappfw;protocol=https;branch=${AGL_BRANCH}"
+SRCREV  = "4f75c049e8ba1e7fd4f1094f9ed8b681318f021d"
 S       = "${WORKDIR}/git"
 
 # PV needs to be modified with SRCPV to work AUTOREV correctly

@@ -14,9 +14,8 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/radio;protocol=https;bra
            file://presets-ALS.conf \
            file://presets-CES.conf \
            file://presets-FOSDEM.conf \
-           file://0001-Migrate-to-Qt-6.patch \
            "
-SRCREV  = "aef392d9df8bb5e4ada4b3f8f44016e8a839d154"
+SRCREV  = "6a1ff73f3d561aa945f64460433498583d81dabb"
 
 S  = "${WORKDIR}/git"
 

@@ -18,9 +18,8 @@ PV = "2.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/hvac;protocol=https;branch=${AGL_BRANCH} \
            file://hvac.conf \
            file://hvac.token \
-           file://0001-Migrate-to-Qt-6.patch \
            "
-SRCREV = "d37674bb6dbb5ceb15c650a0344b0caf624963bc"
+SRCREV = "3ff350bd5376c5a255909b43a7336801e797ca76"
 
 S = "${WORKDIR}/git"
 
