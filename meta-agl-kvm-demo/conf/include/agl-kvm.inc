@@ -1,23 +1,17 @@
 DISTRO_FEATURES:append = " virtualization"
 
 #
-# Attempt to make guest machine derived from host machine, as opposed to
-# hard-coding it in the multiconfig conf file.  Unfortunately, using any
-# of the expanded overrides or e.g. TUNE_ARCH from the host MACHINE seems
-# not feasible here with respect to BitBake conf file parse ordering, so
-# a generic mapping to e.g. virtio-${TUNE_ARCH} is sadly not currently
-# workable.
+# Unfortunately, using any of the expanded overrides or e.g. TUNE_ARCH
+# from the host MACHINE here seems not feasible due to BitBake conf
+# file parse ordering, so a generic mapping to e.g. virtio-${TUNE_ARCH}
+# is sadly not currently workable.
 #
 
-# Define a default, for now use one that will cause an immediate error.
-AGL_GUEST_MACHINE = "INVALID"
+# Set default guest machine
+AGL_GUEST_MACHINE = "virtio-aarch64"
 
-# Set for demo target machine
-AGL_GUEST_MACHINE:h3ulcb = "virtio-aarch64"
-
-# Force variable value to be live before multiconfigs are parsed to make
-# BitBake parser happy
-AGL_GUEST_MACHINE := "${AGL_GUEST_MACHINE}"
+# Hook to allow overriding AGL_GUEST_MACHINE for specific targets
+include agl-kvm-${MACHINE}.inc
 
 BBMULTICONFIG = "agl-kvm-guest"
 
