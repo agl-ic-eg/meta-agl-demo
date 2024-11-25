@@ -9,7 +9,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=374fee6a7817f1e1a5a7bfb7b7989553"
 DEPENDS = " \
     wayland wayland-native \
     agl-compositor \
-    gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-bad \
+    gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-bad grpc grpc-native \
 "
 
 PV = "1.0+git${SRCPV}"
@@ -17,11 +17,11 @@ PV = "1.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-cluster-demo-receiver;protocol=https;branch=${AGL_BRANCH} \
            file://cluster-receiver.service \
 "
-SRCREV  = "7dd7d94968d1ac2edae62c4b1797407ea8640e3c"
+SRCREV  = "fd77d8d38d899ca40d090344582f3ec816fd0591"
 
 S  = "${WORKDIR}/git"
 
-inherit cmake pkgconfig systemd
+inherit meson pkgconfig systemd
 
 SYSTEMD_SERVICE:${PN} = "${BPN}.service"
 
