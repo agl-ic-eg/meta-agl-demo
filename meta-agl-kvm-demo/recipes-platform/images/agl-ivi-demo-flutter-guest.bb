@@ -10,5 +10,6 @@ ONDEMANDNAVI_CONF = "ondemandnavi-conf-kvm-demo"
 TBTNAVI_CONF = "tbtnavi-conf-kvm-demo"
 
 IMAGE_INSTALL += " \
+    weston-pipewire \
     weston-ini-conf-remoting-kvm \
 "
