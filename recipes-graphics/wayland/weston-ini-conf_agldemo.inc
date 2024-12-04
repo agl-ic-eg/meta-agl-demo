@@ -4,17 +4,9 @@ SRC_URI += "file://remote-output.cfg.in"
 
 WESTON_FRAGMENTS_BASE += "grpc-proxy"
 
-# Options for the user to change in local.conf
-# e.g. REMOTING_OUTPUT_MODE = "1080x1488"
-REMOTING_OUTPUT_MODE ??= "640x720@30"
-REMOTING_OUTPUT_HOST ??= "192.168.10.3"
-REMOTING_OUTPUT_PORT ??= "5005"
-
 do_configure:append() {
     # Standalone cluster support version
-    sed -e "s#host=.*#host=${REMOTING_OUTPUT_HOST}#" \
-        -e "s#port=.*#port=${REMOTING_OUTPUT_PORT}#" \
-        ${WORKDIR}/remote-output.cfg.in  > ${WORKDIR}/remote-output.cfg
+    cp ${WORKDIR}/remote-output.cfg.in ${WORKDIR}/remote-output.cfg
 }
 
 do_compile:append() {
