@@ -11,5 +11,6 @@ TBTNAVI_CONF = "tbtnavi-conf-kvm-demo"
 
 IMAGE_INSTALL += " \
     weston-pipewire \
+    agl-compositor-init-pipewire \
     weston-ini-conf-remoting-kvm \
 "
