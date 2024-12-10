@@ -1,8 +1,8 @@
 [Unit]
 Description=cluster-receiver
 
-Requires=agl-compositor.service
-After=agl-compositor.service
+Requires=flutter-cluster-dashboard.service
+After=flutter-cluster-dashboard.service
 
 # Since we are part of the agl session, make sure we are started before
 # it is complete.
