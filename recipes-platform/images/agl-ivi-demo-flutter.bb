@@ -12,6 +12,8 @@ AGL_APPS_INSTALL += " \
     flutter-ics-homescreen \
     ${FLUTTER_ICS_HOMESCREEN_CONF} \
     camera-gstreamer \
+    window-management-client-grpc \
+    agl-shell-activator \
     ondemandnavi \
     ${ONDEMANDNAVI_CONF} \
     ${MUSICDATA} \

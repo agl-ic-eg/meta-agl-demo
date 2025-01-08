@@ -19,6 +19,7 @@ AGL_APPS_INSTALL += " \
     radio \
     window-management-client-grpc \
     camera-gstreamer \
+    agl-shell-activator \
 "
 
 IMAGE_INSTALL += " \
