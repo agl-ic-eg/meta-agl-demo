@@ -47,6 +47,9 @@ export XDG_RUNTIME_DIR=/run/user/1001
 # is used.
 export SDL_VIDEO_WAYLAND_WMCLASS="${QEMU_XDG_APP_ID:-${image}}"
 
+# Default to GLES, allowing a conf file to override
+QEMU_SDL_GL_FLAVOR="${QEMU_SDL_GL_FLAVOR:-es}"
+
 ${TASKSET_CMD} \
 qemu-system-${arch} \
 	-enable-kvm \
@@ -65,7 +68,7 @@ qemu-system-${arch} \
 	${QEMU_INPUT_OPT} \
 	-global virtio-mmio.force-legacy=false \
 	-device virtio-gpu-gl-device \
-	-display sdl,gl=on \
+	-display sdl,gl=${QEMU_SDL_GL_FLAVOR} \
 	${QEMU_AUDIO_OPT} \
 	${QEMU_CAN_OPT} \
 	${QEMU_EXTRA_OPT} \
