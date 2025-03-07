@@ -3,7 +3,7 @@
 # switch between kuksa_databroker and kuksa_val_server
 server_type = kuksa_databroker
 # VSS mapping file
-mapping = /usr/share/vss/vss_rel_4.0-agl-gw-hardware.json
+mapping = /usr/share/vss/vss_5.0-agl-gw-hardware.json
 
 # IP address for server (KUKSA.val Server or Databroker)
 ip = localhost
@@ -19,7 +19,7 @@ tls = True
 root_ca_path=/etc/kuksa-val/CA.pem
 
 # Token file for authorization.
-token = /etc/kuksa-can-provider/dbc_feeder.token
+token = /etc/kuksa-can-provider/can-provider.token
 
 [can]
 # CAN port
