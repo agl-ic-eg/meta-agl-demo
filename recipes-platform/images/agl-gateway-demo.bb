@@ -14,6 +14,7 @@ IMAGE_FEATURES += " \
 AGL_DEVEL_INSTALL = " \
     packagegroup-agl-kuksa-val-databroker-devel \
     tcpdump \
+    simple-can-simulator \
 "
 
 IMAGE_INSTALL += " \
