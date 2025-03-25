@@ -1,0 +1,11 @@
+[Unit]
+Requires=pipewire.service
+After=pipewire.service
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/agl-service-audiomixer
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

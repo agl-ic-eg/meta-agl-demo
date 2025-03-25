@@ -7,7 +7,11 @@ SUMMARY = "AGL KVM + gateway preconfigured Flutter demo image"
 IMAGE_FEATURES:remove = "kuksa-val-databroker"
 
 # Not needed if we're not running the databroker
-IMAGE_INSTALL:remove = "kuksa-databroker-agl-demo-cluster"
+IMAGE_INSTALL:remove = " \
+    agl-service-audiomixer-systemd-databroker \
+    agl-service-hvac-systemd-databroker \
+    kuksa-databroker-agl-demo-cluster \
+"
 
 IMAGE_INSTALL += "\
     agl-service-hvac-conf-gateway-demo \

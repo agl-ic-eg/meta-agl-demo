@@ -19,6 +19,8 @@ AGL_APPS_INSTALL = ""
 PLATFORM_SERVICES_INSTALL = " \
     packagegroup-agl-ivi-multimedia-platform \
     packagegroup-agl-ivi-services-platform \
+    agl-service-audiomixer-systemd-databroker \
+    agl-service-hvac-systemd-databroker \
 "
 
 IMAGE_INSTALL += " \

@@ -21,6 +21,8 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-service-hvac;protoco
            file://agl-service-hvac.conf.default \
            file://agl-service-hvac.conf.gateway-demo \
            file://agl-service-hvac.token \
+           file://agl-service-hvac.service \
+           file://databroker.conf \
 "
 SRCREV  = "1f55937667e35fb79dabee0e180787e34a59169a"
 
@@ -45,6 +47,10 @@ do_install:append() {
     install -m 0644 ${WORKDIR}/agl-service-hvac.conf.default ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/agl-service-hvac.conf.gateway-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/agl-service-hvac.token ${D}${sysconfdir}/xdg/AGL/agl-service-hvac/
+
+    # Replace the default systemd unit
+    install -m 0644 ${WORKDIR}/agl-service-hvac.service ${D}${systemd_system_unitdir}/
+    install -m 0644 -D ${WORKDIR}/databroker.conf ${D}${systemd_system_unitdir}/agl-service-hvac.d/databroker.conf
 }
 
 FILES:${PN} += "${systemd_system_unitdir}"
@@ -53,7 +59,7 @@ RDEPENDS:${PN} += "${PN}-conf"
 
 ALTERNATIVE_LINK_NAME[agl-service-hvac.conf] = "${sysconfdir}/xdg/AGL/agl-service-hvac.conf"
 
-PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-gateway-demo"
+PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-gateway-demo ${PN}-systemd-databroker"
 
 FILES:${PN}-conf += "${sysconfdir}/xdg/AGL/agl-service-hvac.conf.default"
 RDEPENDS:${PN}-conf = "${PN}"
@@ -67,4 +73,6 @@ RPROVIDES:${PN}-conf-gateway-demo = "agl-service-hvac.conf"
 ALTERNATIVE:${PN}-conf-gateway-demo = "agl-service-hvac.conf"
 ALTERNATIVE_TARGET_${PN}-conf-gateway-demo = "${sysconfdir}/xdg/AGL/agl-service-hvac.conf.gateway-demo"
 ALTERNATIVE_PRIORITY_${PN}-conf-gateway-demo = "20"
+
+FILES:${PN}-systemd-databroker += "${systemd_system_unitdir}/agl-service-hvac.d/databroker.conf"
 

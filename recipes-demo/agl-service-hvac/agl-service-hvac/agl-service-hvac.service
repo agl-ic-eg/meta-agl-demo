@@ -1,0 +1,7 @@
+[Service]
+Type=simple
+ExecStart=/usr/sbin/agl-service-hvac
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

@@ -19,6 +19,8 @@ IMAGE_FEATURES += " \
 HOST_AUDIO_INSTALL = " \
     packagegroup-agl-ivi-services-platform \
     packagegroup-agl-ivi-multimedia-platform \
+    agl-service-audiomixer-systemd-databroker \
+    agl-service-hvac-systemd-databroker \
     agl-service-radio-conf-kvm-demo \
     packagegroup-pipewire \
     wireplumber-config-agl \

@@ -23,6 +23,8 @@ SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/agl-service-audiomixer.g
            file://agl-service-audiomixer.conf.default \
            file://agl-service-audiomixer.conf.gateway-demo \
            file://agl-service-audiomixer.token \
+           file://agl-service-audiomixer.service \
+           file://databroker.conf \
 "
 SRCREV  = "2e7d2c7a4d9c6dd37552c69a896286aa7dacd2c3"
 
@@ -47,6 +49,10 @@ do_install:append() {
     install -m 0644 ${WORKDIR}/agl-service-audiomixer.conf.default ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/agl-service-audiomixer.conf.gateway-demo ${D}${sysconfdir}/xdg/AGL/
     install -m 0644 ${WORKDIR}/agl-service-audiomixer.token ${D}${sysconfdir}/xdg/AGL/agl-service-audiomixer/
+
+    # Replace the default systemd unit
+    install -m 0644 ${WORKDIR}/agl-service-audiomixer.service ${D}${systemd_system_unitdir}/
+    install -m 0644 -D ${WORKDIR}/databroker.conf ${D}${systemd_system_unitdir}/agl-service-audiomixer.d/databroker.conf
 }
 
 FILES:${PN} += "${systemd_system_unitdir}"
@@ -55,7 +61,7 @@ RDEPENDS:${PN} += "${PN}-conf"
 
 ALTERNATIVE_LINK_NAME[agl-service-audiomixer.conf] = "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf"
 
-PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-gateway-demo"
+PACKAGE_BEFORE_PN += "${PN}-conf ${PN}-conf-gateway-demo ${PN}-systemd-databroker"
 
 FILES:${PN}-conf += "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf.default"
 RDEPENDS:${PN}-conf = "${PN}"
@@ -69,3 +75,5 @@ RPROVIDES:${PN}-conf-gateway-demo = "agl-service-audiomixer.conf"
 ALTERNATIVE:${PN}-conf-gateway-demo = "agl-service-audiomixer.conf"
 ALTERNATIVE_TARGET_${PN}-conf-gateway-demo = "${sysconfdir}/xdg/AGL/agl-service-audiomixer.conf.gateway-demo"
 ALTERNATIVE_PRIORITY_${PN}-conf-gateway-demo = "20"
+
+FILES:${PN}-systemd-databroker += "${systemd_system_unitdir}/agl-service-audiomixer.d/databroker.conf"
