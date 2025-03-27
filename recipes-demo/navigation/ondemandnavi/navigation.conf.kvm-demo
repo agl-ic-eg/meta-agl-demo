@@ -1,4 +1,6 @@
 [kuksa-client]
 hostname = "172.16.10.1"
+use-tls = true
+ca-certificate = "/etc/kuksa-val/CA.pem"
 tls-server-name = "localhost"
 authorization = "/etc/xdg/AGL/navigation/navigation.token"
