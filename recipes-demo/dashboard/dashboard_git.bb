@@ -17,9 +17,8 @@ PV = "2.0+git${SRCPV}"
 SRC_URI = "git://gerrit.automotivelinux.org/gerrit/apps/dashboard;protocol=https;branch=${AGL_BRANCH} \
            file://dashboard.conf \
            file://dashboard.token \
-           file://0001-Migrate-to-Qt-6.patch \
            "
-SRCREV  = "b1b67ab525555a082ca257ad08fc4fba9b1f74e3"
+SRCREV  = "205f7f3510b4abf04c4020416c985e657e29c908"
 
 S = "${WORKDIR}/git"
 
