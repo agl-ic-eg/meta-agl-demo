@@ -16,6 +16,7 @@ the compositor already geometry provided by the client instead of
 computing one for itself, so we need to send a new set_window_geometry()
 with newer dimensions.
 
+Upstream-Status: Pending
 Signed-off-by: Marius Vlad <marius.vlad@collabora.com>
 ---
  src/client/qwaylandwindow.cpp | 2 +-

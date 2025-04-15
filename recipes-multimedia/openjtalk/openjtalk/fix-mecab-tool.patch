@@ -1,3 +1,5 @@
+Upstream-Status: Inappropriate [upstream is dead]
+
 diff --git a/mecab-naist-jdic/Makefile.am b/mecab-naist-jdic/Makefile.am
 old mode 100644
 new mode 100755

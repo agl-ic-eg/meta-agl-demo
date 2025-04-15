@@ -8,6 +8,7 @@ Avoid touching inputContext() when QT_LOGGING_RULES are enabled. This
 check ensures we're still able to debug Qt issues.
 
 Bug-AGL: SPEC-4770
+Upstream-Status: Pending
 Signed-off-by: Marius Vlad <marius.vlad@collabora.com>
 ---
  src/client/qwaylandintegration.cpp | 4 +++-
