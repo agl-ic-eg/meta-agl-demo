@@ -21,8 +21,7 @@ do_compile[noexec] = "1"
 
 do_install() {
     # compile qrc
-    # RECIPE_SYSROOT_NATIVE
-    ${RECIPE_SYSROOT_NATIVE}/usr/libexec/rcc -g python ${S}/assets/res.qrc | sed '0,/PySide6/s//PyQt6/' > ${S}/res_rc.py
+    rcc -g python ${S}/assets/res.qrc | sed '0,/PySide6/s//PyQt6/' > ${S}/res_rc.py
 
     # There's no provision for a Pythonic install into /usr/lib, so dump
     # into a directory /usr/libexec.
