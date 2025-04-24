@@ -69,18 +69,6 @@ dependencies:
   - URI: https://gerrit.automotivelinux.org/gerrit/gitweb?p=AGL/meta-agl.git
   - Branch: "master"<br/><br/>
 
-**The `agl-sota` Feature:**
-
-* Here Technologies' `meta-updater` Layer:
-
-  - URI: https://github.com/advancedtelematic/meta-updater/
-  - Branch: "dunfell"<br/><br/>
-
-* Here Technologies' `meta-updater-qemux86-64` Layer:
-
-  - URI: https://github.com/advancedtelematic/meta-updater-qemux86-64/
-  - Branch: "dunfell"<br/><br/>
-
 * OpenEmbedded's `meta-openembedded` Layer:
 
   - URI: https://github.com/openembedded/meta-openembedded
